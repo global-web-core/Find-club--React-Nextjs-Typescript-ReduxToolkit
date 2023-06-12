@@ -1,0 +1,7 @@
+.leftAngle {
+	border-radius: var(--border-radius-leftcorner);
+}
+
+.selected {
+	background-color: rgba(0, 68, 255, 0.7);
+}

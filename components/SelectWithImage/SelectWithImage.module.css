@@ -1,0 +1,115 @@
+.main {
+	height: 38px;
+	margin: 6px 5px 0 5px;
+}
+
+.selectWithImage {
+	border-radius: var(--border-radius-default);
+	box-shadow: var(--box-shadow-default);
+	background-color: #ffffff92;
+	backdrop-filter: blur(7px);
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	padding: 0px 0px 0px 0px;
+}
+
+.content {
+	height: 0;
+	width: 100%;
+	border-radius: 0 0 20px 20px;
+	overflow: hidden;
+}
+
+.content hr {
+	margin: 0px 20px 5px 20px;
+	height: 1px;
+	background-color: silver;
+	border: none;
+}
+
+.selectWithImage.open {
+	position: relative;
+	z-index: 1;
+}
+
+.selectWithImage.open .content {
+	display: block;
+	height: 100%;
+}
+
+.selectWithImage:hover {
+	cursor: pointer;
+}
+
+.item {
+	display: flex;
+	align-items: center;
+	border-radius: var(--border-radius-default);
+	margin: 5px 10px 5px 10px;
+}
+
+.item:hover {
+	background-color: rgba(128, 128, 128, 0.246);
+}
+
+.item span {
+	overflow: hidden;
+	margin-right: 41px;
+}
+
+.icon {
+	margin-right: 10px;
+	border-radius: 50%;
+	outline: 5px solid #ffffffbb;
+	object-fit: cover;
+	background-color: white;
+}
+
+.listItems {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	margin-bottom: 5px;
+	overflow-y: auto;
+}
+
+.downSection {
+	overflow: hidden;
+	outline: none;
+}
+
+.itemHeader {
+	display: flex;
+	align-items: center;
+}
+
+.headerRight button {
+	margin: -3px -3px -3px 0;
+	padding: 0 10px;
+	height: 100%;
+	border: none;
+	outline: 5px solid rgba(255, 255, 255, 0.60);
+}
+
+.headerRight {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-left: 15px;
+	margin-right: 10px;
+}
+
+.useButton {
+	margin-right: 0;
+}
+
+.useButton button {
+	margin: 0 0 0 10px;
+}
+
+.open {
+	border-radius: 20px 15px 20px 20px;
+}

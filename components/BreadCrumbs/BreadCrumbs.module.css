@@ -1,0 +1,116 @@
+.breadcrumb {
+	overflow-x: scroll;
+	margin: 5px;
+	border-radius: 20px;
+	overflow: hidden;
+}
+
+.breadcrumb ul {
+	list-style: none;
+	display: flex;
+	white-space: nowrap;
+	margin: 0;
+	padding: 0;
+}
+
+.breadcrumb li {
+	float: left;
+}
+
+.breadcrumb li a {
+	color: var(--color-text-breadcrumbs);
+	display: flex;
+	background: var(--color-main-breadcrumbs);
+	text-decoration: none;
+	position: relative;
+	height: 40px;
+	line-height: 40px;
+	padding: 0 10px 0 5px;
+	text-align: center;
+	margin-right: 23px;
+	align-items: center;
+}
+
+.breadcrumb li a img {
+	margin-right: 5px;
+}
+
+.breadcrumb li:first-child a img {
+	margin-right: 0;
+}
+
+
+.breadcrumb li:first-child a {
+	padding-left: 15px;
+	-moz-border-radius: 20px 0 0 20px;
+	-webkit-border-radius: 20px;
+	border-radius: 20px 0 0 20px;
+}
+
+.breadcrumb li:first-child a:before {
+	border: none;
+}
+
+.breadcrumb li:last-child a {
+	padding-right: 15px;
+	-moz-border-radius: 0 20px 20px 0;
+	-webkit-border-radius: 0;
+	border-radius: 0 20px 20px 0;
+}
+
+.breadcrumb li:last-child a:after {
+	border: none;
+}
+
+.breadcrumb li a:before,
+.breadcrumb li a:after {
+	content: "";
+	position: absolute;
+	top: 0;
+	border: 0 solid var(--color-main-breadcrumbs);
+	border-width: 20px 10px;
+	width: 0;
+	height: 0;
+}
+
+.breadcrumb li a:before {
+	left: -15px;
+	border-left-color: transparent;
+}
+
+.breadcrumb li a:after {
+	left: 100%;
+	border-color: transparent;
+	border-left-color: var(--color-main-breadcrumbs);
+}
+
+.breadcrumb li a:hover {
+	background-color: var(--color-hover-breadcrumbs);
+}
+
+.breadcrumb li a:hover:before {
+	border-color: var(--color-hover-breadcrumbs);
+	border-left-color: transparent;
+}
+
+.breadcrumb li a:hover:after {
+	border-left-color: var(--color-hover-breadcrumbs);
+}
+
+.breadcrumb li.active a {
+	background-color: var(--color-active-breadcrumbs);
+	margin-right: 0;
+}
+
+.breadcrumb li.active a:before {
+	border-color: var(--color-active-breadcrumbs);
+	border-left-color: transparent;
+}
+
+.breadcrumb li.active a:after {
+	border-left-color: var(--color-active-breadcrumbs);
+}
+
+.breadcrumb li.active a {
+	pointer-events: none;
+}

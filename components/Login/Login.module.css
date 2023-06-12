@@ -1,0 +1,55 @@
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  height: 48px;
+  width: 48px;
+  position: relative;
+}
+
+.main {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  border: 5px solid rgba(255, 255, 255, 0.30);
+  background-color: #ffffff92;
+  backdrop-filter: blur(7px);
+  position: relative;
+  z-index: 1;
+  width: max-content;
+  box-shadow: var(--box-shadow-default);
+  border-radius: var(--border-radius-default);
+  padding: 15px 15px 10px 15px;
+}
+
+.header {
+  cursor: pointer;
+  width: max-content;
+}
+
+.active .image {
+  border: 5px solid rgba(255, 255, 255, 0.60);
+}
+
+.image {
+  border-radius: 50%;
+  border: 5px solid rgba(255, 255, 255, 0.40);
+}
+
+.description div {
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+  align-items: center;
+}
+.description div button {
+  width: max-content;
+}
+
+.active .main {
+  display: flex;
+}
+
+.login h3 {
+  margin: 0;
+}

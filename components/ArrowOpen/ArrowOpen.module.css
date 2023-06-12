@@ -1,0 +1,30 @@
+.arrow {
+	box-sizing: border-box;
+	height: 12px;
+	width: 12px;
+	border-style: solid;
+	border-width: 0px 2px 2px 0px;
+	transform: rotate(45deg)  translate(-2px, -2px);
+	transition: border-width 200ms ease,
+							transform 200ms ease;
+}
+
+.open {
+	transform: rotate(225deg) translate(-2px, -2px);
+}
+
+.boxArrow {
+	width: 20px;
+	height: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.dark {
+	color: gray;
+}
+
+.light {
+	color: white;
+}

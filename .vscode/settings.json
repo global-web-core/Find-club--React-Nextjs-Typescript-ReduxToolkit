@@ -1,0 +1,23 @@
+{
+	"[javascript]": {
+		"editor.insertSpaces": false,
+		"editor.tabSize": 2,
+		"editor.detectIndentation": false,
+	},
+	"[typescript]": {
+		"editor.insertSpaces": false,
+		"editor.tabSize": 2,
+		"editor.detectIndentation": false,
+	},
+	"[typescriptreact]": {
+		"editor.insertSpaces": false,
+		"editor.tabSize": 2,
+		"editor.detectIndentation": false,
+	},
+	"[css]": {
+		"editor.insertSpaces": false,
+		"editor.tabSize": 2,
+		"editor.detectIndentation": false,
+	}
+
+}

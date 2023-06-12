@@ -1,0 +1,114 @@
+.filters {
+	display: flex;
+	justify-content: center;
+	gap: 20px;
+	background-color: rgba(255, 255, 255, 0.10);
+	border-radius: 15px;
+	margin-bottom: 20px;
+	padding-bottom: 5px;
+}
+
+.meetings {
+	gap: 20px;
+	margin: 0 20px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	margin-bottom: 20px;
+}
+
+.meeting {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	overflow: hidden;
+	gap: 10px;
+}
+
+.item {
+	overflow: hidden;
+}
+
+.mainContent {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 15px;
+}
+
+.hideContent hr {
+	border: 1px solid rgba(255, 255, 255, 0.30);
+}
+
+.nameMeeting {
+	display: flex;
+	align-items: center;
+}
+
+.nameMeeting h2 {
+	margin: 0;
+	padding: 0;
+}
+
+.nameMeeting h3 {
+	margin: 0;
+	padding: 0;
+}
+
+.location {
+	display: flex;
+}
+
+.statistic {
+	display: flex;
+	width: 100%;
+}
+
+.statusMeeting {
+	display: flex;
+	width: 100%;
+	justify-content: space-around;
+}
+
+.itemStatistic {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: center;
+	width: 100%;
+}
+
+.statisticWithoutArrow {
+	padding-right: 20px;
+}
+
+.title {
+	color: white;
+}
+
+.controlButton  {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	justify-content: flex-end;
+}
+
+.statusMeeting button {
+	height: fit-content;
+}
+
+
+@media (max-width: 800px) {
+	.meetings {
+		grid-template-columns: 100%;
+	}
+	.nameMeeting {
+		flex-direction: column;
+	}
+	.helperArrow {
+		display: none;
+	}
+}

@@ -1,0 +1,19 @@
+.select {
+	padding: 6px 30px 6px 10px;
+	border-radius: var(--border-radius-default);
+	background-image: url(./images/arrow.png);
+	background-repeat: no-repeat;
+	background-size: 17px 17px;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	background-position: calc(100% - 8px) center;
+}
+
+.rightAngle {
+	border-radius: var(--border-radius-rightcorner);
+}
+
+.error {
+	background-color: rgba(255, 0, 0, 0.119);
+	border: 1px solid red;
+}

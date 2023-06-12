@@ -1,0 +1,12 @@
+.divDefault {
+	display: flex;
+	flex-direction: column;
+	background-color: #fff;
+	border-radius: var(--border-radius-default);
+	border: 5px solid rgba(255, 255, 255, 0.10);
+	background-color: #ffffff1b;
+}
+
+.yourMeetings {
+	width: 90%;
+}

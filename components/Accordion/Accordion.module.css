@@ -1,0 +1,41 @@
+.accordion {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	border-radius: var(--border-radius-default);
+	box-shadow: var(--box-shadow-default);
+	background-color: #ffffff1b;
+	color: white;
+	padding: 10px;
+	border: 10px solid rgba(255, 255, 255, 0.10);
+	overflow: hidden;
+	transition: background-color linear .5s;
+	height: fit-content;
+}
+
+.accordion:hover {
+	background-color: #ffffff39;
+	transition: background-color linear .5s;
+}
+
+.header {
+	display: flex;
+	width: 100%;
+}
+
+.control {
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: black;
+}
+
+.content {
+	height: 0;
+}
+
+.open .content {
+	height: 100%;
+}
+

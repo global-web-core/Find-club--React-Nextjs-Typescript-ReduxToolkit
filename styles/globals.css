@@ -1,0 +1,111 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-size: 16px;
+  background-image: linear-gradient(to top, #3f51b1 0%, #5a55ae 13%, #7b5fac 25%, #8f6aae 38%, #a86aa4 50%, #cc6b8e 62%, #f18271 75%, #f3a469 87%, #f7c978 100%);
+  min-height: 100vh;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    color: black;
+    background-image: linear-gradient(to top, #283373 0%, #38356d 13%, #554277 25%, #59416d 38%, #5c3959 50%, #5a2e3e 62%, #61362f 75%, #593d27 87%, #54452a 100%);
+  }
+}
+
+
+
+
+
+
+:root {
+  /* Colors */
+
+
+  /* Component BreadCrumbs */
+  --color-main-breadcrumbs: #8daca6;
+  --color-hover-breadcrumbs: #139379;
+  --color-active-breadcrumbs: #1abc9c;
+  --color-text-breadcrumbs: #fff;
+}
+
+
+
+:root {
+  /* Others styles */
+
+
+  --box-shadow-default: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  --border-radius-default: 20px;
+  --border-radius-rightcorner: 20px 0 0 20px;
+  --border-radius-leftcorner: 0 20px 20px 0;
+  --border-default: 4px solid #c3c3c3;
+  --border-default__hover: 4px solid #9e9e9e;
+  --border-default-thin: 2px solid #c3c3c3;
+  --outline-default: 4px solid #c3c3c3;
+}
+
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  padding: 6px 10px;
+  border-radius: var(--border-radius-default);
+  cursor: pointer;
+  /* outline: 2px solid gray; */
+  border: 5px solid rgba(255, 255, 255, 0.30);
+  /* border: none; */
+  /* margin: 2px 2px; */
+  color: white;
+  background-color: rgba(0, 68, 255, 0.4);
+  transition: background-color linear .35s;
+}
+
+button:hover {
+  background-color: rgba(104, 255, 104, 0.5);
+  color: black;
+  transition: background-color linear .35s;
+}
+
+select, input, textarea {
+  border: 5px solid rgba(255, 255, 255, 0.10);
+  background-color: hsla(0, 0%, 100%, 0.4);
+  border-radius: var(--border-radius-default);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+input[type=datetime-local] {
+  padding: 6px 10px;
+  /* border-radius: var(--border-radius-default); */
+}
+/* input[type=datetime-local] {
+  width: 105%;
+} */
+
+input[type=date]::-webkit-calendar-picker-indicator{
+  margin-left: 6px;
+}
+
+textarea {
+  padding: 6px 10px;
+  border-radius: var(--border-radius-default);
+}
+
+
+
+input.error {
+  background-color: rgba(255, 0, 0, 0.119);
+  border: 1px solid red;
+}

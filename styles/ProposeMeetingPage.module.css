@@ -1,0 +1,33 @@
+.title {
+  color: white;
+}
+
+.error {
+	background-color: rgba(255, 0, 0, 0.119);
+	border: 1px solid red;
+}
+
+.proposeMeeting select {
+  width: 100%;
+  max-width: 400px;
+}
+
+.proposeMeeting input {
+  width: 100%;
+  max-width: 400px;
+}
+
+.proposeMeeting textarea {
+  width: 100%;
+  max-width: 400px;
+}
+
+.divForm {
+  width: 100%;
+  max-width: 400px;
+}
+
+.form {
+  min-width: 450px;
+  padding: 20px;
+}
