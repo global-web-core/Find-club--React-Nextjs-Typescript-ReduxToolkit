@@ -19,36 +19,59 @@ body {
   }
 }
 
-
-
-
-
-
 :root {
   /* Colors */
-
+  --color-light: #ffffff1b;
+  --color-light-2: #3f50b112;
+  --color-light-3: #ffffffa6;
+  --color-light-4: #eaeaeaa6;
+  --color-light-5: rgba(255, 255, 255, 0.10);
+  --color-white: white;
+  --color-black: black;
+  --color-green-1: rgba(104, 255, 104, 0.5);
+  --color-green-2: #8daca6;
+  --color-green-3: #139379;
+  --color-green-4: #1abc9c;
+  --color-blue-1: rgba(0, 68, 255, 0.4);
+  --color-red-1: rgba(255, 0, 0, 0.3);
+  --color-gray-1: gray;
+  --color-silver-1: silver;
 
   /* Component BreadCrumbs */
-  --color-main-breadcrumbs: #8daca6;
-  --color-hover-breadcrumbs: #139379;
-  --color-active-breadcrumbs: #1abc9c;
+  --color-main-breadcrumbs: var(--color-green-2);
+  --color-hover-breadcrumbs: var(--color-green-3);
+  --color-active-breadcrumbs: var(--color-green-4);
   --color-text-breadcrumbs: #fff;
+
+	/* Component Alert */
+	--color-green-alert: #60c060;
+	--color-blue-alert: #4d90fd;
+	--color-orange-alert: #fc9700;
+	--color-red-alert: #da4932;
 }
-
-
 
 :root {
   /* Others styles */
-
-
   --box-shadow-default: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   --border-radius-default: 20px;
   --border-radius-rightcorner: 20px 0 0 20px;
   --border-radius-leftcorner: 0 20px 20px 0;
-  --border-default: 4px solid #c3c3c3;
+  --border-default: 5px solid #c3c3c3;
+  --border-default-red: 5px solid rgba(255, 0, 0, 0.547);
+	--border-default-2: 5px solid rgba(255, 255, 255, 0.10);
+	--border-default-3: 5px solid rgba(255, 255, 255, 0.50);
+	--border-default-4: 5px solid rgba(255, 255, 255, 0.30);
+	--border-default-5: 5px solid rgba(255, 255, 255, 0.40);
+	--border-default-6: 5px solid rgba(255, 255, 255, 0.60);
+	--border-default-wide: 10px solid rgba(255, 255, 255, 0.30);
   --border-default__hover: 4px solid #9e9e9e;
   --border-default-thin: 2px solid #c3c3c3;
   --outline-default: 4px solid #c3c3c3;
+	--blur-default: blur(7px);
+	--blur-default-2: blur(4px);
+	--time-transitioion: 0.5s;
+	--time-transitioion-fast: 0.3s;
+	--time-transitioion-fast-2: 0.35s;
 }
 
 
@@ -61,25 +84,26 @@ button {
   padding: 6px 10px;
   border-radius: var(--border-radius-default);
   cursor: pointer;
-  /* outline: 2px solid gray; */
-  border: 5px solid rgba(255, 255, 255, 0.30);
-  /* border: none; */
-  /* margin: 2px 2px; */
-  color: white;
-  background-color: rgba(0, 68, 255, 0.4);
-  transition: background-color linear .35s;
+  border: var(--border-default-4);
+  color: var(--color-white);
+  background-color: var(--color-blue-1);
+  transition: background-color linear var(--time-transitioion-fast-2);
 }
 
 button:hover {
-  background-color: rgba(104, 255, 104, 0.5);
-  color: black;
-  transition: background-color linear .35s;
+  background-color: var(--color-green-1);
+  color: var(--color-black);
+  transition: background-color linear var(--time-transitioion-fast-2);
 }
 
 select, input, textarea {
-  border: 5px solid rgba(255, 255, 255, 0.10);
-  background-color: hsla(0, 0%, 100%, 0.4);
+  border: var(--border-default-4);
+  background-color: var(--border-default-5);
   border-radius: var(--border-radius-default);
+	color: var(--color-white);
+}
+input::placeholder, textarea::placeholder {
+  color: var(--color-white);
 }
 
 * {
@@ -88,11 +112,7 @@ select, input, textarea {
 
 input[type=datetime-local] {
   padding: 6px 10px;
-  /* border-radius: var(--border-radius-default); */
 }
-/* input[type=datetime-local] {
-  width: 105%;
-} */
 
 input[type=date]::-webkit-calendar-picker-indicator{
   margin-left: 6px;
@@ -103,9 +123,7 @@ textarea {
   border-radius: var(--border-radius-default);
 }
 
-
-
 input.error {
-  background-color: rgba(255, 0, 0, 0.119);
-  border: 1px solid red;
+  background-color: var(--color-red-1);
+  border: var(--border-default-red);
 }

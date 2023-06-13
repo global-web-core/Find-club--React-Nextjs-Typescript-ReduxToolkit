@@ -69,7 +69,6 @@ export default function YourMeetingsPage(): JSX.Element {
 			setLoading(false);
 		}
 		startFetching();
-
 	}, [])
 
 	useEffect(() => {
@@ -241,9 +240,9 @@ export default function YourMeetingsPage(): JSX.Element {
 		
 		meetings.forEach(meeting => {
 			const currentMeeting: MeetingsInterface.MeetingsWithDependentData = JSON.parse(JSON.stringify(meeting));
-
+			
 			if (currentMeeting.id === idMeeting) {
-				if (newStatus?.status) currentMeeting.status = newStatus?.status;
+				if (newStatus?.status !== undefined) currentMeeting.status = newStatus?.status;
 			}
 			updateMeeting.push(currentMeeting);
 		})

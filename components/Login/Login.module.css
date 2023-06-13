@@ -11,9 +11,9 @@
   display: none;
   flex-direction: column;
   align-items: center;
-  border: 5px solid rgba(255, 255, 255, 0.30);
-  background-color: #ffffff92;
-  backdrop-filter: blur(7px);
+  border: var(--border-default-4);
+  background-color: var(--color-light-3);
+  backdrop-filter: var(--blur-default);
   position: relative;
   z-index: 1;
   width: max-content;
@@ -28,12 +28,12 @@
 }
 
 .active .image {
-  border: 5px solid rgba(255, 255, 255, 0.60);
+  border: var(--border-default-6);
 }
 
 .image {
   border-radius: 50%;
-  border: 5px solid rgba(255, 255, 255, 0.40);
+  border: var(--border-default-4);
 }
 
 .description div {

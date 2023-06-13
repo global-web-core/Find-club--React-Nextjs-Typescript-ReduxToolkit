@@ -6,14 +6,14 @@
 .selectWithImage {
 	border-radius: var(--border-radius-default);
 	box-shadow: var(--box-shadow-default);
-	background-color: #ffffff92;
-	backdrop-filter: blur(7px);
+	background-color: var(--color-light-3);
+	backdrop-filter: var(--blur-default);
 }
 
 .header {
 	display: flex;
 	justify-content: space-between;
-	padding: 0px 0px 0px 0px;
+	padding: 0;
 }
 
 .content {
@@ -26,7 +26,7 @@
 .content hr {
 	margin: 0px 20px 5px 20px;
 	height: 1px;
-	background-color: silver;
+	background-color: var(--color-silver-1);
 	border: none;
 }
 
@@ -52,7 +52,7 @@
 }
 
 .item:hover {
-	background-color: rgba(128, 128, 128, 0.246);
+	background-color: var(--color-light-4);
 }
 
 .item span {
@@ -63,9 +63,9 @@
 .icon {
 	margin-right: 10px;
 	border-radius: 50%;
-	outline: 5px solid #ffffffbb;
+	outline: var(--border-default-6);
 	object-fit: cover;
-	background-color: white;
+	background-color: var(--color-white);
 }
 
 .listItems {
@@ -91,7 +91,7 @@
 	padding: 0 10px;
 	height: 100%;
 	border: none;
-	outline: 5px solid rgba(255, 255, 255, 0.60);
+	outline: var(--border-default-6);
 }
 
 .headerRight {

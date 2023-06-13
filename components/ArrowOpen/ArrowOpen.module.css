@@ -22,9 +22,9 @@
 }
 
 .dark {
-	color: gray;
+	color: var(--color-gray-1);
 }
 
 .light {
-	color: white;
+	color: var(--color-white);
 }

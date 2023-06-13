@@ -49,7 +49,10 @@ export const Alert = (): JSX.Element => {
 							key={message.id}
 						>
 							<div className={styles.icon}>
-								<Image src={message.typeAlert ? pathCurrentIcon[message.typeAlert] : ''} width={30} height={30} alt='icon' />
+								<Image src={message.typeAlert ? pathCurrentIcon[message.typeAlert] : ''}
+									fill
+									alt='icon'
+								/>
 							</div>
 							<div className={styles.text}>
 								{message.title && <span><strong>{firstLetterUpperCase(message.title)}!</strong></span>}

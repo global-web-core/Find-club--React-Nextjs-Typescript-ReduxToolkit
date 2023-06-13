@@ -5,7 +5,7 @@
 	height: 100vh;
 	align-items: center;
 	justify-content: center;
-	color: white;
+	color: var(--color-white);
 }
 
 .main {
@@ -14,12 +14,12 @@
 	align-items: center;
 	justify-content: center;
 	max-width: 500px;
-	background-color: rgba(255, 255, 255, 0.10);
+	background-color: var(--color-light-5);
 	width: calc(100% - 30px);
 	box-shadow: var(--box-shadow-default);
 	border-radius: var(--border-radius-default);
 	padding: 20px 50px 50px 50px;
-	border: 10px solid rgba(255, 255, 255, 0.20);
+	border: var(--border-default-wide);
 }
 
 .item {
@@ -30,14 +30,14 @@
 	width: 100%;
 	border-radius: var(--border-radius-default);
 	padding: 10px;
-	border: var(--border-default-thin);
+	border: var(--border-default-4);
 	align-items: center;
-	transition: box-shadow 0.5s;
+	transition: box-shadow var(--time-transitioion);
 }
 
 .item:hover {
 	box-shadow: var(--box-shadow-default);
-	transition: box-shadow 0.5s;
+	transition: box-shadow var(--time-transitioion);
 }
 
 .image {

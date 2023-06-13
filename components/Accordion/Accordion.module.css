@@ -4,18 +4,18 @@
 	width: 100%;
 	border-radius: var(--border-radius-default);
 	box-shadow: var(--box-shadow-default);
-	background-color: #ffffff1b;
-	color: white;
+	background-color: var(--color-light);
+	color: var(--color-white);
 	padding: 10px;
-	border: 10px solid rgba(255, 255, 255, 0.10);
+	border: 10px solid var(--color-light);
 	overflow: hidden;
-	transition: background-color linear .5s;
+	transition: background-color linear var(--time-transitioion);
 	height: fit-content;
 }
 
 .accordion:hover {
-	background-color: #ffffff39;
-	transition: background-color linear .5s;
+	background-color: var(--color-light-2);
+	transition: background-color linear var(--time-transitioion);
 }
 
 .header {
@@ -28,7 +28,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: black;
+	color: var(--color-black);
 }
 
 .content {
@@ -38,4 +38,3 @@
 .open .content {
 	height: 100%;
 }
-

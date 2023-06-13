@@ -1,9 +1,9 @@
 .divDefault {
 	display: flex;
 	flex-direction: column;
-	background-color: #fff;
+	background-color: var(--color-white);
 	border-radius: var(--border-radius-default);
-	border: 5px solid rgba(255, 255, 255, 0.10);
+	border: var(--border-default-2);
 	background-color: #ffffff1b;
 }
 

@@ -2,7 +2,8 @@
 	position: fixed;
 	bottom: 0;
 	right: 0;
-	max-width: 372px;
+	max-width: 400px;
+	width: 100%;
 	margin: 20px;
 	display: flex;
 	flex-direction: column;
@@ -11,30 +12,31 @@
 
 .alert {
 	display: flex;
-	background-color:#fbfbfb;
-	border-radius: 20px;
+	background-color: var(--color-light-3);
+	border-radius: var(--border-radius-default);
 	overflow: hidden;
 	margin-top: 20px;
-	border: 1px solid gray;
-	transition: box-shadow linear .5s;
-	width: max-content;
+	border: var(--border-default-3);
+	transition: box-shadow, background-color linear var(--time-transitioion);
+	width: 100%;
+	backdrop-filter: var(--blur-default-2);
 }
 
 .alert:hover {
-	transition: box-shadow linear .5s;
+	transition: box-shadow, background-color linear var(--time-transitioion);
 	box-shadow: var(--box-shadow-default);
+	background-color: var(--color-light-4);
 }
 
 .icon {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding-left: 10px;
 	position: relative;
-	border: 1px solid black;
 	border-left: 0;
 	border-top: 0;
 	border-bottom: 0;
+	width: 70px;
 }
 
 .icon:after {
@@ -46,18 +48,26 @@
 	content: '';
 	width: 10px;
 	height: 10px;
-	border: 1px solid black;
-	background: #fff;
+	background: var(--color-white);
 	position: relative;
-	left: 6px;
+	left: 26px;
 	border-left: 0;
 	border-bottom: 0;
+}
+
+.icon img {
+	width: 30px;
+	height: 30px;
+	padding: 10px;
+	object-fit: contain;
 }
 
 .text {
 	display: flex;
 	flex-direction: column;
 	padding: 15px 0 15px 15px;
+	width: 100%;
+	overflow: hidden;
 }
 
 .close {
@@ -68,29 +78,68 @@
 	background-color: transparent;
 	border: none;
 	cursor: pointer;
-	color: gray;
+	color: var(--color-black);
+	transition: color linear var(--time-transitioion-fast);
 }
 
 .close:hover {
-	color: black;
+	background: none;
+	color: var(--color-white);
+	transition: color linear var(--time-transitioion-fast);
 }
 
 .alertSuccess .icon, .alertSuccess .icon:after {
-	border-color: #54a754;
-	background: #60c060;
+	background: var(--color-green-alert);
 }
 
 .alertInfo .icon, .alertInfo .icon:after {
-	border-color: #3a8ace;
-	background: #4d90fd;
+	background: var(--color-blue-alert);
 }
 
 .alertWarning .icon, .alertWarning .icon:after {
-	border-color: #d68000;
-	background: #fc9700;
+	background: var(--color-orange-alert);
 }
 
 .alertDanger .icon, .alertDanger .icon:after {
-	border-color: #ca452e;
-	background: #da4932;
+	background: var(--color-red-alert);
+}
+
+@media (max-width: 800px) {
+	.content {
+		margin: 10px;
+	}
+	.text {
+		padding: 7px 0 7px 10px;
+	}
+	.close {
+		width: 40px;
+		height: 35px;
+		padding: 0;
+	}
+	.alert {
+		margin-top: 10px;
+	}
+}
+
+@media (max-width: 500px) {
+	.content {
+		max-width: 320px;
+	}
+	.icon {
+		width: 30px;
+	}
+	.icon img {
+		padding: 3px 5px 3px 3px;
+	}
+	.icon:after {
+		width: 7px;
+		height: 7px;
+		left: 12px;
+	}
+}
+
+@media (max-width: 360px) {
+	.content {
+		max-width: 270px;
+	}
 }
