@@ -26,6 +26,9 @@ body {
   --color-light-3: #ffffffa6;
   --color-light-4: #eaeaeaa6;
   --color-light-5: rgba(255, 255, 255, 0.10);
+  --color-light-6: rgba(255, 255, 255, 0.30);
+  --color-light-7: rgba(255, 255, 255, 0.50);
+  --color-light-8: rgba(255, 255, 255, 0.70);
   --color-white: white;
   --color-black: black;
   --color-green-1: rgba(104, 255, 104, 0.5);
@@ -36,6 +39,9 @@ body {
   --color-red-1: rgba(255, 0, 0, 0.3);
   --color-gray-1: gray;
   --color-silver-1: silver;
+  --color-silver-1: silver;
+  --color-purple-1: #7b5fac;
+  --color-burgundy-1: #cc6b8e;
 
   /* Component BreadCrumbs */
   --color-main-breadcrumbs: var(--color-green-2);
@@ -64,8 +70,11 @@ body {
 	--border-default-5: 5px solid rgba(255, 255, 255, 0.40);
 	--border-default-6: 5px solid rgba(255, 255, 255, 0.60);
 	--border-default-wide: 10px solid rgba(255, 255, 255, 0.30);
+	--border-default-wide-2: 10px solid rgba(255, 255, 255, 0.10);
+	--border-default-wide-3: 5px solid rgba(255, 255, 255, 0.10);
   --border-default__hover: 4px solid #9e9e9e;
   --border-default-thin: 2px solid #c3c3c3;
+  --border-default-thin-2: 1px solid rgba(255, 255, 255, 0.30);
   --outline-default: 4px solid #c3c3c3;
 	--blur-default: blur(7px);
 	--blur-default-2: blur(4px);
@@ -114,8 +123,8 @@ input[type=datetime-local] {
   padding: 6px 10px;
 }
 
-input[type=date]::-webkit-calendar-picker-indicator{
-  margin-left: 6px;
+input[type=datetime-local]::-webkit-calendar-picker-indicator{
+	filter: invert(1);
 }
 
 textarea {
@@ -127,3 +136,11 @@ input.error {
   background-color: var(--color-red-1);
   border: var(--border-default-red);
 }
+
+@media (max-width: 500px) {
+	h1 {
+		font-size: 24px;
+
+	}
+}
+

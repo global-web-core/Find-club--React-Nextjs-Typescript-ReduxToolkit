@@ -317,10 +317,12 @@ export default function YourMeetingsPage(): JSX.Element {
 					: 
 						<DivDefault>
 							<div className={styles.filters}>
-								<Button name={textTranslation[ML.key.all]} selected={selectFilter === nameFilter.all ? true : false} onClick={() => setSelectFilter(nameFilter.all)} />
-								<Button name={textTranslation[ML.key.iOrganise]} selected={selectFilter === nameFilter.my ? true : false} onClick={() => setSelectFilter(nameFilter.my)} />
-								<Button name={textTranslation[ML.key.organizedByOthers]} selected={selectFilter === nameFilter.other ? true : false} onClick={() => setSelectFilter(nameFilter.other)} />
-								<Button name={textTranslation[ML.key.alreadyGone]}  selected={selectFilter === nameFilter.passed ? true : false} onClick={() => setSelectFilter(nameFilter.passed)} />
+								<div className={styles.listButton}>
+									<Button name={textTranslation[ML.key.all]} selected={selectFilter === nameFilter.all ? true : false} onClick={() => setSelectFilter(nameFilter.all)} />
+									<Button name={textTranslation[ML.key.iOrganise]} selected={selectFilter === nameFilter.my ? true : false} onClick={() => setSelectFilter(nameFilter.my)} />
+									<Button name={textTranslation[ML.key.organizedByOthers]} selected={selectFilter === nameFilter.other ? true : false} onClick={() => setSelectFilter(nameFilter.other)} />
+									<Button name={textTranslation[ML.key.alreadyGone]}  selected={selectFilter === nameFilter.passed ? true : false} onClick={() => setSelectFilter(nameFilter.passed)} />
+								</div>
 							</div>
 							<div className={styles.meetings}>
 								{meetings && meetings.map((v) => (
@@ -355,7 +357,7 @@ export default function YourMeetingsPage(): JSX.Element {
 														<div className={styles.itemStatistic}>
 															{!checkOwnDesires(v.id) &&
 																<>
-																	<div>{checkStatusWish(v.id) ? textTranslation[ML.key.iPlanToGo] : textTranslation[ML.key.iNotGoing]}</div>
+																	<div className={styles.minor}>{checkStatusWish(v.id) ? textTranslation[ML.key.iPlanToGo] : textTranslation[ML.key.iNotGoing]}</div>
 																	<Button  name={checkStatusWish(v.id) ? textTranslation[ML.key.iNotGoing] : textTranslation[ML.key.planningToGo]} onClick={() => changeStatusWish(v.id)}/>
 																</>
 															}
@@ -363,15 +365,15 @@ export default function YourMeetingsPage(): JSX.Element {
 														<div className={styles.itemStatistic}>
 															{!checkOwnDesires(v.id) &&
 																<>
-																	<div>{checkStatusReadiness(v.id) ? textTranslation[ML.key.iDefinitelyComing] : textTranslation[ML.key.undecided]}</div>
+																	<div className={styles.minor}>{checkStatusReadiness(v.id) ? textTranslation[ML.key.iDefinitelyComing] : textTranslation[ML.key.undecided]}</div>
 																	<Button  name={checkStatusReadiness(v.id) ? textTranslation[ML.key.undecided] : textTranslation[ML.key.definitelyComing]} onClick={() => changeStatusReadiness(v.id)}/>
 																</>
 															}
 														</div>
 													</div>
-														<div>{checkOwnDesires(v.id) ? textTranslation[ML.key.iOrganise] : textTranslation[ML.key.organisesAnother]}</div>
-														<div>{textTranslation[ML.key.languagePeopleMeeting]} {v.language}</div>
-														<div className={styles.location}>
+														<div className={styles.minor}>{checkOwnDesires(v.id) ? textTranslation[ML.key.iOrganise] : textTranslation[ML.key.organisesAnother]}</div>
+														<div className={styles.minor}>{textTranslation[ML.key.languagePeopleMeeting]} {v.language}</div>
+														<div className={cn(styles.location, styles.minor)}>
 															<div>{v.country}&nbsp;→&nbsp;</div>
 															<div>{v.city}</div>
 														</div>
@@ -382,12 +384,12 @@ export default function YourMeetingsPage(): JSX.Element {
 															</div>
 															{checkOwnDesires(v.id)
 																?
-																	<div className={styles.controlButton}>
+																	<div className={cn(styles.controlButton, styles.minor)}>
 																		<div className={styles.emptyBlock}>{v.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>
 																		<Button  name={v.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.cancelMeeting] : textTranslation[ML.key.resumeMeeting]} onClick={() => changeStatusMeeting(v.status, v.id)}/>
 																	</div>
 																:
-																	<div className={styles.emptyBlock}>{v.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>
+																	<div className={cn(styles.emptyBlock, styles.minor)}>{v.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>
 															}
 															
 														</div>

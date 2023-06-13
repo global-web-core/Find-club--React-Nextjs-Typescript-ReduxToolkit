@@ -1,10 +1,10 @@
 .title {
-  color: white;
+  color: var(--color-white);
 }
 
 .error {
-	background-color: rgba(255, 0, 0, 0.119);
-	border: 1px solid red;
+	background-color: var(--color-red-1);
+	border: var(--border-default-red);
 }
 
 .proposeMeeting select {
@@ -22,12 +22,13 @@
   max-width: 400px;
 }
 
-.divForm {
-  width: 100%;
-  max-width: 400px;
-}
-
 .form {
   min-width: 450px;
   padding: 20px;
+}
+
+@media (max-width: 500px) {
+	.form {
+		min-width: unset;
+	}
 }

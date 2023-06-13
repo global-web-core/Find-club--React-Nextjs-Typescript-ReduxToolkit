@@ -7,7 +7,7 @@
 	background-color: var(--color-light);
 	color: var(--color-white);
 	padding: 10px;
-	border: 10px solid var(--color-light);
+	border: var(--border-default-wide-2);
 	overflow: hidden;
 	transition: background-color linear var(--time-transitioion);
 	height: fit-content;
@@ -37,4 +37,10 @@
 
 .open .content {
 	height: 100%;
+}
+
+@media (max-width: 500px) {
+	.accordion {
+		border: var(--border-default-wide-3);
+	}
 }

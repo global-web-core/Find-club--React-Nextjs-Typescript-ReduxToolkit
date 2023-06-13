@@ -114,3 +114,47 @@
 .breadcrumb li.active a {
 	pointer-events: none;
 }
+
+@media (max-width: 800px) {
+	.breadcrumb li a {
+		height: 29px;
+		padding: 0 2px 0 2px;
+		margin-right: 16px;
+	}
+	.breadcrumb li a img {
+		margin-right: 2px;
+	}
+	.breadcrumb li:first-child a {
+		padding-left: 5px;
+	}
+	.breadcrumb li:last-child a {
+		padding-right: 5px;
+	}
+	.breadcrumb li a:before {
+		left: -11px;
+	}
+	.breadcrumb li a:before,
+	.breadcrumb li a:after {
+		border-width: 15px 6px;
+	}
+	.breadcrumb li a img {
+		display: none;
+	}
+	.breadcrumb li:first-child a img {
+		display: block;
+	}
+}
+
+@media (max-width: 500px) {
+	.breadcrumb li a {
+		margin-right: 14px;
+		font-size: 14px;
+	}
+}
+
+@media (max-width: 400px) {
+	.breadcrumb li a {
+		padding: 0 0px 0 1px;
+		font-size: 10px;
+	}
+}
