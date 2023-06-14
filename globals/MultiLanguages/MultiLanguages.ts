@@ -145,6 +145,16 @@ const key = {
 	meetingCancelled: 'meeting-cancelled',
 	meetingWill: 'meeting-will',
 	meetingExists: 'this-meeting-already-exists',
+	whoWillGoWithMe: 'who-will-go-with-me',
+	descriptionMainPage: 'description-main-page',
+	titleProposeMeeting: 'title-propose-meeting',
+	descriptionProposeMeeting: 'description-propose-meeting',
+	titleYourMeetings: 'title-your-meetings',
+	descriptionYourMeetings: 'description-your-meetings',
+	logInYourAccount: 'log-in-your-account',
+	descriptionSignin: 'description-signin',
+	titleCountries: 'title-countries',
+	descriptionCountries: 'description-countries',
 }
 
 export {

@@ -2,7 +2,6 @@
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	height: 100vh;
 	align-items: center;
 	justify-content: center;
 	color: var(--color-white);
@@ -20,6 +19,10 @@
 	border-radius: var(--border-radius-default);
 	padding: 20px 50px 50px 50px;
 	border: var(--border-default-wide);
+}
+
+.main h1 {
+	text-align: center;
 }
 
 .item {
@@ -42,4 +45,21 @@
 
 .image {
 	margin-right: 20px;
+}
+
+@media (max-width: 550px) {
+	.main {
+		padding: 20px 20px 50px 20px;
+		border: var(--border-default-4);
+	}
+}
+
+@media (max-width: 430px) {
+	.main {
+		padding: 10px 10px 50px 10px;
+		border: var(--border-default-4);
+	}
+	.item {
+		padding: 5px;
+	}
 }

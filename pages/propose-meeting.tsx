@@ -1,4 +1,5 @@
 import styles from '../styles/ProposeMeetingPage.module.css'
+import Head from 'next/head'
 import { BreadCrumbs, Login, Main, Select, SelectLanguage, Loading, Alert, Button, DivDefault } from '../components';
 import { Cities, Countries, CitiesByCountries, Interests, InterestsByCities, Languages, Categories, CategoriesByInterests, Meetings, Users, Desires } from '../models';
 import { useRouter } from 'next/router';
@@ -240,6 +241,11 @@ export default function ProposeMeetingPage(): JSX.Element {
 	if (session) {
 		return (
 			<div className={styles.proposeMeeting}>
+				<Head>
+					<title>{textTranslation[ML.key.titleProposeMeeting]}</title>
+					<meta name="description" content={textTranslation[ML.key.descriptionProposeMeeting]} />
+					<link rel="icon" href="/favicon.ico" />
+				</Head>
 				<Main>
 					<Login/>
 					<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />

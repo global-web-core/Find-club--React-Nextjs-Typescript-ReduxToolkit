@@ -6,6 +6,9 @@ import { CitiesInterface, CountriesInterface, CitiesByCountriesInterface, Langua
 import { ParsedUrlQuery } from 'querystring';
 import { ML } from '../../globals';
 import { useEffect, useState } from 'react';
+import Head from 'next/head';
+import { TextTranslationSlice } from '../../store/slices';
+import { useAppDispatch, useAppSelector } from '../../store/hook';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const countriesData = await Countries.getAll();
@@ -69,26 +72,43 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 export default function CountriesPage({ listCities, listLanguages, text, country }: CountriesPageProps): JSX.Element {
 	const router = useRouter();
 	const routerQuery = router.query as {[key:string]: string};
+	const dispatch = useAppDispatch();
 	
-	const [textTranslation, setTextTranslation] = useState({});
 	
-	const updateLanguage = async () => {
-		const currentTranslationText = await ML.getChangeTranslationText(text)
-		setTextTranslation(currentTranslationText);
+	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
+	const updateLanguage = () => {
+		dispatch(TextTranslationSlice.updateLanguageAsync())
 	}
-	
 	useEffect(() => {
-		ML.setLanguageByPath(router.query.countries as string, listLanguages, country);
-		updateLanguage();
-	}, []);
+		async function startFetching() {
+			// ML.setLanguageByBrowser(listLanguages);
+			ML.setLanguageByPath(router.query.countries as string, listLanguages, country);
+			updateLanguage();
+		}
+		startFetching();
+	}, [])
+	
+	// const [textTranslation, setTextTranslation] = useState({});
+	
+	// const updateLanguage = async () => {
+	// 	const currentTranslationText = await ML.getChangeTranslationText(text)
+	// 	setTextTranslation(currentTranslationText);
+	// }
 
 	return (
-		<Main>
-			<Login />
-			<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
-			<SelectCity listCities={listCities} text={textTranslation}></SelectCity>
-			<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
-		</Main>
+		<>
+			<Head>
+				<title>{textTranslation[ML.key.titleCountries]}</title>
+				<meta name="description" content={textTranslation[ML.key.descriptionCountries]} />
+				<link rel="icon" href="/favicon.ico" />
+			</Head>
+			<Main>
+				<Login />
+				<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
+				<SelectCity listCities={listCities} text={textTranslation}></SelectCity>
+				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
+			</Main>
+		</>
 	)
 }
 

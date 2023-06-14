@@ -9,6 +9,7 @@ import { useSession, signIn } from 'next-auth/react';
 import cn from 'classnames';
 import { AlertsSlice, MeetingsSlice, DesiresSlice, TextTranslationSlice } from '../store/slices'
 import {useAppDispatch, useAppSelector} from '../store/hook'
+import Head from 'next/head';
 
 const nameFilter = {
 	all: 'all',
@@ -307,105 +308,112 @@ export default function YourMeetingsPage(): JSX.Element {
 
 	if (session && status === 'authenticated') {
 		return (
-			<Main>
-				<Login/>
-				<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
-				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()}  country={null}></SelectLanguage>
-				<h1 className={styles.title}>{textTranslation[ML.key.yourMeetings]}</h1>
-				{loading
-					? <Loading textTranslation={textTranslation[ML.key.loading]} />
-					: 
-						<DivDefault>
-							<div className={styles.filters}>
-								<div className={styles.listButton}>
-									<Button name={textTranslation[ML.key.all]} selected={selectFilter === nameFilter.all ? true : false} onClick={() => setSelectFilter(nameFilter.all)} />
-									<Button name={textTranslation[ML.key.iOrganise]} selected={selectFilter === nameFilter.my ? true : false} onClick={() => setSelectFilter(nameFilter.my)} />
-									<Button name={textTranslation[ML.key.organizedByOthers]} selected={selectFilter === nameFilter.other ? true : false} onClick={() => setSelectFilter(nameFilter.other)} />
-									<Button name={textTranslation[ML.key.alreadyGone]}  selected={selectFilter === nameFilter.passed ? true : false} onClick={() => setSelectFilter(nameFilter.passed)} />
+			<>
+				<Head>
+					<title>{textTranslation[ML.key.titleYourMeetings]}</title>
+					<meta name="description" content={textTranslation[ML.key.descriptionYourMeetings]} />
+					<link rel="icon" href="/favicon.ico" />
+				</Head>
+				<Main>
+					<Login/>
+					<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
+					<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()}  country={null}></SelectLanguage>
+					<h1 className={styles.title}>{textTranslation[ML.key.yourMeetings]}</h1>
+					{loading
+						? <Loading textTranslation={textTranslation[ML.key.loading]} />
+						: 
+							<DivDefault>
+								<div className={styles.filters}>
+									<div className={styles.listButton}>
+										<Button name={textTranslation[ML.key.all]} selected={selectFilter === nameFilter.all ? true : false} onClick={() => setSelectFilter(nameFilter.all)} />
+										<Button name={textTranslation[ML.key.iOrganise]} selected={selectFilter === nameFilter.my ? true : false} onClick={() => setSelectFilter(nameFilter.my)} />
+										<Button name={textTranslation[ML.key.organizedByOthers]} selected={selectFilter === nameFilter.other ? true : false} onClick={() => setSelectFilter(nameFilter.other)} />
+										<Button name={textTranslation[ML.key.alreadyGone]}  selected={selectFilter === nameFilter.passed ? true : false} onClick={() => setSelectFilter(nameFilter.passed)} />
+									</div>
 								</div>
-							</div>
-							<div className={styles.meetings}>
-								{meetings && meetings.map((v) => (
-									<Accordion key={v.id}
-										header={
-											<>
-												<div className={styles.meeting}>
-													<div className={styles.nameMeeting}>
-														<h2>{v.interest}</h2>
-														<span className={styles.helperArrow}>&nbsp;→&nbsp;</span>
-														<h3>{v.category}</h3>
-													</div>
-													<div>{Helpers.currentDatetimeDbToDatetimeLocalString(v.dateMeeting)}</div>
-													<div className={styles.statistic}>
-														<div className={styles.itemStatistic}>
-															<div>{textTranslation[ML.key.wanted]}: {getLengthWish(v.id)}</div>
+								<div className={styles.meetings}>
+									{meetings && meetings.map((v) => (
+										<Accordion key={v.id}
+											header={
+												<>
+													<div className={styles.meeting}>
+														<div className={styles.nameMeeting}>
+															<h2>{v.interest}</h2>
+															<span className={styles.helperArrow}>&nbsp;→&nbsp;</span>
+															<h3>{v.category}</h3>
 														</div>
-														<div className={styles.itemStatistic}>
-															<div>{textTranslation[ML.key.confirmations]}: {getLengthReadiness(v.id)}</div>
-														</div>
-													</div>
-												</div>
-											</>
-										}
-
-										hideContent={
-											<>
-												<div className={styles.hideContent}>
-													<hr/>
-													<div className={styles.mainContent}>
-													<div className={cn(styles.statistic, styles.statisticWithoutArrow)}>
-														<div className={styles.itemStatistic}>
-															{!checkOwnDesires(v.id) &&
-																<>
-																	<div className={styles.minor}>{checkStatusWish(v.id) ? textTranslation[ML.key.iPlanToGo] : textTranslation[ML.key.iNotGoing]}</div>
-																	<Button  name={checkStatusWish(v.id) ? textTranslation[ML.key.iNotGoing] : textTranslation[ML.key.planningToGo]} onClick={() => changeStatusWish(v.id)}/>
-																</>
-															}
-														</div>
-														<div className={styles.itemStatistic}>
-															{!checkOwnDesires(v.id) &&
-																<>
-																	<div className={styles.minor}>{checkStatusReadiness(v.id) ? textTranslation[ML.key.iDefinitelyComing] : textTranslation[ML.key.undecided]}</div>
-																	<Button  name={checkStatusReadiness(v.id) ? textTranslation[ML.key.undecided] : textTranslation[ML.key.definitelyComing]} onClick={() => changeStatusReadiness(v.id)}/>
-																</>
-															}
-														</div>
-													</div>
-														<div className={styles.minor}>{checkOwnDesires(v.id) ? textTranslation[ML.key.iOrganise] : textTranslation[ML.key.organisesAnother]}</div>
-														<div className={styles.minor}>{textTranslation[ML.key.languagePeopleMeeting]} {v.language}</div>
-														<div className={cn(styles.location, styles.minor)}>
-															<div>{v.country}&nbsp;→&nbsp;</div>
-															<div>{v.city}</div>
-														</div>
-														<div>{v.placeMeeting.length > 0 ? textTranslation[ML.key.meetingPoint] + ': ' + v.placeMeeting : textTranslation[ML.key.meetingNotSpecifiedDiscuss]}</div>
-														<div className={styles.statusMeeting}>
-															<div className={styles.controlButton}>
-																<Button  name={textTranslation[ML.key.goToChat]}/>
+														<div>{Helpers.currentDatetimeDbToDatetimeLocalString(v.dateMeeting)}</div>
+														<div className={styles.statistic}>
+															<div className={styles.itemStatistic}>
+																<div>{textTranslation[ML.key.wanted]}: {getLengthWish(v.id)}</div>
 															</div>
-															{checkOwnDesires(v.id)
-																?
-																	<div className={cn(styles.controlButton, styles.minor)}>
-																		<div className={styles.emptyBlock}>{v.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>
-																		<Button  name={v.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.cancelMeeting] : textTranslation[ML.key.resumeMeeting]} onClick={() => changeStatusMeeting(v.status, v.id)}/>
-																	</div>
-																:
-																	<div className={cn(styles.emptyBlock, styles.minor)}>{v.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>
-															}
-															
+															<div className={styles.itemStatistic}>
+																<div>{textTranslation[ML.key.confirmations]}: {getLengthReadiness(v.id)}</div>
+															</div>
 														</div>
 													</div>
-												</div>
-											</>
-										}
-									/>
-								))}
-								{meetings.length === 0 && <ListEmpty/>}
-							</div>
-						</DivDefault>
-				}
-				<Button  name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
-				<Alert/>
-			</Main>
+												</>
+											}
+
+											hideContent={
+												<>
+													<div className={styles.hideContent}>
+														<hr/>
+														<div className={styles.mainContent}>
+														<div className={cn(styles.statistic, styles.statisticWithoutArrow)}>
+															<div className={styles.itemStatistic}>
+																{!checkOwnDesires(v.id) &&
+																	<>
+																		<div className={styles.minor}>{checkStatusWish(v.id) ? textTranslation[ML.key.iPlanToGo] : textTranslation[ML.key.iNotGoing]}</div>
+																		<Button  name={checkStatusWish(v.id) ? textTranslation[ML.key.iNotGoing] : textTranslation[ML.key.planningToGo]} onClick={() => changeStatusWish(v.id)}/>
+																	</>
+																}
+															</div>
+															<div className={styles.itemStatistic}>
+																{!checkOwnDesires(v.id) &&
+																	<>
+																		<div className={styles.minor}>{checkStatusReadiness(v.id) ? textTranslation[ML.key.iDefinitelyComing] : textTranslation[ML.key.undecided]}</div>
+																		<Button  name={checkStatusReadiness(v.id) ? textTranslation[ML.key.undecided] : textTranslation[ML.key.definitelyComing]} onClick={() => changeStatusReadiness(v.id)}/>
+																	</>
+																}
+															</div>
+														</div>
+															<div className={styles.minor}>{checkOwnDesires(v.id) ? textTranslation[ML.key.iOrganise] : textTranslation[ML.key.organisesAnother]}</div>
+															<div className={styles.minor}>{textTranslation[ML.key.languagePeopleMeeting]} {v.language}</div>
+															<div className={cn(styles.location, styles.minor)}>
+																<div>{v.country}&nbsp;→&nbsp;</div>
+																<div>{v.city}</div>
+															</div>
+															<div>{v.placeMeeting.length > 0 ? textTranslation[ML.key.meetingPoint] + ': ' + v.placeMeeting : textTranslation[ML.key.meetingNotSpecifiedDiscuss]}</div>
+															<div className={styles.statusMeeting}>
+																<div className={styles.controlButton}>
+																	<Button  name={textTranslation[ML.key.goToChat]}/>
+																</div>
+																{checkOwnDesires(v.id)
+																	?
+																		<div className={cn(styles.controlButton, styles.minor)}>
+																			<div className={styles.emptyBlock}>{v.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>
+																			<Button  name={v.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.cancelMeeting] : textTranslation[ML.key.resumeMeeting]} onClick={() => changeStatusMeeting(v.status, v.id)}/>
+																		</div>
+																	:
+																		<div className={cn(styles.emptyBlock, styles.minor)}>{v.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>
+																}
+																
+															</div>
+														</div>
+													</div>
+												</>
+											}
+										/>
+									))}
+									{meetings.length === 0 && <ListEmpty/>}
+								</div>
+							</DivDefault>
+					}
+					<Button  name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
+					<Alert/>
+				</Main>
+			</>
 		);
 	}
 
