@@ -1,6 +1,6 @@
 import {LanguageTranslation} from '../../models';
 import { Constants } from '../../globals';
-import {CountriesInterface, LanguageTranslationInterface, LanguagesInterface} from '../../interfaces';
+import {CountriesInterface, LanguageTranslationInterface, LanguagesInterface, TextTranslationInterface } from '../../interfaces';
 import { LS, ML } from '../../globals';
 
 const textForPageCountry = ['selectCountry', 'selectLanguage', 'goTo', 'ru', 'us', 'russian', 'english'];
@@ -16,9 +16,9 @@ const checkNeedTranslationText = () => {
 	return true;
 }
 
-const getChangeTranslationText = async (text, page = null) => {
+const getChangeTranslationText = async (text:TextTranslationInterface.Text | null, page = null) => {
 	const saveSetLanguage = getLanguage();
-	if(!checkNeedTranslationText()) {
+	if(!checkNeedTranslationText() && text) {
 		return text;
 	}
 	const changeTextTranslation = await getTranslationText(page, saveSetLanguage);
@@ -28,7 +28,7 @@ const getChangeTranslationText = async (text, page = null) => {
 const getTranslationText = async (page = null, language = Constants.settingDefault.LANGUAGE) => {
 	const textDb = await LanguageTranslation.get(language);
 	
-	const text: textObtect = {};
+	const text: TextTranslationInterface.Text = {};
 	if (textDb) {
 		const listText = textDb.data;
 		
@@ -168,8 +168,4 @@ export {
 	setLanguageByBrowser,
 	setLanguage,
 	key
-}
-
-interface textObtect {
-  [index: string]: string;
 }

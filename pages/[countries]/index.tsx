@@ -2,7 +2,7 @@ import { BreadCrumbs, Login, SelectCity, SelectLanguage, Main } from '../../comp
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { Cities, Countries, CitiesByCountries, Languages } from '../../models';
 import { useRouter } from 'next/router';
-import { CitiesInterface, CountriesInterface, CitiesByCountriesInterface, LanguagesInterface, LanguageTranslationInterface } from '../../interfaces';
+import { CitiesInterface, CountriesInterface, CitiesByCountriesInterface, LanguagesInterface, TextTranslationInterface } from '../../interfaces';
 import { ParsedUrlQuery } from 'querystring';
 import { ML } from '../../globals';
 import { useEffect, useState } from 'react';
@@ -76,24 +76,17 @@ export default function CountriesPage({ listCities, listLanguages, text, country
 	
 	
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
-	const updateLanguage = () => {
-		dispatch(TextTranslationSlice.updateLanguageAsync())
+	const updateLanguage = async () => {
+		const currentTranslationText = await ML.getChangeTranslationText(text)
+		dispatch(TextTranslationSlice.updateLanguageAsync(currentTranslationText))
 	}
 	useEffect(() => {
 		async function startFetching() {
-			// ML.setLanguageByBrowser(listLanguages);
 			ML.setLanguageByPath(router.query.countries as string, listLanguages, country);
 			updateLanguage();
 		}
 		startFetching();
 	}, [])
-	
-	// const [textTranslation, setTextTranslation] = useState({});
-	
-	// const updateLanguage = async () => {
-	// 	const currentTranslationText = await ML.getChangeTranslationText(text)
-	// 	setTextTranslation(currentTranslationText);
-	// }
 
 	return (
 		<>
@@ -115,6 +108,6 @@ export default function CountriesPage({ listCities, listLanguages, text, country
 interface CountriesPageProps {
 	listCities: CitiesInterface.City[];
 	listLanguages: LanguagesInterface.Languages[];
-	text: LanguageTranslationInterface.Translation[];
+	text: TextTranslationInterface.Text;
 	country: CountriesInterface.Country;
 }

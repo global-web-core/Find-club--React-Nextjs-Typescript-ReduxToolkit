@@ -19,7 +19,7 @@ export const SelectLanguage = ({ listLanguages, updateLanguage, text, country }:
 			setSelectedOption(value);
 			updateLanguage();
 
-			if (router.pathname !== '/' && router.query.length) {
+			if (router.pathname !== '/' && Object.keys(router.query).length) {
 				let urlCountry = (router.query.countries as string).slice(0, 2);
 				if (urlCountry) {
 					const settingLanguage = ML.getLanguage();

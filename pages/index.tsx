@@ -63,8 +63,8 @@ export default function Home({ listCountries, listLanguages, text }: HomeProps):
 				111
 				<SelectCountry listCountries={listCountries} listLanguages={listLanguages} text={textTranslation}></SelectCountry>
 				111
-				<Button  name="Предложить встречу" onClick={() => {router.push({pathname: '/propose-meeting'})}} />
-				<Button  name="Ваши встречи" onClick={() => {router.push({pathname: '/your-meetings'})}} />
+				<Button name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
+				<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: '/your-meetings'})}} />
 			</Main>
     </>
   )
