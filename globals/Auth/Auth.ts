@@ -20,7 +20,6 @@ function MysqlAdapter(client, options = {}): Adapter {
 			return;
 		},
 		async getUser(id) {
-			console.log('===getUser-id', id);
 			const usersDb = await Users.getById(id);
 			if (usersDb.data.length) return usersDb.data[0];
 			console.log('!!! Error in getting the user by ID');
@@ -48,11 +47,9 @@ function MysqlAdapter(client, options = {}): Adapter {
 			return user.data[0];
 		},
 		async updateUser(user) {
-			console.log('===updateUser-user', user);
 			return;
 		},
 		async deleteUser(userId) {
-			console.log('===deleteUser-userId', userId);
 			return;
 		},
 		async linkAccount(account) {
@@ -65,8 +62,6 @@ function MysqlAdapter(client, options = {}): Adapter {
 			return;
 		},
 		async unlinkAccount({ providerAccountId, provider }) {
-			console.log('===unlinkAccount-providerAccountId', providerAccountId);
-			console.log('===unlinkAccount-provider', provider);
 			return;
 		},
 		async createSession({ sessionToken, userId, expires }) {
@@ -104,7 +99,6 @@ function MysqlAdapter(client, options = {}): Adapter {
 			return result;
 		},
 		async updateSession({ sessionToken }) {
-			console.log('===updateSession-sessionToken', sessionToken);
 			return;
 		},
 		async deleteSession(sessionToken) {
@@ -115,14 +109,9 @@ function MysqlAdapter(client, options = {}): Adapter {
 			}
 		},
 		async createVerificationToken({ identifier, expires, token }) {
-			console.log('===createVerificationToken-identifier', identifier);
-			console.log('===createVerificationToken-expires', expires);
-			console.log('===createVerificationToken-token', token);
 			return;
 		},
 		async useVerificationToken({ identifier, token }) {
-			console.log('===useVerificationToken-identifier', identifier);
-			console.log('===useVerificationToken-token', token);
 			return;
 		},
 	}

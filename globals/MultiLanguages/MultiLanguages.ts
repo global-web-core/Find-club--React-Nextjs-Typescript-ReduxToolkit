@@ -1,43 +1,34 @@
 import {LanguageTranslation} from '../../models';
-import { Constants } from '../../globals';
-import {CountriesInterface, LanguageTranslationInterface, LanguagesInterface, TextTranslationInterface } from '../../interfaces';
-import { LS, ML } from '../../globals';
-
-const textForPageCountry = ['selectCountry', 'selectLanguage', 'goTo', 'ru', 'us', 'russian', 'english'];
+import {CountriesInterface, LanguageTranslationInterface, LanguagesInterface } from '../../interfaces';
+import { LS, ML, Constants } from '../../globals';
+import keyText from './KeyText';
 
 const checkNeedTranslationText = () => {
 	const saveSetLanguage = getLanguage();
 	if (!saveSetLanguage) {
 		return false;
 	}
-	if (saveSetLanguage === Constants.settingDefault.LANGUAGE) {
-		return false;
-	}
 	return true;
 }
 
-const getChangeTranslationText = async (text:TextTranslationInterface.Text | null, page = null) => {
+const getChangeTranslationText = async (text:LanguageTranslationInterface.TextTranslation | null) => {
 	const saveSetLanguage = getLanguage();
 	if(!checkNeedTranslationText() && text) {
 		return text;
 	}
-	const changeTextTranslation = await getTranslationText(page, saveSetLanguage);
+	const changeTextTranslation = await getTranslationText(saveSetLanguage);
 	if (changeTextTranslation) return changeTextTranslation;
 }
 
-const getTranslationText = async (page = null, language = Constants.settingDefault.LANGUAGE) => {
+const getTranslationText = async (language = Constants.settingDefault.LANGUAGE) => {
 	const textDb = await LanguageTranslation.get(language);
 	
-	const text: TextTranslationInterface.Text = {};
+	const text: LanguageTranslationInterface.TextTranslation = {};
 	if (textDb) {
 		const listText = textDb.data;
 		
 		listText.forEach((fieldText: LanguageTranslationInterface.Translation) => {
-			if (!page) {
-				text[fieldText.nameText] = fieldText.translation
-			} else if (page === 'countries') {
-				text[fieldText.nameText] = fieldText.translation
-			}
+			text[fieldText.nameText] = fieldText.translation
 		});
 		return text;
 	}
@@ -63,11 +54,17 @@ const addInPathLanguage = (statedLanguage: string, language: LanguagesInterface.
 }
 
 const setLanguageByPath = (pathLanguage: string, listLanguages: LanguagesInterface.Languages[], country: CountriesInterface.Country) => {
-	const currentLanguage: LanguagesInterface.Languages | undefined = listLanguages.find(language => language.idCountry === country.id);
+	const languageByPath = getLanguageByPath(pathLanguage, listLanguages, country);
 	const saveSetLanguage = getLanguage();
+	if (!saveSetLanguage) ML.setLanguage(languageByPath);
+	if (saveSetLanguage !== languageByPath && languageByPath) ML.setLanguage(languageByPath);
+}
+
+const getLanguageByPath = (pathLanguage: string, listLanguages: LanguagesInterface.Languages[], country: CountriesInterface.Country) => {
+	const currentLanguage: LanguagesInterface.Languages | undefined = listLanguages.find(language => language.idCountry === country.id);
 	pathLanguage = ((pathLanguage.length === 2 && currentLanguage?.route) || (pathLanguage.length === 5 && pathLanguage.slice(3, 5))) as string;
-	if (!saveSetLanguage) ML.setLanguage(pathLanguage);
-	if (saveSetLanguage !== pathLanguage && pathLanguage) ML.setLanguage(pathLanguage);
+
+	return pathLanguage;
 }
 
 const setLanguageByBrowser = (listLanguages: LanguagesInterface.Languages[]) => {
@@ -89,73 +86,7 @@ const setLanguage = (language: string) => {
 	LS.set(LS.key.language, language);
 }
 
-const key = {
-	selectCountry: 'select-сountry',
-	selectCity: 'select-city',
-	selectInterest: 'select-interest',
-	selectLanguage: 'select-language',
-	selectCategory: 'select-category',
-	goTo: 'go-to',
-	ru: 'ru',
-	us: 'us',
-	moscow: 'moscow',
-	saintPetersburg: 'saint-petersburg',
-	newYork: 'new-york',
-	losAngeles: 'los-angeles',
-	it: 'it',
-	fitness: 'fitness',
-	category: 'category',
-	interest: 'interest',
-	city: 'city',
-	country: 'country',
-	allIt: 'all-it',
-	programming: 'programming',
-	smartFitness: 'smart-fitness',
-	loading: 'loading',
-	yourMeetings: 'your-meetings',
-	all: 'all',
-	iOrganise: 'i-organise',
-	organizedByOthers: 'organized-by-others',
-	organisesAnother: 'organises-another',
-	alreadyGone: 'already-gone',
-	wanted: 'wanted',
-	confirmations: 'confirmations',
-	meetingPoint: 'meeting-point',
-	languagePeopleMeeting: 'the-language-of-the-people-at-the-meeting',
-	goToChat: 'go-to-chat',
-	cancelMeeting: 'cancel-meeting',
-	resumeMeeting: 'resume-the-meeting',
-	meetingNotSpecifiedDiscuss: 'meeting-place-not-specified-discuss-in-chat',
-	iPlanToGo: 'i-plan-to-go',
-	planningToGo: 'planning-to-go',
-	iDefinitelyComing: 'i-am-definitely-coming',
-	definitelyComing: 'definitely-coming',
-	undecided: 'undecided',
-	iUndecided: 'i-am-undecided',
-	offerToMeet: 'offer-to-meet',
-	iNotGoing: 'i-am-not-going',
-	continue: 'continue',
-	writeMeetingPlace: 'write-a-meeting-place',
-	error: 'error',
-	successfully: 'successfully',
-	warning: 'warning',
-	receivingMeeting: 'when-receiving-the-meeting-list',
-	addedMeeting: 'added-meeting',
-	onAddingMeeting: 'on-adding-a-meeting',
-	meetingCancelled: 'meeting-cancelled',
-	meetingWill: 'meeting-will',
-	meetingExists: 'this-meeting-already-exists',
-	whoWillGoWithMe: 'who-will-go-with-me',
-	descriptionMainPage: 'description-main-page',
-	titleProposeMeeting: 'title-propose-meeting',
-	descriptionProposeMeeting: 'description-propose-meeting',
-	titleYourMeetings: 'title-your-meetings',
-	descriptionYourMeetings: 'description-your-meetings',
-	logInYourAccount: 'log-in-your-account',
-	descriptionSignin: 'description-signin',
-	titleCountries: 'title-countries',
-	descriptionCountries: 'description-countries',
-}
+const key = keyText;
 
 export {
 	addInPathLanguage,
@@ -167,5 +98,6 @@ export {
 	setLanguageByPath,
 	setLanguageByBrowser,
 	setLanguage,
-	key
+	key,
+	getLanguageByPath,
 }

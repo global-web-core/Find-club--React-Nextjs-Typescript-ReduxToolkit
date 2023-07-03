@@ -1,0 +1,8 @@
+User-Agent: *
+Allow: /
+Disallow: /propose-meeting
+Disallow: /your-meetings
+Disallow: /auth/
+Disallow: /auth/*
+Disallow: /auth/signin/
+Disallow: /signin?*

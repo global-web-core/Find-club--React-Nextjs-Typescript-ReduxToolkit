@@ -1,11 +1,11 @@
 import { BreadCrumbs, Login, SelectCity, SelectLanguage, Main } from '../../components';
-import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
+import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, Metadata } from 'next';
 import { Cities, Countries, CitiesByCountries, Languages } from '../../models';
 import { useRouter } from 'next/router';
-import { CitiesInterface, CountriesInterface, CitiesByCountriesInterface, LanguagesInterface, TextTranslationInterface } from '../../interfaces';
+import { CitiesInterface, CountriesInterface, CitiesByCountriesInterface, LanguagesInterface, LanguageTranslationInterface, MetadataInterface } from '../../interfaces';
 import { ParsedUrlQuery } from 'querystring';
 import { ML } from '../../globals';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Head from 'next/head';
 import { TextTranslationSlice } from '../../store/slices';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
@@ -40,46 +40,81 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 		};
 	}
 	
-	const textDb = await ML.getTranslationText();
-	let text = {};
-	if (textDb) text = textDb
-	
-	const country = await Countries.getByRoute((params.countries as string).slice(0, 2) as string);
-	if (!country.data.length) return {props: {}};
-	const citiesCountry = await CitiesByCountries.getAllByCountry(country.data[0].id);
+	const countryDb = await Countries.getByRoute((params.countries as string).slice(0, 2) as string);
+	if (!countryDb.data.length) return {props: {}};
+	const country = countryDb.data[0];
+	const citiesCountry = await CitiesByCountries.getAllByCountry(country.id);
 	
 	if (!citiesCountry.data.length) return {props: {}};
 	const idCities = citiesCountry.data.map((city: CitiesByCountriesInterface.CityByCountries) => city.idCity);
 	const citiesData = await Cities.getAll();
 	
 	if (!idCities.length || !citiesData.data.length) return {props: {}};
-	const listCities: string[] = citiesData.data.filter((city: CitiesInterface.City) => idCities.includes(city.id));
+	const listCities = citiesData.data.filter((city: CitiesInterface.City) => idCities.includes(city.id));
 
-	let listLanguages: string[] = [];
+	let listLanguages = [];
 	const languagesDb = await Languages.getAll();
 	if (languagesDb) listLanguages = languagesDb.data
+	if (!languagesDb.data.length) return {props: {}};
+
+	let text = {};
+	let lang;
+	const pathLanguage = params.countries;
+	if (typeof pathLanguage === 'string') {
+		const languageByPath = ML.getLanguageByPath(pathLanguage, listLanguages, country);
+		lang = languageByPath;
+		const textDb = await ML.getTranslationText(languageByPath);
+		if (textDb) text = textDb
+		if (!textDb || !languageByPath) return {props: {}};
+	}
+	
+	let metadata;
+	if (typeof pathLanguage === 'string' && lang) metadata = generateMetadata(text, pathLanguage, lang);
 
 	return {
 		props: {
 			listCities,
 			listLanguages,
 			text,
-			country: country.data[0]
+			country,
+			metadata
 		}
 	};
 };
 
-export default function CountriesPage({ listCities, listLanguages, text, country }: CountriesPageProps): JSX.Element {
+export function generateMetadata(text: LanguageTranslationInterface.TextTranslation, pathCountries: string, lang: string):MetadataInterface.Main {
+	const getTextForTitle = () => {
+		const country = pathCountries?.length ? text[pathCountries.slice(0, 2) as keyof typeof text] + ' ' : '';
+		const mainText = text[ML.key.titleCountries];
+		const title = country + mainText;
+		return title;
+	}
+
+	const getTextForDescription = () => {
+		const country = pathCountries?.length ? text[pathCountries.slice(0, 2) as keyof typeof text] + ' ' : '';
+		const mainText = text[ML.key.descriptionCountries];
+		const description = country + mainText;
+		return description;
+	}
+
+	return {
+		title: getTextForTitle(),
+		description: getTextForDescription(),
+		lang
+	}
+}
+
+export default function CountriesPage({ listCities, listLanguages, text, country, metadata }: CountriesPageProps): JSX.Element {
 	const router = useRouter();
 	const routerQuery = router.query as {[key:string]: string};
 	const dispatch = useAppDispatch();
-	
 	
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	const updateLanguage = async () => {
 		const currentTranslationText = await ML.getChangeTranslationText(text)
 		dispatch(TextTranslationSlice.updateLanguageAsync(currentTranslationText))
 	}
+
 	useEffect(() => {
 		async function startFetching() {
 			ML.setLanguageByPath(router.query.countries as string, listLanguages, country);
@@ -91,9 +126,8 @@ export default function CountriesPage({ listCities, listLanguages, text, country
 	return (
 		<>
 			<Head>
-				<title>{textTranslation[ML.key.titleCountries]}</title>
-				<meta name="description" content={textTranslation[ML.key.descriptionCountries]} />
-				<link rel="icon" href="/favicon.ico" />
+				<title>{metadata.title}</title>
+				<meta name="description" content={metadata.description} />
 			</Head>
 			<Main>
 				<Login />
@@ -108,6 +142,7 @@ export default function CountriesPage({ listCities, listLanguages, text, country
 interface CountriesPageProps {
 	listCities: CitiesInterface.City[];
 	listLanguages: LanguagesInterface.Languages[];
-	text: TextTranslationInterface.Text;
+	text: LanguageTranslationInterface.TextTranslation;
 	country: CountriesInterface.Country;
+	metadata: MetadataInterface.Main;
 }

@@ -3,9 +3,12 @@ import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { Cities, Countries, CitiesByCountries, Interests, InterestsByCities, Languages, Categories, CategoriesByInterests } from '../../../../../models';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
-import { CitiesByCountriesInterface, CitiesInterface, CountriesInterface, InterestsInterface, InterestsByCitiesInterface, LanguagesInterface, LanguageTranslationInterface, CategoryInterface, CategoriesByInterestsInterface } from '../../../../../interfaces';
+import { CitiesByCountriesInterface, CitiesInterface, CountriesInterface, InterestsInterface, InterestsByCitiesInterface, LanguagesInterface, LanguageTranslationInterface, CategoryInterface, CategoriesByInterestsInterface, MetadataInterface } from '../../../../../interfaces';
 import { useEffect, useState } from 'react';
 import { ML } from '../../../../../globals';
+import Head from 'next/head';
+import { useAppDispatch, useAppSelector } from '../../../../../store/hook';
+import { TextTranslationSlice } from '../../../../../store/slices';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const listCountries = await Countries.getAll();
@@ -77,32 +80,72 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 		};
 	}
 
-	const country = await Countries.getByRoute((params.countries as string).slice(0, 2));
+	const countryDb = await Countries.getByRoute((params.countries as string).slice(0, 2) as string);
+	const country = countryDb.data[0];
+
 	const languagesDb = await Languages.getAll();
-	const text = await ML.getTranslationText();
 
-	if (!text || !languagesDb.data.length || !country.data.length) return {props: {}};
+	if (!languagesDb.data.length || !countryDb.data.length) return {props: {}};
 
-	const listLanguages: string[] = languagesDb.data;
+	const listLanguages = languagesDb.data;
+
+	let text = {};
+	let lang;
+	const pathLanguage = params.countries;
+	if (typeof pathLanguage === 'string') {
+		const languageByPath = ML.getLanguageByPath(pathLanguage, listLanguages, country);
+		lang = languageByPath;
+		const textDb = await ML.getTranslationText(languageByPath);
+		if (textDb) text = textDb
+		if (!textDb || !languageByPath) return {props: {}};
+	}
+
+	let metadata;
+	const pathInterest = params.categories;
+	if (typeof pathInterest === 'string' && lang) metadata = generateMetadata(text, pathInterest, lang);
 
 	return {
 		props: {
 			listLanguages,
 			text,
-			country: country.data[0]
+			country,
+			metadata
 		}
 	};
 };
 
-export default function InterestsPage({ listLanguages, text, country }: CategoriesPageProps): JSX.Element {
+export function generateMetadata(text: LanguageTranslationInterface.TextTranslation, pathInterest: string, lang: string):MetadataInterface.Main {
+	const getTextForTitle = () => {
+		const interest = pathInterest?.length ? text[pathInterest as keyof typeof text] + ' ' : '';
+		const mainText = text[ML.key.titleInterests];
+		const title = interest + mainText;
+		return title;
+	}
+
+	const getTextForDescription = () => {
+		const interest = pathInterest?.length ? text[pathInterest as keyof typeof text] + ' ' : '';
+		const mainText = text[ML.key.descriptionInterests];
+		const description = interest + mainText;
+		return description;
+	}
+
+	return {
+		title: getTextForTitle(),
+		description: getTextForDescription(),
+		lang
+	}
+}
+
+export default function InterestsPage({ listLanguages, text, country, metadata }: CategoriesPageProps): JSX.Element {
 	const router = useRouter();
 	const routerQuery = router.query as {[key:string]: string};
+	const dispatch = useAppDispatch();
 	
-	const [textTranslation, setTextTranslation] = useState({});
+	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	
 	const updateLanguage = async () => {
-		const currentTranslationText = await ML.getChangeTranslationText(text, null)
-		setTextTranslation(currentTranslationText);
+		const currentTranslationText = await ML.getChangeTranslationText(text)
+		dispatch(TextTranslationSlice.updateLanguageAsync(currentTranslationText))
 	}
 	
 	useEffect(() => {
@@ -111,17 +154,24 @@ export default function InterestsPage({ listLanguages, text, country }: Categori
 	}, []);
 
 	return (
-		<Main>
-			<Login/>
-			<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
-			page categories
-			<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
-		</Main>
+		<>
+			<Head>
+				<title>{metadata.title}</title>
+				<meta name="description" content={metadata.description} />
+			</Head>
+			<Main>
+				<Login/>
+				<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
+				page categories
+				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
+			</Main>
+		</>
 	)
 }
 
 interface CategoriesPageProps {
 	listLanguages: LanguagesInterface.Languages[];
-	text: LanguageTranslationInterface.Translation[];
+	text: LanguageTranslationInterface.TextTranslation;
 	country: CountriesInterface.Country;
+	metadata: MetadataInterface.Main;
 }

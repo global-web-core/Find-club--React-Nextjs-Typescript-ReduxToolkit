@@ -9,7 +9,7 @@ import * as CategoryInterface from './category.interface';
 import * as CategoriesByInterestsInterface from './categoriesByInterests.interface';
 import * as MeetingsInterface from './meetings.interface';
 import * as DesiresInterface from './desires.interface';
-import * as TextTranslationInterface from './textTranslation.interface';
+import * as MetadataInterface from './metadata.interface';
 
 export {
 	CitiesInterface,
@@ -23,5 +23,5 @@ export {
 	CategoriesByInterestsInterface,
 	MeetingsInterface,
 	DesiresInterface,
-	TextTranslationInterface
+	MetadataInterface
 }

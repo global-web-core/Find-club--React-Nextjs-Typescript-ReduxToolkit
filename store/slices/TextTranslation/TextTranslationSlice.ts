@@ -2,10 +2,10 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ML } from '../../../globals';
 import { AlertsSlice } from '../../slices';
 import { AppState, AppDispatch } from '../../store';
-import { TextTranslationInterface } from '../../../interfaces';
+import { LanguageTranslationInterface } from '../../../interfaces';
 
 interface InitialState {
-	entities: TextTranslationInterface.Text;
+	entities: LanguageTranslationInterface.TextTranslation;
   status: 'idle' | 'loading';
 	error: string | null;
 }
@@ -16,15 +16,15 @@ const initialState: InitialState = {
 	error: null,
 }
 
-const updateLanguageAsync = createAsyncThunk<TextTranslationInterface.Text, TextTranslationInterface.Text | undefined, {dispatch: AppDispatch}>(
+const updateLanguageAsync = createAsyncThunk<LanguageTranslationInterface.TextTranslation, LanguageTranslationInterface.TextTranslation | undefined, {dispatch: AppDispatch}>(
   'textTranslation/updateLanguageAsync',
   async (text, {dispatch}) => {
 		const textDb = text ? text : await ML.getTranslationText();
-		const currentTranslationText = await ML.getChangeTranslationText(textDb, null)
+		const currentTranslationText = await ML.getChangeTranslationText(textDb)
 
 		if (!currentTranslationText) dispatch(AlertsSlice.add('Ошибка загрузки переведенного текста', '', 'danger'));
 		console.log
-		return currentTranslationText as TextTranslationInterface.Text
+		return currentTranslationText as LanguageTranslationInterface.TextTranslation
   }
 )
 

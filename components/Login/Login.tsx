@@ -7,6 +7,9 @@ import { signIn, signOut, useSession } from "next-auth/react"
 import Image from 'next/image';
 import {iconUser} from './images';
 import { Button } from '../../components';
+import { useAppSelector } from '../../store/hook';
+import { TextTranslationSlice } from '../../store/slices';
+import { ML } from '../../globals';
 
 export const Login = (): JSX.Element => {
 	const router = useRouter();
@@ -14,6 +17,7 @@ export const Login = (): JSX.Element => {
 	const [userHover, setUserHover] = useState(false);
 	const { data: session, status } = useSession();
 	const pathIconUser = session?.user?.image || iconUser;
+	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 
 	const handleUserMouseEnter = () => {
 		setUserHover(true);
@@ -68,19 +72,19 @@ export const Login = (): JSX.Element => {
 					<div className={styles.description}>
 						{!session && (
 							<div>
-								<span>Вы не вошли в систему</span>
+								<span>{textTranslation[ML.key.notLoggedIn]}</span>
 								<Button
-									name={'Войти Sign in'}
+									name={textTranslation[ML.key.signIn]}
 									onClick={(e) => handleClickSignIn(e)}
 								/>
 							</div>
 						)}
 						{session?.user && (
 							<div>
-								<h3>Добро пожаловать</h3>
+								<h3>{textTranslation[ML.key.welcome]}</h3>
 								<span>{session.user.name ?? session.user.email}</span>
 								<Button
-									name={'Выйти Sign out'}
+									name={textTranslation[ML.key.signOut]}
 									onClick={(e) => handleClickSignOut(e)}
 								/>
 							</div>

@@ -5,9 +5,11 @@ import { Countries, Languages } from '../models';
 import { useRouter } from 'next/router';
 import { GetStaticProps, GetStaticPropsContext } from 'next';
 import { ParsedUrlQuery } from 'querystring';
-import { CountriesInterface, LanguagesInterface, LanguageTranslationInterface } from '../interfaces';
-import { ML } from '../globals';
-import { useEffect, useState } from 'react';
+import { CountriesInterface, LanguagesInterface, LanguageTranslationInterface, MetadataInterface } from '../interfaces';
+import { ML, Constants } from '../globals';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../store/hook';
+import { TextTranslationSlice } from '../store/slices';
 
 export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsContext<ParsedUrlQuery>) => {
 	const countriesDb = await Countries.getAll();
@@ -16,31 +18,39 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 
 	let listCountries: string[] = [];
 	let listLanguages: string[] = [];
-	let text = {};
+	let text:LanguageTranslationInterface.TextTranslation = {};
 	if (countriesDb && languagesDb && textDb) {
 		listCountries = countriesDb.data
 		listLanguages = languagesDb.data
 		text = textDb
 	}
 
+	const metadata = {
+		title: text[ML.key.whoWillGoWithMe],
+		description: text[ML.key.descriptionMainPage],
+		lang: Constants.settingDefault.LANGUAGE
+	}
+		
 	return {
 		props: {
 			listCountries,
 			listLanguages,
-			text
+			text,
+			metadata
 		}
 	};
 };
 
-export default function Home({ listCountries, listLanguages, text }: HomeProps): JSX.Element {
+export default function Home({ listCountries, listLanguages, text, metadata }: HomeProps): JSX.Element {
 	const router = useRouter();
 	const routerQuery = router.query as {[key:string]: string};
+	const dispatch = useAppDispatch();
 	
-	const [textTranslation, setTextTranslation] = useState<{[key:string]: string}>({});
+	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 
 	const updateLanguage = async () => {
-		const currentTranslationText = await ML.getChangeTranslationText(text, null)
-		setTextTranslation(currentTranslationText);
+		const currentTranslationText = await ML.getChangeTranslationText(text) || {};
+		dispatch(TextTranslationSlice.updateLanguageAsync(currentTranslationText))
 	}
 
 	useEffect(() => {
@@ -50,11 +60,10 @@ export default function Home({ listCountries, listLanguages, text }: HomeProps):
 
   return (
     <>
-      <Head>
-        <title>{textTranslation[ML.key.whoWillGoWithMe]}</title>
-        <meta name="description" content={textTranslation[ML.key.descriptionMainPage]} />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+			<Head>
+				<title>{Object.keys(textTranslation).length === 0 ? metadata.title : textTranslation[ML.key.whoWillGoWithMe]}</title>
+				<meta name="description" content={Object.keys(textTranslation).length === 0 ? metadata.description : textTranslation[ML.key.descriptionMainPage]} />
+			</Head>
 			<Main>
 				<Login/>
 				<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
@@ -73,5 +82,6 @@ export default function Home({ listCountries, listLanguages, text }: HomeProps):
 interface HomeProps {
 	listCountries: CountriesInterface.Country[];
 	listLanguages: LanguagesInterface.Languages[];
-	text: LanguageTranslationInterface.Translation[];
+	text: LanguageTranslationInterface.TextTranslation;
+	metadata: MetadataInterface.Main;
 }

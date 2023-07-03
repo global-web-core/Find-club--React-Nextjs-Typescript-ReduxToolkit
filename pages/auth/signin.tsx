@@ -41,7 +41,6 @@ export default function SignIn({ providers }: InferGetServerSidePropsType<typeof
 			<Head>
 				<title>{textTranslation[ML.key.logInYourAccount]}</title>
 				<meta name="description" content={textTranslation[ML.key.descriptionSignin]} />
-				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<Main>
 				<div className={styles.selectLanguage}>

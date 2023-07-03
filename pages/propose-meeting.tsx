@@ -244,7 +244,6 @@ export default function ProposeMeetingPage(): JSX.Element {
 				<Head>
 					<title>{textTranslation[ML.key.titleProposeMeeting]}</title>
 					<meta name="description" content={textTranslation[ML.key.descriptionProposeMeeting]} />
-					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<Main>
 					<Login/>

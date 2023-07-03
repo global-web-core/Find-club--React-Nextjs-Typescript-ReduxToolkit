@@ -17,9 +17,8 @@ export const SelectLanguage = ({ listLanguages, updateLanguage, text, country }:
 		if (value) {
 			ML.setLanguage(value);
 			setSelectedOption(value);
-			updateLanguage();
 
-			if (router.pathname !== '/' && Object.keys(router.query).length) {
+			if (router.pathname !== '/' && Object.keys(router.query).length && !router?.query?.callbackUrl) {
 				let urlCountry = (router.query.countries as string).slice(0, 2);
 				if (urlCountry) {
 					const settingLanguage = ML.getLanguage();
@@ -37,12 +36,14 @@ export const SelectLanguage = ({ listLanguages, updateLanguage, text, country }:
 					if (router.query.cities?.length) queryPaths.cities = router.query.cities as string;
 					if (router.query.interests?.length) queryPaths.interests = router.query.interests as string;
 					if (router.query.categories?.length) queryPaths.categories = router.query.categories as string;
-
+					
 					router.push({
 						pathname: router.pathname,
 						query: queryPaths
-					});
+					}).then(() => router.reload());
 				}
+			} else {
+				updateLanguage();
 			}
 		}
 	}

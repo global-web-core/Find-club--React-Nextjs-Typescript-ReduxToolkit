@@ -312,7 +312,6 @@ export default function YourMeetingsPage(): JSX.Element {
 				<Head>
 					<title>{textTranslation[ML.key.titleYourMeetings]}</title>
 					<meta name="description" content={textTranslation[ML.key.descriptionYourMeetings]} />
-					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<Main>
 					<Login/>

@@ -2,11 +2,14 @@ import { BreadCrumbs, Login, SelectInterest, SelectLanguage } from '../../../com
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { Cities, Countries, CitiesByCountries, Interests, InterestsByCities, Languages } from '../../../models';
 import { useRouter } from 'next/router';
-import { CountriesInterface, InterestsInterface, CitiesInterface, CitiesByCountriesInterface, LanguagesInterface, LanguageTranslationInterface } from '../../../interfaces';
+import { CountriesInterface, InterestsInterface, CitiesInterface, CitiesByCountriesInterface, LanguagesInterface, LanguageTranslationInterface, MetadataInterface } from '../../../interfaces';
 import { ParsedUrlQuery } from 'querystring';
 import { ML } from '../../../globals';
 import { useEffect, useState } from 'react';
 import { Main } from '../../../components';
+import Head from 'next/head';
+import { useAppDispatch, useAppSelector } from '../../../store/hook';
+import { TextTranslationSlice } from '../../../store/slices';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const listCountries = await Countries.getAll();
@@ -51,11 +54,13 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 		};
 	}
 
-	const country = await Countries.getByRoute((params.countries as string).slice(0, 2));
+	const countryDb = await Countries.getByRoute((params.countries as string).slice(0, 2) as string);
+	const country = countryDb.data[0];
+
 	const cityData = await Cities.getAllByRouteCity(params.cities as string);
 	const interestsData = await Interests.getAll();
 	const interestsByCitiesData = await InterestsByCities.getAll();
-	if (!country || !cityData.data.length || !interestsData.data.length || !interestsByCitiesData.data.length) return {props: {}};
+	if (!country || !cityData.data.length || !interestsData.data.length || !interestsByCitiesData.data.length || !countryDb.data.length) return {props: {}};
 
 	const idInterests: number[] = [];
 	for (let index = 0; index < interestsByCitiesData.data.length; index++) {
@@ -63,34 +68,69 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 	}
 
 	const listInterests: InterestsInterface.Interest[] = interestsData.data.filter((interest: InterestsInterface.Interest) => idInterests.includes(interest.id));
-
-	const textDb = await ML.getTranslationText();
-	let text = {};
-	if (textDb) text = textDb
-
-	let listLanguages: string[] = [];
+	
+	let listLanguages = [];
 	const languagesDb = await Languages.getAll();
 	if (languagesDb) listLanguages = languagesDb.data
+
+	let text = {};
+	let lang;
+	const pathLanguage = params.countries;
+	if (typeof pathLanguage === 'string') {
+		const languageByPath = ML.getLanguageByPath(pathLanguage, listLanguages, country);
+		lang = languageByPath;
+		const textDb = await ML.getTranslationText(languageByPath);
+		if (textDb) text = textDb
+		if (!textDb || !languageByPath) return {props: {}};
+	}
+
+	let metadata;
+	const pathCity = params.cities;
+	if (typeof pathCity === 'string' && lang) metadata = generateMetadata(text, pathCity, lang);
 
 	return {
 		props: {
 			listInterests,
 			listLanguages,
 			text,
-			country: country.data[0]
+			country,
+			metadata
 		}
 	};
 };
 
-export default function CountriesPage({ listInterests, listLanguages, text, country }: CountriesPageProps): JSX.Element {
+export function generateMetadata(text: LanguageTranslationInterface.TextTranslation, pathCity: string, lang: string):MetadataInterface.Main {
+	const getTextForTitle = () => {
+		const city = pathCity?.length ? text[pathCity as keyof typeof text] + ' ' : '';
+		const mainText = text[ML.key.titleCities];
+		const title = city + mainText;
+		return title;
+	}
+
+	const getTextForDescription = () => {
+		const city = pathCity?.length ? text[pathCity as keyof typeof text] + ' ' : '';
+		const mainText = text[ML.key.descriptionCities];
+		const description = city + mainText;
+		return description;
+	}
+
+	return {
+		title: getTextForTitle(),
+		description: getTextForDescription(),
+		lang
+	}
+}
+
+export default function CountriesPage({ listInterests, listLanguages, text, country, metadata }: CountriesPageProps): JSX.Element {
 	const router = useRouter();
 	const routerQuery = router.query as {[key:string]: string};
+	const dispatch = useAppDispatch();
 	
-	const [textTranslation, setTextTranslation] = useState({});
+	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	
 	const updateLanguage = async () => {
-		const currentTranslationText = await ML.getChangeTranslationText(text, null)
-		setTextTranslation(currentTranslationText);
+		const currentTranslationText = await ML.getChangeTranslationText(text)
+		dispatch(TextTranslationSlice.updateLanguageAsync(currentTranslationText))
 	}
 	
 	useEffect(() => {
@@ -99,18 +139,25 @@ export default function CountriesPage({ listInterests, listLanguages, text, coun
 	}, []);
 
 	return (
-		<Main>
-			<Login/>
-			<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
-			<SelectInterest  listInterests={listInterests} text={textTranslation}></SelectInterest>
-			<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
-		</Main>
+		<>
+			<Head>
+				<title>{metadata.title}</title>
+				<meta name="description" content={metadata.description} />
+			</Head>
+			<Main>
+				<Login/>
+				<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
+				<SelectInterest  listInterests={listInterests} text={textTranslation}></SelectInterest>
+				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
+			</Main>
+		</>
 	)
 }
 
 interface CountriesPageProps {
 	listInterests: InterestsInterface.Interest[];
 	listLanguages: LanguagesInterface.Languages[];
-	text: LanguageTranslationInterface.Translation[];
+	text: LanguageTranslationInterface.TextTranslation;
 	country: CountriesInterface.Country;
+	metadata: MetadataInterface.Main;
 }

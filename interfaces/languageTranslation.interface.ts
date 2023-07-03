@@ -3,3 +3,7 @@ export interface Translation {
 	nameText: string;
 	translation: string;
 }
+
+export interface TextTranslation {
+	[key: string]: string
+}
