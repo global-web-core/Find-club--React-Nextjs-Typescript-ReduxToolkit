@@ -53,3 +53,9 @@
 .login h3 {
   margin: 0;
 }
+
+@media (max-width: 800px) {
+	.main {
+		left: 80px;
+	}
+}

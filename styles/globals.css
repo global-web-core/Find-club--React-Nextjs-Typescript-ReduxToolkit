@@ -8,6 +8,7 @@ body {
   background-image: linear-gradient(to top, #3f51b1 0%, #5a55ae 13%, #7b5fac 25%, #8f6aae 38%, #a86aa4 50%, #cc6b8e 62%, #f18271 75%, #f3a469 87%, #f7c978 100%);
   min-height: 100vh;
 	background-repeat: no-repeat;
+	overflow-x: hidden;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,6 +31,7 @@ body {
   --color-light-6: rgba(255, 255, 255, 0.30);
   --color-light-7: rgba(255, 255, 255, 0.50);
   --color-light-8: rgba(255, 255, 255, 0.70);
+  --color-light-9: rgba(255, 255, 255, 0.80);
   --color-white: white;
   --color-black: black;
   --color-green-1: rgba(104, 255, 104, 0.5);
@@ -39,6 +41,7 @@ body {
   --color-blue-1: rgba(0, 68, 255, 0.4);
   --color-red-1: rgba(255, 0, 0, 0.3);
   --color-gray-1: gray;
+  --color-gray-2: rgba(128, 128, 128, 0.5);
   --color-silver-1: silver;
   --color-silver-1: silver;
   --color-purple-1: #7b5fac;
@@ -63,6 +66,7 @@ body {
   --border-radius-default: 20px;
   --border-radius-rightcorner: 20px 0 0 20px;
   --border-radius-leftcorner: 0 20px 20px 0;
+  --border-radius-topcorner: 20px 20px 0 0;
   --border-default: 5px solid #c3c3c3;
   --border-default-red: 5px solid rgba(255, 0, 0, 0.547);
 	--border-default-2: 5px solid rgba(255, 255, 255, 0.10);
@@ -136,6 +140,10 @@ textarea {
 input.error {
   background-color: var(--color-red-1);
   border: var(--border-default-red);
+}
+
+ul {
+	padding-left: 20px;
 }
 
 @media (max-width: 500px) {

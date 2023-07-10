@@ -39,6 +39,7 @@ export default function YourMeetingsPage(): JSX.Element {
 	const [lengthDesires, setLengthDesires] = useState<LengthDesires[]>([]);
 
 	const updateLanguage = () => {
+		if (typeof window !== "undefined") document.documentElement.lang = ML.getLanguage()
 		dispatch(TextTranslationSlice.updateLanguageAsync())
 	}
 
@@ -357,7 +358,6 @@ export default function YourMeetingsPage(): JSX.Element {
 											hideContent={
 												<>
 													<div className={styles.hideContent}>
-														<hr/>
 														<div className={styles.mainContent}>
 														<div className={cn(styles.statistic, styles.statisticWithoutArrow)}>
 															<div className={styles.itemStatistic}>

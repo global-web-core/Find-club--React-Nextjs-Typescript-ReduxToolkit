@@ -1,5 +1,5 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
-import { AlertsSlice, MeetingsSlice, DesiresSlice, TextTranslationSlice } from './slices'
+import { AlertsSlice, MeetingsSlice, DesiresSlice, TextTranslationSlice, BasicSlice } from './slices'
 
 export function makeStore() {
   return configureStore({
@@ -8,6 +8,7 @@ export function makeStore() {
 			meetings: MeetingsSlice.reducer,
 			desires: DesiresSlice.reducer,
 			textTranslation: TextTranslationSlice.reducer,
+			basic: BasicSlice.reducer,
 		},
 		devTools: true
   })

@@ -2,8 +2,9 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 10px;
-	padding-bottom: 150px;
+	gap: 20px;
+	padding-bottom: 50px;
+	width: 100%;
 }
 
 .main form {
@@ -11,4 +12,16 @@
 	flex-direction: column;
 	align-items: center;
 	gap: 10px;
+}
+
+@media (max-width: 768px) {
+	.main {
+		padding: 0 10px 50px 10px;
+	}
+}
+
+@media (max-width: 576px) {
+	.main {
+		padding: 0 7px 50px 7px;
+	}
 }

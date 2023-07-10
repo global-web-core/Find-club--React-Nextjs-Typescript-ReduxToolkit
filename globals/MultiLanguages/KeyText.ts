@@ -72,6 +72,7 @@ const keyText = {
 	welcome: 'welcome',
 	signIn: 'sign-in',
 	notLoggedIn: 'not-logged-in',
+	whoGoWithMe: 'who-go-with-me',
 }
 
 export default keyText;

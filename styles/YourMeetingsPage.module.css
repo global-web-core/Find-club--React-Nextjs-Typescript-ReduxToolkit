@@ -46,10 +46,6 @@
 	text-align: center;
 }
 
-.hideContent hr {
-	border: var(--border-default-thin-2);
-}
-
 .nameMeeting {
 	display: flex;
 	align-items: center;

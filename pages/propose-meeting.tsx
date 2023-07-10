@@ -30,6 +30,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 	const [trySubmit, setTrySubmit] = useState(false);
 
 	const updateLanguage = async () => {
+		if (typeof window !== "undefined") document.documentElement.lang = ML.getLanguage()
 		dispatch(TextTranslationSlice.updateLanguageAsync())
 	}
 

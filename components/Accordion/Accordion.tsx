@@ -19,7 +19,12 @@ export const Accordion = ({ header, hideContent }: AccordionProps): JSX.Element 
 					<div className={styles.control} onClick={handleClick}><ArrowOpen open={open} color='light' /></div>
 				</div>
 				<div className={styles.content}>
-					{open && hideContent}
+					{open &&
+						<>
+							<hr/>
+							{hideContent}
+						</>
+					}
 				</div>
 			</div>
 		</>

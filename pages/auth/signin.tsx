@@ -19,6 +19,7 @@ export default function SignIn({ providers }: InferGetServerSidePropsType<typeof
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	const [listLanguages, setListLanguages] = useState<LanguagesInterface.Languages[]>([]);
 	const updateLanguage = () => {
+		if (typeof window !== "undefined") document.documentElement.lang = ML.getLanguage()
 		dispatch(TextTranslationSlice.updateLanguageAsync())
 	}
 	const handleSignIn = (providerId: string) => {
