@@ -28,7 +28,7 @@ export const SelectLanguage = ({ listLanguages, updateLanguage, text, country }:
 						ML.setLanguage(currentLanguage.route);
 					}
 					
-					urlCountry = urlCountry + ML.addInPathLanguage(settingLanguage, currentLanguage);
+					urlCountry = urlCountry + ML.addInPathLanguage(settingLanguage, currentLanguage, urlCountry);
 					
 					const queryPaths: QueryPaths = {
 						countries: urlCountry

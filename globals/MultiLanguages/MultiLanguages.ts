@@ -45,10 +45,11 @@ const getPathByCountry = (countries: CountriesInterface.Country[], languages: La
 	}
 }
 
-const addInPathLanguage = (statedLanguage: string, language: LanguagesInterface.Languages | undefined) => {
+const addInPathLanguage = (statedLanguage: string, language: LanguagesInterface.Languages | undefined, urlCountry: string) => {
 	if (!statedLanguage || statedLanguage === language?.route) {
 		return '';
 	} else {
+		if (urlCountry === statedLanguage) return '';
 		return '-' + statedLanguage;
 	}
 }

@@ -27,7 +27,7 @@ export const SelectCountry = ({listCountries, listLanguages, text}: SelectCountr
 			const currentLanguage = languages.find((language: LanguagesInterface.Languages) => currentCountry && language.idCountry === currentCountry.id);
 			if (!settingLanguage && currentLanguage) ML.setLanguage(currentLanguage.route);
 
-			urlCountry = urlCountry + ML.addInPathLanguage(settingLanguage, currentLanguage);
+			urlCountry = urlCountry + ML.addInPathLanguage(settingLanguage, currentLanguage, urlCountry);
 
 			router.push({
 				pathname: '[countries]',
