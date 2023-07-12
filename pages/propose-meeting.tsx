@@ -1,19 +1,19 @@
 import styles from '../styles/ProposeMeetingPage.module.css'
 import Head from 'next/head'
-import { BreadCrumbs, Login, Main, Select, SelectLanguage, Loading, Alert, Button, DivDefault } from '../components';
+import { Main, Select, Loading, Alert, Button, DivDefault } from '../components';
 import { Cities, Countries, CitiesByCountries, Interests, InterestsByCities, Languages, Categories, CategoriesByInterests, Meetings, Users, Desires } from '../models';
 import { useRouter } from 'next/router';
 import { CountriesInterface, InterestsInterface, CitiesInterface, CitiesByCountriesInterface, LanguagesInterface, CategoryInterface, InterestsByCitiesInterface, CategoriesByInterestsInterface, DesiresInterface } from '../interfaces';
 import { ML, Helpers, Constants } from '../globals';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import { AlertsSlice, TextTranslationSlice } from '../store/slices'
 import { useAppDispatch, useAppSelector } from '../store/hook'
+import { Layout } from '../layout/Layout';
 
 export default function ProposeMeetingPage(): JSX.Element {
 	const { data: session, status } = useSession();
 	const router = useRouter();
-	const routerQuery = router.pathname;
 	const dispatch = useAppDispatch();
 	const [loading, setLoading] = useState(true);
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
@@ -247,9 +247,6 @@ export default function ProposeMeetingPage(): JSX.Element {
 					<meta name="description" content={textTranslation[ML.key.descriptionProposeMeeting]} />
 				</Head>
 				<Main>
-					<Login/>
-					<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
-					<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()}  country={null}></SelectLanguage>
 					<h1 className={styles.title}>{textTranslation[ML.key.offerToMeet]}</h1>
 					{loading ? <Loading textTranslation={textTranslation[ML.key.loading]} /> : 
 						<DivDefault className={styles.divForm}>
@@ -339,6 +336,14 @@ export default function ProposeMeetingPage(): JSX.Element {
 	return (
 		<></>
 	);
+}
+
+ProposeMeetingPage.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
 }
 
 export type TypeDataMeeting = {

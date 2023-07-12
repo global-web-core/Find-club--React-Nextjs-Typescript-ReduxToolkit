@@ -1,15 +1,16 @@
-import { BreadCrumbs, Login, SelectInterest, SelectLanguage } from '../../../components';
+import { SelectInterest, SelectLanguage } from '../../../components';
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { Cities, Countries, CitiesByCountries, Interests, InterestsByCities, Languages } from '../../../models';
 import { useRouter } from 'next/router';
 import { CountriesInterface, InterestsInterface, CitiesInterface, CitiesByCountriesInterface, LanguagesInterface, LanguageTranslationInterface, MetadataInterface } from '../../../interfaces';
 import { ParsedUrlQuery } from 'querystring';
 import { ML } from '../../../globals';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { Main } from '../../../components';
 import Head from 'next/head';
 import { useAppDispatch, useAppSelector } from '../../../store/hook';
 import { TextTranslationSlice } from '../../../store/slices';
+import { Layout } from '../../../layout/Layout';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const listCountries = await Countries.getAll();
@@ -121,9 +122,8 @@ export function generateMetadata(text: LanguageTranslationInterface.TextTranslat
 	}
 }
 
-export default function CountriesPage({ listInterests, listLanguages, text, country, metadata }: CountriesPageProps): JSX.Element {
+export default function CitiesPage({ listInterests, listLanguages, text, country, metadata }: CitiesPageProps): JSX.Element {
 	const router = useRouter();
-	const routerQuery = router.query as {[key:string]: string};
 	const dispatch = useAppDispatch();
 	
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
@@ -145,8 +145,6 @@ export default function CountriesPage({ listInterests, listLanguages, text, coun
 				<meta name="description" content={metadata.description} />
 			</Head>
 			<Main>
-				<Login/>
-				<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
 				<SelectInterest  listInterests={listInterests} text={textTranslation}></SelectInterest>
 				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
 			</Main>
@@ -154,7 +152,15 @@ export default function CountriesPage({ listInterests, listLanguages, text, coun
 	)
 }
 
-interface CountriesPageProps {
+CitiesPage.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
+}
+
+interface CitiesPageProps {
 	listInterests: InterestsInterface.Interest[];
 	listLanguages: LanguagesInterface.Languages[];
 	text: LanguageTranslationInterface.TextTranslation;

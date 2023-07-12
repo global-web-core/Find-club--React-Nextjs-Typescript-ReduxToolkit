@@ -1,15 +1,16 @@
 import styles from '../styles/YourMeetingsPage.module.css'
-import { BreadCrumbs, Login, Main, SelectLanguage, Loading, Alert, Button, Accordion, ListEmpty, DivDefault } from '../components';
+import { Main, Loading, Alert, Button, Accordion, ListEmpty, DivDefault } from '../components';
 import { Cities, Countries, Interests, Languages, Categories, Meetings, Users, Desires } from '../models';
 import { useRouter } from 'next/router';
 import { CountriesInterface, InterestsInterface, CitiesInterface, LanguagesInterface, CategoryInterface, MeetingsInterface, DesiresInterface } from '../interfaces';
 import { ML, Helpers, Constants } from '../globals';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import cn from 'classnames';
 import { AlertsSlice, MeetingsSlice, DesiresSlice, TextTranslationSlice } from '../store/slices'
 import {useAppDispatch, useAppSelector} from '../store/hook'
 import Head from 'next/head';
+import { Layout } from '../layout/Layout';
 
 const nameFilter = {
 	all: 'all',
@@ -22,7 +23,6 @@ export default function YourMeetingsPage(): JSX.Element {
 	const dispatch = useAppDispatch();
 	const { data: session, status } = useSession();
 	const router = useRouter();
-	const routerQuery = router.pathname;
 	
 	// State
 	const [loading, setLoading] = useState(true);
@@ -38,18 +38,12 @@ export default function YourMeetingsPage(): JSX.Element {
 	const desires = useAppSelector(state => DesiresSlice.desiresSelect(state));
 	const [lengthDesires, setLengthDesires] = useState<LengthDesires[]>([]);
 
-	const updateLanguage = () => {
-		if (typeof window !== "undefined") document.documentElement.lang = ML.getLanguage()
-		dispatch(TextTranslationSlice.updateLanguageAsync())
-	}
-
 	useEffect(() => {
 		async function startFetching() {
 			const languagesDb = await Languages.getAll();
 			const listLanguagesDb = languagesDb.data;
 			setListLanguages(listLanguagesDb);
 			ML.setLanguageByBrowser(listLanguagesDb);
-			updateLanguage();
 
 			const countriesDb = await Countries.getAll();
 			const listCountriesDb = countriesDb.data;
@@ -315,9 +309,6 @@ export default function YourMeetingsPage(): JSX.Element {
 					<meta name="description" content={textTranslation[ML.key.descriptionYourMeetings]} />
 				</Head>
 				<Main>
-					<Login/>
-					<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
-					<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()}  country={null}></SelectLanguage>
 					<h1 className={styles.title}>{textTranslation[ML.key.yourMeetings]}</h1>
 					{loading
 						? <Loading textTranslation={textTranslation[ML.key.loading]} />
@@ -419,6 +410,14 @@ export default function YourMeetingsPage(): JSX.Element {
 	return (
 		<></>
 	);
+}
+
+YourMeetingsPage.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
 }
 
 interface LengthDesires {

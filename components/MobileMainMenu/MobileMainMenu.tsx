@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import styles from './MobileMainMenu.module.css';
 import { MobileMainMenuProps } from './MobileMainMenu.props';
 import cn from 'classnames';

@@ -68,7 +68,7 @@ const getLanguageByPath = (pathLanguage: string, listLanguages: LanguagesInterfa
 }
 
 const setLanguageByBrowser = (listLanguages: LanguagesInterface.Languages[]) => {
-	if (typeof window !== "undefined") {
+	if (typeof window !== "undefined" && listLanguages) {
 		const userLanguage = window.navigator?.language?.slice(0,2) || null;
 		const currentLanguage = listLanguages.find(language => language.route === userLanguage);
 		const statedLanguage = getLanguage();

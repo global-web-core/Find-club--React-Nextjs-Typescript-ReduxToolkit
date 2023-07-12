@@ -22,34 +22,41 @@
   background-size: cover;
 	transition: transform ease-in-out 2s, filter ease-in-out 2s;
 }
+
 .fold:nth-child(1) {
   background-position: 0%;
 	filter: brightness(1.25);
 }
+
 .fold:nth-child(2) {
 	background-position: 25%;
 	transform: skewY(-15deg);
 	filter: brightness(0.75);
 }
+
 .fold:nth-child(3) {
 	background-position: 50%;
 	transform: skewY(15deg);
 	filter: brightness(1.25);
 }
+
 .fold:nth-child(4) {
 	transform: skewY(-15deg);
   background-position: 75%;
 	filter: brightness(0.75);
 }
+
 .fold:nth-child(5) {
 	transform: skewY(15deg);
   background-position: 100%;
 	filter: brightness(1.25);
 }
+
 .fold:first-child {
   border-radius: var(--border-radius-rightcorner);
 	transform: skewY(15deg);
 }
+
 .fold:last-child {
   border-radius: var(--border-radius-leftcorner);
 }

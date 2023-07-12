@@ -1,8 +1,11 @@
 .breadcrumb {
+	display: flex;
+	justify-content: center;
 	overflow-x: scroll;
 	margin: 5px;
 	border-radius: var(--border-radius-default);
 	overflow: hidden;
+	margin: 20px 0;
 }
 
 .breadcrumb ul {
@@ -35,10 +38,14 @@
 	margin-right: 5px;
 }
 
+.breadcrumb li:first-child {
+	overflow: hidden;
+	border-radius: var(--border-radius-default);
+}
+
 .breadcrumb li:first-child a img {
 	margin-right: 0;
 }
-
 
 .breadcrumb li:first-child a {
 	padding-left: 15px;

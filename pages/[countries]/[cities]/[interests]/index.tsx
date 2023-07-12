@@ -3,12 +3,13 @@ import { Cities, Countries, CitiesByCountries, Interests, InterestsByCities, Lan
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { CitiesByCountriesInterface, CitiesInterface, CountriesInterface, InterestsInterface, InterestsByCitiesInterface, LanguagesInterface, LanguageTranslationInterface, CategoryInterface, MetadataInterface } from '../../../../interfaces';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { ML } from '../../../../globals';
-import { BreadCrumbs, Login, SelectLanguage, Main, SelectCategory } from '../../../../components';
+import { SelectLanguage, Main, SelectCategory } from '../../../../components';
 import Head from 'next/head';
 import { TextTranslationSlice } from '../../../../store/slices';
 import { useAppDispatch, useAppSelector } from '../../../../store/hook';
+import { Layout } from '../../../../layout/Layout';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const listCountries = await Countries.getAll();
@@ -138,9 +139,8 @@ export function generateMetadata(text: LanguageTranslationInterface.TextTranslat
 	}
 }
 
-export default function InterestsPage({ listCategories, listLanguages, text, country, metadata, ...props }: InterestsPageProps): JSX.Element {
+export default function InterestsPage({ listCategories, listLanguages, text, country, metadata }: InterestsPageProps): JSX.Element {
 	const router = useRouter();
-	const routerQuery = router.query as {[key:string]: string};
 	const dispatch = useAppDispatch();
 	
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
@@ -162,14 +162,20 @@ export default function InterestsPage({ listCategories, listLanguages, text, cou
 				<meta name="description" content={metadata.description} />
 			</Head>
 			<Main>
-				<Login/>
-				<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
 				page interest
 				<SelectCategory listCategories={listCategories}  text={textTranslation}></SelectCategory>
 				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
 			</Main>
 		</>
 	)
+}
+
+InterestsPage.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
 }
 
 interface InterestsPageProps {

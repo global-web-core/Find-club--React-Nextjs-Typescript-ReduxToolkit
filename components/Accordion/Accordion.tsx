@@ -30,5 +30,3 @@ export const Accordion = ({ header, hideContent }: AccordionProps): JSX.Element 
 		</>
 	);
 };
-
-

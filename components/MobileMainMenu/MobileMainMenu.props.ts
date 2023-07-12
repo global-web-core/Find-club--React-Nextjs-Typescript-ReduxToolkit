@@ -1,5 +1,5 @@
-import { DetailedHTMLProps, HTMLAttributes, ReactNode} from 'react';
+import {DetailedHTMLProps, HTMLAttributes, ReactNode} from 'react';
 
-export interface HamburgerProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
-	open: boolean;
+export interface MobileMainMenuProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
+	children: ReactNode;
 }

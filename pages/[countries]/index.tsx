@@ -1,14 +1,15 @@
-import { BreadCrumbs, Login, SelectCity, SelectLanguage, Main } from '../../components';
-import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, Metadata } from 'next';
+import { SelectCity, SelectLanguage, Main } from '../../components';
+import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { Cities, Countries, CitiesByCountries, Languages } from '../../models';
 import { useRouter } from 'next/router';
 import { CitiesInterface, CountriesInterface, CitiesByCountriesInterface, LanguagesInterface, LanguageTranslationInterface, MetadataInterface } from '../../interfaces';
 import { ParsedUrlQuery } from 'querystring';
 import { ML } from '../../globals';
-import { useEffect } from 'react';
+import { ReactElement, useEffect } from 'react';
 import Head from 'next/head';
 import { TextTranslationSlice } from '../../store/slices';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
+import { Layout } from '../../layout/Layout';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const countriesData = await Countries.getAll();
@@ -106,7 +107,6 @@ export function generateMetadata(text: LanguageTranslationInterface.TextTranslat
 
 export default function CountriesPage({ listCities, listLanguages, text, country, metadata }: CountriesPageProps): JSX.Element {
 	const router = useRouter();
-	const routerQuery = router.query as {[key:string]: string};
 	const dispatch = useAppDispatch();
 	
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
@@ -130,13 +130,19 @@ export default function CountriesPage({ listCities, listLanguages, text, country
 				<meta name="description" content={metadata.description} />
 			</Head>
 			<Main>
-				<Login />
-				<BreadCrumbs currentRoute={routerQuery} text={textTranslation} />
 				<SelectCity listCities={listCities} text={textTranslation}></SelectCity>
 				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
 			</Main>
 		</>
 	)
+}
+
+CountriesPage.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
 }
 
 interface CountriesPageProps {

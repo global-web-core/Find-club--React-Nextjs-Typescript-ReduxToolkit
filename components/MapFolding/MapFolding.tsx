@@ -4,7 +4,7 @@ import cn from 'classnames';
 
 export const MapFolding = ():JSX.Element => {
 	const [activeAnimation, setActiveAnimation] = useState(false);
-	const mapRef = useRef();
+	const mapRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		window.addEventListener('scroll', scrollHandler);
@@ -12,8 +12,10 @@ export const MapFolding = ():JSX.Element => {
 	}, []);
 
 	const scrollHandler = () => {
-		const topScreen = window.pageYOffset;
-		const bottomScreen = window.pageYOffset + window.innerHeight;
+		if (mapRef.current === null) return;
+		
+		const topScreen = window.scrollY;
+		const bottomScreen = window.scrollY + window.innerHeight;
 		const topBlock = mapRef.current.offsetTop;
 		const bottomBlock = mapRef.current.offsetTop + mapRef.current.offsetHeight;
 		if(topBlock >= topScreen && topBlock <= bottomScreen

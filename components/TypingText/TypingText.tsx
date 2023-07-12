@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import styles from './TypingText.module.css';
+import { TypingTextProps } from './TypingText.props';
 import cn from 'classnames';
 
-export const TypingText = ({listText}):JSX.Element => {
+export const TypingText = ({listText}: TypingTextProps):JSX.Element => {
 	const [lengthListText, setLengthListText] = useState(0);
-	const [text, setText] = useState(null);
+	const [text, setText] = useState<string | null>(null);
 	const [runningAnimation, setRunningAnimation] = useState(false);
 	const [countAnimation, setCountAnimation] = useState(0);
 
 	const timeTypingOneText = 5000;
 	const maxCountRepeat = 50;
 
-	let timerAnimation;
-	let timerRestart;
-	const addText = (textAdd, index) => {
+	let timerAnimation: ReturnType<typeof setTimeout>;
+	let timerRestart: ReturnType<typeof setTimeout>;
+	const addText = (textAdd: string, index: number) => {
 		timerAnimation = setTimeout(() => {
 			setText(textAdd);
 			setRunningAnimation(true);
@@ -47,7 +48,7 @@ export const TypingText = ({listText}):JSX.Element => {
 		return () => {
 			clearAllTimer()
 		};
-	}, [])
+	}, [listText])
 
 	useEffect(() => {
 		if (countAnimation > maxCountRepeat) {

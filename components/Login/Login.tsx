@@ -15,7 +15,7 @@ export const Login = (): JSX.Element => {
 	const router = useRouter();
 	const loginRef = useRef(null);
 	const [userHover, setUserHover] = useState(false);
-	const { data: session, status } = useSession();
+	const { data: session } = useSession();
 	const pathIconUser = session?.user?.image || iconUser;
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 
@@ -58,7 +58,6 @@ export const Login = (): JSX.Element => {
 			};
 		}, [ref]);
 	}
-	
 
 	useOutsideClick(loginRef);
 	

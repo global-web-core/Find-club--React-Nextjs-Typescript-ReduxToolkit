@@ -9,9 +9,10 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { TextTranslationSlice } from "../../store/slices";
 import { ML } from "../../globals";
 import { Languages } from "../../models";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { LanguagesInterface } from "../../interfaces";
 import styles from '../../styles/Signin.module.css';
+import {WithoutLayout} from '../../layout/Layout';
 
 export default function SignIn({ providers }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const router = useRouter();
@@ -47,9 +48,18 @@ export default function SignIn({ providers }: InferGetServerSidePropsType<typeof
 				<div className={styles.selectLanguage}>
 					<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()}  country={null}></SelectLanguage>
 				</div>
-				<SignInUser listProviders={providers} handleSignIn={(providerId) => handleSignIn(providerId)} />
+				<SignInUser listProviders={providers} handleSignIn={(providerId) => handleSignIn(providerId)} />{/* TODO: make a type for listProviders */}
 			</Main>
     </>
+  )
+}
+
+SignIn.getLayout = function getLayout(page: ReactElement) {
+	console.log('===page', page);
+  return (
+    <WithoutLayout>
+      {page}
+    </WithoutLayout>
   )
 }
 
@@ -64,7 +74,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   const providers = await getProviders();
-	// console.log('--context', context);
   
   return {
     props: { providers: providers ?? [] },
