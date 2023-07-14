@@ -1,12 +1,11 @@
 import styles from '../styles/YourMeetingsPage.module.css'
-import { Main, Loading, Alert, Button, Accordion, ListEmpty, DivDefault } from '../components';
+import { Main, Loading, Alert, Button, DivWithTopPanel, MeetingsList, ButtonList } from '../components';
 import { Cities, Countries, Interests, Languages, Categories, Meetings, Users, Desires } from '../models';
 import { useRouter } from 'next/router';
 import { CountriesInterface, InterestsInterface, CitiesInterface, LanguagesInterface, CategoryInterface, MeetingsInterface, DesiresInterface } from '../interfaces';
 import { ML, Helpers, Constants } from '../globals';
 import { ReactElement, useEffect, useState } from 'react';
 import { useSession, signIn } from 'next-auth/react';
-import cn from 'classnames';
 import { AlertsSlice, MeetingsSlice, DesiresSlice, TextTranslationSlice } from '../store/slices'
 import {useAppDispatch, useAppSelector} from '../store/hook'
 import Head from 'next/head';
@@ -35,8 +34,6 @@ export default function YourMeetingsPage(): JSX.Element {
 	const [idUser, setIdUser] = useState('');
 	const meetings = useAppSelector(state => MeetingsSlice.meetingsSelect(state));
 	const [selectFilter, setSelectFilter] = useState(nameFilter.all);
-	const desires = useAppSelector(state => DesiresSlice.desiresSelect(state));
-	const [lengthDesires, setLengthDesires] = useState<LengthDesires[]>([]);
 
 	useEffect(() => {
 		async function startFetching() {
@@ -84,13 +81,6 @@ export default function YourMeetingsPage(): JSX.Element {
 		}
 
 	}, [meetings])
-
-	useEffect(() => {
-		if (desires.length > 0) {
-			getLengthDesires();
-		}
-
-	}, [desires])
 
 	useEffect(() => {
 		getCurrentIdUser();
@@ -189,24 +179,6 @@ export default function YourMeetingsPage(): JSX.Element {
 		dispatch(DesiresSlice.addAll(listDesiresDb));
 	}
 
-	const getLengthDesires = async () => {
-		const listLengthDesires: LengthDesires[] = [];
-		const listIdMeetings = getListIdMeetings();
-		
-		for await (const idMeeting of listIdMeetings) {
-			let lengthWish = 0;
-			let lengthReadiness = 0;
-			
-			(await Desires.getByIdMeeting(idMeeting))?.data.forEach((desire: DesiresInterface.Desires) => {
-				if (desire.statusWish === Constants.statusWish.WISH) lengthWish++;
-				if (desire.statusReadiness === Constants.statusReadiness.READINESS) lengthReadiness++;
-			})
-
-			listLengthDesires.push({idMeeting: idMeeting, lengthWish: lengthWish, lengthReadiness: lengthReadiness});
-		}
-		setLengthDesires(listLengthDesires);
-	}
-
 	const getListIdMeetings = () => {
 		const idMeetings: number[] = [];
 		for (let index = 0; index < meetings.length; index++) {
@@ -214,92 +186,6 @@ export default function YourMeetingsPage(): JSX.Element {
 		}
 		return idMeetings;
 	}
-
-	const getLengthWish = (idMeeting: number) => {
-		const currentDesire = lengthDesires.find(desire => desire.idMeeting === idMeeting);
-		if (currentDesire) return currentDesire.lengthWish;
-		return 0;
-	}
-
-	const getLengthReadiness = (idMeeting: number) => {
-		const currentDesire = lengthDesires.find(desire => desire.idMeeting === idMeeting);
-		if (currentDesire) return currentDesire.lengthReadiness;
-		return 0;
-	}
-
-	const changeStatusMeeting = async (status: number, idMeeting: number) => {
-		let newStatus: {status: 0 | 1} | undefined;
-		if (status === Constants.activyStatus.ACTIVE) newStatus = {status: Constants.activyStatus.NOT_ACTIVE};
-		if (status === Constants.activyStatus.NOT_ACTIVE) newStatus = {status: Constants.activyStatus.ACTIVE};
-		await Meetings.update(idMeeting, newStatus);
-		const updateMeeting: MeetingsInterface.MeetingsWithDependentData[] = [];
-		
-		meetings.forEach(meeting => {
-			const currentMeeting: MeetingsInterface.MeetingsWithDependentData = JSON.parse(JSON.stringify(meeting));
-			
-			if (currentMeeting.id === idMeeting) {
-				if (newStatus?.status !== undefined) currentMeeting.status = newStatus?.status;
-			}
-			updateMeeting.push(currentMeeting);
-		})
-		dispatch(MeetingsSlice.addAll(updateMeeting));
-		
-	}
-
-	const changeStatusWish = async (idMeeting: number) => {
-		const currentDesires = desires.find(desire => desire.idMeeting === idMeeting && desire.idUser === idUser);
-		
-		if (currentDesires && currentDesires?.id) {
-			const newStatusWish = currentDesires.statusWish === Constants.statusWish.WISH ? {statusWish: Constants.statusWish.NOWISH} : {statusWish: Constants.statusWish.WISH};
-			await Desires.update(currentDesires.id, newStatusWish);
-			const getUpdateDesire = await Desires.getById(currentDesires.id);
-			if (getUpdateDesire?.data.length > 0) {
-				const updateDesire = getUpdateDesire.data[0];
-				const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data[0].id);
-				dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
-			}
-		}
-	}
-
-	const changeStatusReadiness = async (idMeeting: number) => {
-		const currentDesires = desires.find(desire => desire.idMeeting === idMeeting && desire.idUser === idUser);
-
-		if (currentDesires && currentDesires?.id) {
-			const newStatusReadiness = currentDesires.statusReadiness === Constants.statusReadiness.READINESS ? {statusReadiness: Constants.statusReadiness.NOREADINESS} : {statusReadiness: Constants.statusReadiness.READINESS};
-			await Desires.update(currentDesires.id, newStatusReadiness);
-			const getUpdateDesire = await Desires.getById(currentDesires.id);
-			if (getUpdateDesire?.data.length > 0) {
-				const updateDesire = getUpdateDesire.data[0];
-				const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data[0].id);
-				dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
-			}
-		}
-	}
-
-	const checkStatusWish = (idMeeting: number) => {
-		const currentDesires = desires.find(desire => desire.idMeeting === idMeeting && desire.idUser === idUser);
-		if (currentDesires?.statusWish === Constants.statusWish.WISH) {
-			return true;
-		}
-		return false;
-	}
-
-	const checkStatusReadiness = (idMeeting: number) => {
-		const currentDesires = desires.find(desire => desire.idMeeting === idMeeting && desire.idUser === idUser);
-		if (currentDesires?.statusReadiness === Constants.statusReadiness.READINESS) {
-			return true;
-		}
-		return false;
-	}
-
-	const checkOwnDesires = (idMeeting: number) => {
-		const currentDesires = desires.find(desire => desire.idMeeting === idMeeting && desire.idUser === idUser);
-		if (currentDesires?.statusOrganizer === Constants.statusOrganizer.MY) {
-			return true;
-		}
-		return false;
-	}
-	
 
 	if (session && status === 'authenticated') {
 		return (
@@ -313,92 +199,20 @@ export default function YourMeetingsPage(): JSX.Element {
 					{loading
 						? <Loading textTranslation={textTranslation[ML.key.loading]} />
 						: 
-							<DivDefault>
-								<div className={styles.filters}>
-									<div className={styles.listButton}>
-										<Button name={textTranslation[ML.key.all]} selected={selectFilter === nameFilter.all ? true : false} onClick={() => setSelectFilter(nameFilter.all)} />
-										<Button name={textTranslation[ML.key.iOrganise]} selected={selectFilter === nameFilter.my ? true : false} onClick={() => setSelectFilter(nameFilter.my)} />
-										<Button name={textTranslation[ML.key.organizedByOthers]} selected={selectFilter === nameFilter.other ? true : false} onClick={() => setSelectFilter(nameFilter.other)} />
-										<Button name={textTranslation[ML.key.alreadyGone]}  selected={selectFilter === nameFilter.passed ? true : false} onClick={() => setSelectFilter(nameFilter.passed)} />
-									</div>
-								</div>
-								<div className={styles.meetings}>
-									{meetings && meetings.map((v) => (
-										<Accordion key={v.id}
-											header={
-												<>
-													<div className={styles.meeting}>
-														<div className={styles.nameMeeting}>
-															<h2>{v.interest}</h2>
-															<span className={styles.helperArrow}>&nbsp;→&nbsp;</span>
-															<h3>{v.category}</h3>
-														</div>
-														<div>{Helpers.currentDatetimeDbToDatetimeLocalString(v.dateMeeting)}</div>
-														<div className={styles.statistic}>
-															<div className={styles.itemStatistic}>
-																<div>{textTranslation[ML.key.wanted]}: {getLengthWish(v.id)}</div>
-															</div>
-															<div className={styles.itemStatistic}>
-																<div>{textTranslation[ML.key.confirmations]}: {getLengthReadiness(v.id)}</div>
-															</div>
-														</div>
-													</div>
-												</>
-											}
-
-											hideContent={
-												<>
-													<div className={styles.hideContent}>
-														<div className={styles.mainContent}>
-														<div className={cn(styles.statistic, styles.statisticWithoutArrow)}>
-															<div className={styles.itemStatistic}>
-																{!checkOwnDesires(v.id) &&
-																	<>
-																		<div className={styles.minor}>{checkStatusWish(v.id) ? textTranslation[ML.key.iPlanToGo] : textTranslation[ML.key.iNotGoing]}</div>
-																		<Button  name={checkStatusWish(v.id) ? textTranslation[ML.key.iNotGoing] : textTranslation[ML.key.planningToGo]} onClick={() => changeStatusWish(v.id)}/>
-																	</>
-																}
-															</div>
-															<div className={styles.itemStatistic}>
-																{!checkOwnDesires(v.id) &&
-																	<>
-																		<div className={styles.minor}>{checkStatusReadiness(v.id) ? textTranslation[ML.key.iDefinitelyComing] : textTranslation[ML.key.undecided]}</div>
-																		<Button  name={checkStatusReadiness(v.id) ? textTranslation[ML.key.undecided] : textTranslation[ML.key.definitelyComing]} onClick={() => changeStatusReadiness(v.id)}/>
-																	</>
-																}
-															</div>
-														</div>
-															<div className={styles.minor}>{checkOwnDesires(v.id) ? textTranslation[ML.key.iOrganise] : textTranslation[ML.key.organisesAnother]}</div>
-															<div className={styles.minor}>{textTranslation[ML.key.languagePeopleMeeting]} {v.language}</div>
-															<div className={cn(styles.location, styles.minor)}>
-																<div>{v.country}&nbsp;→&nbsp;</div>
-																<div>{v.city}</div>
-															</div>
-															<div>{v.placeMeeting.length > 0 ? textTranslation[ML.key.meetingPoint] + ': ' + v.placeMeeting : textTranslation[ML.key.meetingNotSpecifiedDiscuss]}</div>
-															<div className={styles.statusMeeting}>
-																<div className={styles.controlButton}>
-																	<Button  name={textTranslation[ML.key.goToChat]}/>
-																</div>
-																{checkOwnDesires(v.id)
-																	?
-																		<div className={cn(styles.controlButton, styles.minor)}>
-																			<div className={styles.emptyBlock}>{v.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>
-																			<Button  name={v.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.cancelMeeting] : textTranslation[ML.key.resumeMeeting]} onClick={() => changeStatusMeeting(v.status, v.id)}/>
-																		</div>
-																	:
-																		<div className={cn(styles.emptyBlock, styles.minor)}>{v.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>
-																}
-																
-															</div>
-														</div>
-													</div>
-												</>
-											}
-										/>
-									))}
-									{meetings.length === 0 && <ListEmpty/>}
-								</div>
-							</DivDefault>
+							<DivWithTopPanel
+								topPanel={
+									<>
+										<ButtonList>
+											<Button name={textTranslation[ML.key.all]} selected={selectFilter === nameFilter.all ? true : false} onClick={() => setSelectFilter(nameFilter.all)} />
+											<Button name={textTranslation[ML.key.iOrganise]} selected={selectFilter === nameFilter.my ? true : false} onClick={() => setSelectFilter(nameFilter.my)} />
+											<Button name={textTranslation[ML.key.organizedByOthers]} selected={selectFilter === nameFilter.other ? true : false} onClick={() => setSelectFilter(nameFilter.other)} />
+											<Button name={textTranslation[ML.key.alreadyGone]}  selected={selectFilter === nameFilter.passed ? true : false} onClick={() => setSelectFilter(nameFilter.passed)} />
+										</ButtonList>
+									</>
+								}
+							>
+								<MeetingsList meetings={meetings} idUser={idUser} getListIdMeetings={() => getListIdMeetings()} />
+							</DivWithTopPanel>
 					}
 					<Button  name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
 					<Alert/>
@@ -418,10 +232,4 @@ YourMeetingsPage.getLayout = function getLayout(page: ReactElement) {
       {page}
     </Layout>
   )
-}
-
-interface LengthDesires {
-	idMeeting: number;
-	lengthWish: number;
-	lengthReadiness: number;
 }

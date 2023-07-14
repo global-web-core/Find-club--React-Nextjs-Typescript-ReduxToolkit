@@ -75,6 +75,7 @@ body {
 	--border-default-4: 5px solid rgba(255, 255, 255, 0.30);
 	--border-default-5: 5px solid rgba(255, 255, 255, 0.40);
 	--border-default-6: 5px solid rgba(255, 255, 255, 0.60);
+	--border-default-transparent: 5px solid transparent;
 	--border-default-wide: 10px solid rgba(255, 255, 255, 0.30);
 	--border-default-wide-2: 10px solid rgba(255, 255, 255, 0.10);
 	--border-default-wide-3: 5px solid rgba(255, 255, 255, 0.10);
@@ -149,6 +150,156 @@ select, input {
 ul {
 	padding-left: 20px;
 }
+
+/* Start styles for the react-calendar */
+.react-calendar {
+	border: var(--border-default-4);
+	border-radius: var(--border-radius-default);
+	background-color: var(--color-light-5);
+	max-width: 500px;
+	overflow: hidden;
+}
+
+.react-calendar abbr, span {
+	font-size: 20px;
+}
+
+.react-calendar__month-view__days {
+	margin: 10px;
+}
+
+.react-calendar__month-view__days button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	background-color: transparent;
+	border: var(--border-default-transparent);
+}
+
+.react-calendar__month-view__days button:disabled {
+	color: var(--color-gray-2)
+}
+
+.react-calendar__month-view__days button.react-calendar__tile--active {
+	border: var(--border-default-6);
+}
+
+.react-calendar__month-view__days button:hover {
+	background-color: var(--color-light-6);
+	border: var(--border-default-6);
+	color: var(--color-white)
+}
+
+.react-calendar__month-view__days button:disabled:hover {
+	background-color: transparent;
+	border: none;
+	color: var(--color-gray-2);
+	cursor: default;
+}
+
+.react-calendar__month-view__weekdays {
+	margin: 0 10px;
+}
+
+.react-calendar .react-calendar__month-view__weekdays__weekday {
+	display: flex;
+	justify-content: center;
+	font-weight: bold;
+	text-transform: capitalize;
+	color: var(--color-white);
+	margin: 5px 0;
+}
+
+.react-calendar .react-calendar__month-view__weekdays__weekday abbr {
+	font-size: 24px;
+	text-decoration: none;
+}
+
+.react-calendar__navigation {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	padding: 5px 30px 10px 30px;
+	background-color: var(--color-light-6);
+}
+
+.react-calendar__navigation button {
+	display: flex;
+	width: max-content;
+	background-color: transparent;
+	align-items: center;
+	font-size: 24px;
+	justify-content: center;
+	background: var(--color-main-breadcrumbs);
+	border: unset;
+	min-width: 40px;
+}
+
+.react-calendar__navigation button:hover {
+	color: var(--color-white);
+	background-color: var(--color-light-6);
+	background-color: var(--color-hover-breadcrumbs);
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+	color: var(--color-light-7);
+}
+
+.react-calendar__month-view__days__day--weekend.react-calendar__month-view__days__day--neighboringMonth {
+	color: var(--color-light-7);
+}
+
+.react-calendar__month-view__days__day--weekend {
+	color: #38356d;
+}
+
+.react-calendar__tile {
+	background-color: transparent;
+}
+
+.react-calendar__year-view__months, .react-calendar__decade-view__years, .react-calendar__century-view__decades {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin: 10px;
+}
+
+.react-calendar__year-view__months button, .react-calendar__decade-view__years button, .react-calendar__century-view__decades button {
+	font-size: 20px;
+	color: var(--color-white)
+}
+
+.react-calendar__year-view__months button:hover, .react-calendar__decade-view__years button:hover, .react-calendar__century-view__decades button:hover {
+	background-color: var(--color-light-6);
+}
+@media (max-width: 576px) {
+	.react-calendar__navigation {
+		gap: 5px;
+		padding: 5px;
+	}
+
+	.react-calendar__navigation button {
+		font-size: 16px;
+		min-width: 30px;
+	}
+
+	.react-calendar abbr, span, button {
+		font-size: 16px;
+	}
+
+	.react-calendar__year-view__months button, .react-calendar__decade-view__years button, .react-calendar__century-view__decades button {
+		font-size: 16px;
+	}
+
+	.react-calendar .react-calendar__month-view__weekdays__weekday abbr {
+		font-size: 16px;
+		/* display: flex;
+    justify-content: center;
+    align-items: center; */
+	}
+}
+/* End styles for the react-calendar */
 
 @media (max-width: 500px) {
 	h1 {

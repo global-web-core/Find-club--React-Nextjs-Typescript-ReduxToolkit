@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import { SelectCountry, Main, Button, Accordion, CircleAnimation, TypingText, MapFolding } from '../components';
+import { SelectCountry, Main, Button, Accordion, CircleAnimation, TypingText, MapFolding, Alert } from '../components';
 import { Countries, Languages } from '../models';
 import { useRouter } from 'next/router';
 import { GetStaticProps, GetStaticPropsContext } from 'next';
@@ -167,6 +167,7 @@ export default function Home({ listCountries, listLanguages, text, metadata }: H
 				</div>
 				<Button name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
 				<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: '/your-meetings'})}} />
+				<Alert/>
 			</Main>
     </div>
   )

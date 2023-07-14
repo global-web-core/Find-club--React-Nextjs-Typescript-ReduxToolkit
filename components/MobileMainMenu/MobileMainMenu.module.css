@@ -19,6 +19,10 @@
 	gap: 20px;
 }
 
+.Menu button {
+	text-wrap: nowrap;
+}
+
 .Menu.open {
 	width: 400px;
 	right: 0;

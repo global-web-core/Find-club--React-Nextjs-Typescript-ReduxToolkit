@@ -1,4 +1,4 @@
-import { SelectInterest, SelectLanguage } from '../../../components';
+import { Alert, SelectInterest, SelectLanguage } from '../../../components';
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { Cities, Countries, CitiesByCountries, Interests, InterestsByCities, Languages } from '../../../models';
 import { useRouter } from 'next/router';
@@ -147,6 +147,7 @@ export default function CitiesPage({ listInterests, listLanguages, text, country
 			<Main>
 				<SelectInterest  listInterests={listInterests} text={textTranslation}></SelectInterest>
 				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
+				<Alert/>
 			</Main>
 		</>
 	)

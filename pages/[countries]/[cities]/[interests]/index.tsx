@@ -5,7 +5,7 @@ import { ParsedUrlQuery } from 'querystring';
 import { CitiesByCountriesInterface, CitiesInterface, CountriesInterface, InterestsInterface, InterestsByCitiesInterface, LanguagesInterface, LanguageTranslationInterface, CategoryInterface, MetadataInterface } from '../../../../interfaces';
 import { ReactElement, useEffect } from 'react';
 import { ML } from '../../../../globals';
-import { SelectLanguage, Main, SelectCategory } from '../../../../components';
+import { SelectLanguage, Main, SelectCategory, Alert } from '../../../../components';
 import Head from 'next/head';
 import { TextTranslationSlice } from '../../../../store/slices';
 import { useAppDispatch, useAppSelector } from '../../../../store/hook';
@@ -165,6 +165,7 @@ export default function InterestsPage({ listCategories, listLanguages, text, cou
 				page interest
 				<SelectCategory listCategories={listCategories}  text={textTranslation}></SelectCategory>
 				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
+				<Alert/>
 			</Main>
 		</>
 	)

@@ -1,0 +1,47 @@
+.listButton {
+	display: flex;
+	gap: 20px;
+	padding-bottom: 0;
+}
+
+.listButton {
+  scrollbar-color: var(--scroll-thumb-color, grey) var(--scroll-track, transparent);
+  scrollbar-width: thin;
+}
+
+.listButton::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+.listButton::-webkit-scrollbar-track {
+  background-color: var(--color-light-7);
+  border-radius: 5px;
+	margin: 0 10px;
+}
+.listButton::-webkit-scrollbar-thumb {
+  background-color: linear-gradient(45deg, var(--color-burgundy-1), var(--color-purple-1));
+  background-image: linear-gradient(45deg, var(--color-burgundy-1), var(--color-purple-1));
+  border-radius: 5px;
+}
+
+.listButton button {
+	padding: 6px 10px;
+	white-space: nowrap;
+}
+
+@media (max-width: 800px) {
+	.listButton {
+		gap: 7px;
+	}
+}
+
+@media (max-width: 600px) {
+	.listButton {
+		overflow-x: auto;
+		padding-bottom: 5px;
+	}
+
+	.listButton button {
+		padding: 5px 5px;
+	}
+}

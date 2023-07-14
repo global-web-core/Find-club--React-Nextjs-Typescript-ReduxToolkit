@@ -25,8 +25,8 @@ const request = async (controller: string, method: string, data: any) => {
 		// if (isDevelopmentMode) console.log(json); // Uncomment to see the request in the console
 		return json;
 	}
+	console.log('Error fetch!!! Status 200 was not received:', response.json());
 	// throw await response.json();
-	console.log('Error fetch!!! Status no 200 was received:', response.json());
 	return;
 };
 

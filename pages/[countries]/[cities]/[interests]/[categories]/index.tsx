@@ -1,4 +1,4 @@
-import { SelectLanguage, Main } from '../../../../../components';
+import { SelectLanguage, Main, Alert } from '../../../../../components';
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { Cities, Countries, CitiesByCountries, Interests, InterestsByCities, Languages, Categories, CategoriesByInterests } from '../../../../../models';
 import { useRouter } from 'next/router';
@@ -162,6 +162,7 @@ export default function CategoriesPage({ listLanguages, text, country, metadata 
 			<Main>
 				page categories
 				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
+				<Alert/>
 			</Main>
 		</>
 	)

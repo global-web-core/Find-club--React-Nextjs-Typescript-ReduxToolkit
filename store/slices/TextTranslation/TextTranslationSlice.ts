@@ -18,11 +18,14 @@ const initialState: InitialState = {
 
 const updateLanguageAsync = createAsyncThunk<LanguageTranslationInterface.TextTranslation, LanguageTranslationInterface.TextTranslation | undefined, {dispatch: AppDispatch}>(
   'textTranslation/updateLanguageAsync',
-  async (text, {dispatch}) => {
+  async (text, {dispatch, rejectWithValue}) => {
 		const textDb = text ? text : await ML.getTranslationText();
 		const currentTranslationText = await ML.getChangeTranslationText(textDb)
 
-		if (!currentTranslationText) dispatch(AlertsSlice.add('Ошибка загрузки переведенного текста', '', 'danger'));
+		if (!currentTranslationText) {
+			dispatch(AlertsSlice.add('Ошибка загрузки переведенного текста', '', 'danger'));
+			return rejectWithValue('no get ML.getTranslationText')
+		}
 		console.log
 		return currentTranslationText as LanguageTranslationInterface.TextTranslation
   }
@@ -38,10 +41,10 @@ const textTranslationSlices = createSlice({
         state.status = 'loading'
 				state.error = null
       })
-      .addCase(updateLanguageAsync.rejected, (state) => {
+      .addCase(updateLanguageAsync.rejected, (state, action) => {
 				state.status = 'idle'
-				const error = 'Ошибка загрузки встреч'
-        state.error = error
+				const error = 'Ошибка загрузки переведенного текста'
+        state.error = error + ' ' + action.payload
       })
       .addCase(updateLanguageAsync.fulfilled, (state, action) => {
         state.status = 'idle'

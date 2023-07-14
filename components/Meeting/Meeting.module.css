@@ -1,0 +1,99 @@
+.meeting {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	overflow: hidden;
+	gap: 10px;
+}
+
+.item {
+	overflow: hidden;
+}
+
+.mainContent {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 15px;
+	text-align: center;
+}
+
+.nameMeeting {
+	display: flex;
+	align-items: center;
+}
+
+.nameMeeting h2 {
+	margin: 0;
+	padding: 0;
+}
+
+.nameMeeting h3 {
+	margin: 0;
+	padding: 0;
+}
+
+.location {
+	display: flex;
+}
+
+.statistic {
+	display: flex;
+	width: 100%;
+}
+
+.statusMeeting {
+	display: flex;
+	width: 100%;
+	justify-content: space-around;
+}
+
+.itemStatistic {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: center;
+	width: 100%;
+}
+
+.statisticWithoutArrow {
+	padding-right: 20px;
+}
+
+.controlButton  {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	justify-content: flex-end;
+}
+
+.statusMeeting button {
+	height: fit-content;
+}
+
+.minor {
+	color: var(--color-light-8);
+}
+
+
+@media (max-width: 800px) {
+	.nameMeeting {
+		flex-direction: column;
+	}
+	.helperArrow {
+		display: none;
+	}
+}
+
+@media (max-width: 450px) {
+	.statistic, .statusMeeting {
+		flex-direction: column;
+	}
+	.statusMeeting {
+		align-items: center;
+	}
+}

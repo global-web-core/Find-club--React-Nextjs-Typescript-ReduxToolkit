@@ -1,15 +1,19 @@
-import { SelectCity, SelectLanguage, Main } from '../../components';
+import { SelectCity, Main, Loading, DivWithTopPanel, ButtonList, MeetingsList, Alert } from '../../components';
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { Cities, Countries, CitiesByCountries, Languages } from '../../models';
 import { useRouter } from 'next/router';
 import { CitiesInterface, CountriesInterface, CitiesByCountriesInterface, LanguagesInterface, LanguageTranslationInterface, MetadataInterface } from '../../interfaces';
 import { ParsedUrlQuery } from 'querystring';
 import { ML } from '../../globals';
-import { ReactElement, useEffect } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { TextTranslationSlice } from '../../store/slices';
+import { MeetingsSlice, TextTranslationSlice, UserSlice } from '../../store/slices';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { Layout } from '../../layout/Layout';
+import Calendar from 'react-calendar'
+// import 'react-calendar/dist/Calendar.css'
+import cn from 'classnames';
+import { useSession } from 'next-auth/react';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const countriesData = await Countries.getAll();
@@ -108,8 +112,14 @@ export function generateMetadata(text: LanguageTranslationInterface.TextTranslat
 export default function CountriesPage({ listCities, listLanguages, text, country, metadata }: CountriesPageProps): JSX.Element {
 	const router = useRouter();
 	const dispatch = useAppDispatch();
+	const { data: session, status } = useSession();
 	
+	const [loading, setLoading] = useState(true);
+	const [mounted, setMounted] = useState(false);
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
+	const meetings = useAppSelector(state => MeetingsSlice.meetingsSelect(state));
+	const [value, onChange] = useState(null);
+	// console.log('===value', value);
 	const updateLanguage = async () => {
 		const currentTranslationText = await ML.getChangeTranslationText(text)
 		dispatch(TextTranslationSlice.updateLanguageAsync(currentTranslationText))
@@ -121,7 +131,15 @@ export default function CountriesPage({ listCities, listLanguages, text, country
 			updateLanguage();
 		}
 		startFetching();
+		setMounted(true);
 	}, [])
+
+	const maxDate = new Date();
+	maxDate.setMonth(maxDate.getMonth() + 3);
+
+	useEffect(() => {
+		dispatch(UserSlice.getIdUserAsync(session));
+	}, [session]);
 
 	return (
 		<>
@@ -130,8 +148,34 @@ export default function CountriesPage({ listCities, listLanguages, text, country
 				<meta name="description" content={metadata.description} />
 			</Head>
 			<Main>
+				{mounted &&
+					<div>
+						<Calendar
+							onChange={onChange} value={value}
+							minDate={new Date()} maxDate={new Date(maxDate)}
+							minDetail={"month"} maxDetail={"month"}
+							// showWeekNumbers={true}
+							locale={metadata.lang}
+						/>
+					</div>
+				}
 				<SelectCity listCities={listCities} text={textTranslation}></SelectCity>
-				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
+				{loading
+					? <Loading textTranslation={textTranslation[ML.key.loading]} />
+					: 
+						<DivWithTopPanel
+							topPanel={
+								<>
+									<ButtonList>
+										{/* <Button name={textTranslation[ML.key.all]} selected={selectFilter === nameFilter.all ? true : false} onClick={() => setSelectFilter(nameFilter.all)} /> */}
+									</ButtonList>
+								</>
+							}
+						>
+							<MeetingsList meetings={meetings} idUser={idUser} getListIdMeetings={() => getListIdMeetings()} />
+						</DivWithTopPanel>
+				}
+				<Alert/>
 			</Main>
 		</>
 	)

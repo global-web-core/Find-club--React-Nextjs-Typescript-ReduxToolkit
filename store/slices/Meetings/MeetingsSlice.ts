@@ -18,9 +18,12 @@ const initialState:InitialState = {
 
 const getMeetingsAsync = createAsyncThunk(
   'meetings/getMeetings',
-  async (_, {dispatch}) => {
+  async (_, {dispatch, rejectWithValue}) => {
 		const response = await Meetings.getAll()
-		if (!response) dispatch(AlertsSlice.add('Ошибка загрузки встреч', '', 'danger'));
+		if (!response) {
+			dispatch(AlertsSlice.add('Ошибка загрузки встреч', '', 'danger'));
+			return rejectWithValue('no get Meetings.getAll')
+		}
 		return response.data
   }
 )
@@ -42,10 +45,10 @@ const meetingsSlices = createSlice({
         state.status = 'loading'
 				state.error = null
       })
-      .addCase(getMeetingsAsync.rejected, (state) => {
+      .addCase(getMeetingsAsync.rejected, (state, action) => {
 				state.status = 'idle'
 				const error = 'Ошибка загрузки встреч'
-        state.error = error
+        state.error = error + ' ' + action.payload
       })
       .addCase(getMeetingsAsync.fulfilled, (state, action) => {
         state.status = 'idle'

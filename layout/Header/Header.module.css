@@ -51,7 +51,7 @@
   .header {
 		grid-template-areas: 
 		"iconLogo titleLogo controlLogo";
-		grid-template-columns: 50px auto auto;
+		grid-template-columns: 50px auto 50px;
 		grid-template-rows: 50px;
 	}
 	
@@ -68,7 +68,7 @@
 	}
 
 	.header .titleLogo {
-		justify-content: flex-end;
+		justify-content: center;
 	}
 }
 

@@ -1,0 +1,11 @@
+.topPanel {
+	display: flex;
+	justify-content: center;
+	background-color: var(--color-light-5);
+	border-radius: 15px;
+	margin-bottom: 20px;
+	padding-bottom: 5px;
+	overflow-x: unset;
+	width: 100%;
+	overflow: hidden;
+}
