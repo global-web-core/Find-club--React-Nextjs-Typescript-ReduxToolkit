@@ -26,8 +26,9 @@ const getIdUserAsync = createAsyncThunk<LanguageTranslationInterface.TextTransla
 		const idUserSession = dataUserBySession?.data.length > 0 && dataUserBySession?.data[0].id || null;
 
 		if (!idUserSession && session) {
-			dispatch(AlertsSlice.add('Ошибка получения данных пользователя', '', 'danger'));
-			return rejectWithValue('no idUserSession')
+			const textError = 'Ошибка получения данных пользователя';
+			dispatch(AlertsSlice.add(textError, '', 'danger'));
+			return rejectWithValue(textError)
 		}
 		return idUserSession
   }
@@ -36,7 +37,9 @@ const getIdUserAsync = createAsyncThunk<LanguageTranslationInterface.TextTransla
 const UserSlice = createSlice({
 	name: 'user',
 	initialState: initialState,
-	reducers: {},
+	reducers: {
+		clearAll: () => initialState
+	},
 	extraReducers: (builder) => {
     builder
       .addCase(getIdUserAsync.pending, (state) => {
@@ -56,6 +59,7 @@ const UserSlice = createSlice({
   },
 });
 
+const { clearAll } = UserSlice.actions
 const reducer = UserSlice.reducer
 
 const userSelect = (state: AppState) => {
@@ -66,4 +70,5 @@ export {
 	getIdUserAsync,
 	reducer,
 	userSelect,
+	clearAll
 }

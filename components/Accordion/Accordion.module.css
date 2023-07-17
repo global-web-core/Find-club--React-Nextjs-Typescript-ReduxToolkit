@@ -3,19 +3,19 @@
 	flex-direction: column;
 	width: 100%;
 	border-radius: var(--border-radius-default);
-	box-shadow: var(--box-shadow-default);
 	background-color: var(--color-light);
 	color: var(--color-white);
 	padding: 10px;
 	border: var(--border-default-wide-2);
 	overflow: hidden;
-	transition: background-color linear var(--time-transitioion);
+	transition: background-color linear var(--time-transitioion), box-shadow linear var(--time-transitioion);
 	height: fit-content;
 }
 
 .accordion:hover {
 	background-color: var(--color-light-2);
-	transition: background-color linear var(--time-transitioion);
+	transition: background-color linear var(--time-transitioion), box-shadow linear var(--time-transitioion);
+	box-shadow: var(--box-shadow-default);
 }
 
 .header {

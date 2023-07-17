@@ -2,8 +2,11 @@ import React from 'react';
 import styles from './MeetingsList.module.css';
 import {MeetingsListProps} from './MeetingsList.props';
 import { Meeting, ListEmpty } from '../../components';
+import { useAppSelector } from '../../store/hook';
+import { UserSlice } from '../../store/slices';
 
-export const MeetingsList = ({meetings, idUser, getListIdMeetings}: MeetingsListProps):JSX.Element => {
+export const MeetingsList = ({meetings, getListIdMeetings}: MeetingsListProps):JSX.Element => {
+	const idUser = useAppSelector(state => UserSlice.userSelect(state));
 	return (
 		<div className={styles.meetings}>
 			{meetings && meetings.map((meeting) => (

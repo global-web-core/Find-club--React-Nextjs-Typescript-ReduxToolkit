@@ -1,4 +1,4 @@
-import { SelectCity, Main, Loading, DivWithTopPanel, ButtonList, MeetingsList, Alert } from '../../components';
+import { SelectCity, Main, Loading, DivWithTopPanel, ButtonList, MeetingsList, Alert, Button } from '../../components';
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { Cities, Countries, CitiesByCountries, Languages } from '../../models';
 import { useRouter } from 'next/router';
@@ -7,13 +7,13 @@ import { ParsedUrlQuery } from 'querystring';
 import { ML } from '../../globals';
 import { ReactElement, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { MeetingsSlice, TextTranslationSlice, UserSlice } from '../../store/slices';
+import { MeetingsSlice, SelectFilterSlice, TextTranslationSlice, UserSlice } from '../../store/slices';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { Layout } from '../../layout/Layout';
 import Calendar from 'react-calendar'
 // import 'react-calendar/dist/Calendar.css'
 import cn from 'classnames';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const countriesData = await Countries.getAll();
@@ -118,11 +118,19 @@ export default function CountriesPage({ listCities, listLanguages, text, country
 	const [mounted, setMounted] = useState(false);
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	const meetings = useAppSelector(state => MeetingsSlice.meetingsSelect(state));
+	const idUser = useAppSelector(state => UserSlice.userSelect(state));
+	const selectFilter = useAppSelector(state => SelectFilterSlice.selectFilter(state));
 	const [value, onChange] = useState(null);
 	// console.log('===value', value);
 	const updateLanguage = async () => {
 		const currentTranslationText = await ML.getChangeTranslationText(text)
 		dispatch(TextTranslationSlice.updateLanguageAsync(currentTranslationText))
+	}
+
+	const clearData = () => {
+		dispatch(UserSlice.clearAll());
+		dispatch(MeetingsSlice.clearAll());
+		// dispatch(DesiresSlice.clearAll());
 	}
 
 	useEffect(() => {
@@ -140,6 +148,17 @@ export default function CountriesPage({ listCities, listLanguages, text, country
 	useEffect(() => {
 		dispatch(UserSlice.getIdUserAsync(session));
 	}, [session]);
+
+	useEffect(() => {
+		if (!session && status !== 'loading') {
+			clearData();
+			signIn();
+		}
+
+		if (session && status === 'authenticated' && !loading) {
+			// getDataByIdUser();
+		}
+	}, [session, status, loading, selectFilter, textTranslation])
 
 	return (
 		<>
@@ -167,14 +186,17 @@ export default function CountriesPage({ listCities, listLanguages, text, country
 							topPanel={
 								<>
 									<ButtonList>
-										{/* <Button name={textTranslation[ML.key.all]} selected={selectFilter === nameFilter.all ? true : false} onClick={() => setSelectFilter(nameFilter.all)} /> */}
+										<Button name={textTranslation[ML.key.all]} selected={selectFilter.basic === nameFilter.all ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(nameFilter.all))} />
 									</ButtonList>
 								</>
 							}
 						>
-							<MeetingsList meetings={meetings} idUser={idUser} getListIdMeetings={() => getListIdMeetings()} />
+							<MeetingsList meetings={meetings} getListIdMeetings={() => getListIdMeetings()} />
 						</DivWithTopPanel>
 				}
+				<Button name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
+				<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: '/your-meetings'})}} />
+				<Alert/>
 				<Alert/>
 			</Main>
 		</>

@@ -65,6 +65,19 @@ const typeMeeting: Status = {
 	ALIEN: 1
 };
 
+const nameYourMeetingsFilter = {
+	all: 'all',
+	my: 'my',
+	other: 'other',
+	passed: 'passed'
+};
+
+const nameBasicFilter = {
+	month: 'month',
+	week: 'week',
+	day: 'day'
+};
+
 
 export {
 	API,
@@ -78,7 +91,9 @@ export {
 	typeMeeting,
 	statusOrganizer,
 	statusWish,
-	statusReadiness
+	statusReadiness,
+	nameYourMeetingsFilter,
+	nameBasicFilter
 };
 
 interface Status {

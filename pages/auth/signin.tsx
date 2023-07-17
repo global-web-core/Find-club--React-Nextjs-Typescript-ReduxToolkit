@@ -55,7 +55,6 @@ export default function SignIn({ providers }: InferGetServerSidePropsType<typeof
 }
 
 SignIn.getLayout = function getLayout(page: ReactElement) {
-	console.log('===page', page);
   return (
     <WithoutLayout>
       {page}

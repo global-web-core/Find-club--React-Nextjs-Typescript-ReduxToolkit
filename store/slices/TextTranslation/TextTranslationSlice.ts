@@ -54,7 +54,6 @@ const textTranslationSlices = createSlice({
   },
 });
 
-// const { updateLanguage } = textTranslationSlices.actions
 const reducer = textTranslationSlices.reducer
 
 const textTranslationSelect = (state: AppState) => {

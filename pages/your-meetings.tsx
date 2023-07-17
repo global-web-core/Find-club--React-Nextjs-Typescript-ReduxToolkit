@@ -6,17 +6,10 @@ import { CountriesInterface, InterestsInterface, CitiesInterface, LanguagesInter
 import { ML, Helpers, Constants } from '../globals';
 import { ReactElement, useEffect, useState } from 'react';
 import { useSession, signIn } from 'next-auth/react';
-import { AlertsSlice, MeetingsSlice, DesiresSlice, TextTranslationSlice } from '../store/slices'
+import { AlertsSlice, MeetingsSlice, DesiresSlice, TextTranslationSlice, UserSlice, SelectFilterSlice } from '../store/slices'
 import {useAppDispatch, useAppSelector} from '../store/hook'
 import Head from 'next/head';
 import { Layout } from '../layout/Layout';
-
-const nameFilter = {
-	all: 'all',
-	my: 'my',
-	other: 'other',
-	passed: 'passed'
-};
 
 export default function YourMeetingsPage(): JSX.Element {
 	const dispatch = useAppDispatch();
@@ -31,9 +24,9 @@ export default function YourMeetingsPage(): JSX.Element {
 	const [listCities, setListCities] = useState<CitiesInterface.City[]>([]);
 	const [listInterests, setListInterests] = useState<InterestsInterface.Interest[]>([]);
 	const [listCategories, setListCategories] = useState<CategoryInterface.Category[]>([]);
-	const [idUser, setIdUser] = useState('');
+	const idUser = useAppSelector(state => UserSlice.userSelect(state));
 	const meetings = useAppSelector(state => MeetingsSlice.meetingsSelect(state));
-	const [selectFilter, setSelectFilter] = useState(nameFilter.all);
+	const selectFilter = useAppSelector(state => SelectFilterSlice.selectFilter(state));
 
 	useEffect(() => {
 		async function startFetching() {
@@ -87,24 +80,22 @@ export default function YourMeetingsPage(): JSX.Element {
 	}, [session]);
 	
 	const clearData = () => {
-		setIdUser('');
+		dispatch(UserSlice.clearAll());
 		dispatch(MeetingsSlice.clearAll());
 		dispatch(DesiresSlice.clearAll());
 	}
 
 	const getCurrentIdUser = async () => {
-		const dataUserBySession = await Users.getBySession(session?.user?.email, session?.user?.image, session?.user?.name)
-		const idUserSession = dataUserBySession?.data.length > 0 && dataUserBySession?.data[0].id || null;
-		setIdUser(idUserSession);
+		dispatch(UserSlice.getIdUserAsync(session));
 	}
 
 	const getListMeetings = async () => {
 		const idUserSession = idUser;
 		let desiresDb;
-		if (selectFilter === nameFilter.all) desiresDb = await Desires.getByIdUser(idUserSession);
-		if (selectFilter === nameFilter.my) desiresDb = await Desires.getByIdUserByStatusOrganizer(idUserSession, Constants.statusOrganizer.MY);
-		if (selectFilter === nameFilter.other) desiresDb = await Desires.getByIdUserByStatusOrganizer(idUserSession, Constants.statusOrganizer.ANOTHER);
-		if (selectFilter === nameFilter.passed) desiresDb = await Desires.getByIdUser(idUserSession);
+		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.all) desiresDb = await Desires.getByIdUser(idUserSession);
+		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.my) desiresDb = await Desires.getByIdUserByStatusOrganizer(idUserSession, Constants.statusOrganizer.MY);
+		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.other) desiresDb = await Desires.getByIdUserByStatusOrganizer(idUserSession, Constants.statusOrganizer.ANOTHER);
+		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.passed) desiresDb = await Desires.getByIdUser(idUserSession);
 		
 		const idMeetings: number[] = [];
 		let listMeetings: MeetingsInterface.Meetings[] = [];
@@ -117,7 +108,7 @@ export default function YourMeetingsPage(): JSX.Element {
 			listMeetings.push((await Meetings.getByIdMeeting(idMeeting))?.data[0]);
 		}
 
-		if (selectFilter === nameFilter.passed) {
+		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.passed) {
 			const filteredListMeetings = Helpers.filterPastDate(listMeetings, 'dateMeeting');
 			
 			listMeetings = filteredListMeetings || listMeetings;
@@ -203,15 +194,15 @@ export default function YourMeetingsPage(): JSX.Element {
 								topPanel={
 									<>
 										<ButtonList>
-											<Button name={textTranslation[ML.key.all]} selected={selectFilter === nameFilter.all ? true : false} onClick={() => setSelectFilter(nameFilter.all)} />
-											<Button name={textTranslation[ML.key.iOrganise]} selected={selectFilter === nameFilter.my ? true : false} onClick={() => setSelectFilter(nameFilter.my)} />
-											<Button name={textTranslation[ML.key.organizedByOthers]} selected={selectFilter === nameFilter.other ? true : false} onClick={() => setSelectFilter(nameFilter.other)} />
-											<Button name={textTranslation[ML.key.alreadyGone]}  selected={selectFilter === nameFilter.passed ? true : false} onClick={() => setSelectFilter(nameFilter.passed)} />
+											<Button name={textTranslation[ML.key.all]} selected={selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.all ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(Constants.nameYourMeetingsFilter.all))} />
+											<Button name={textTranslation[ML.key.iOrganise]} selected={selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.my ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(Constants.nameYourMeetingsFilter.my))} />
+											<Button name={textTranslation[ML.key.organizedByOthers]} selected={selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.other ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(Constants.nameYourMeetingsFilter.other))} />
+											<Button name={textTranslation[ML.key.alreadyGone]}  selected={selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.passed ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(Constants.nameYourMeetingsFilter.passed))} />
 										</ButtonList>
 									</>
 								}
 							>
-								<MeetingsList meetings={meetings} idUser={idUser} getListIdMeetings={() => getListIdMeetings()} />
+								<MeetingsList meetings={meetings} getListIdMeetings={() => getListIdMeetings()} />
 							</DivWithTopPanel>
 					}
 					<Button  name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />

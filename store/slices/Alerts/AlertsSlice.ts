@@ -35,7 +35,6 @@ const alertsSlices = createSlice({
 	}
 });
 
-
 const {add, removeAll, removeMessage} = alertsSlices.actions
 const reducer = alertsSlices.reducer
 

@@ -58,9 +58,6 @@ const meetingsSlices = createSlice({
   },
 });
 
-
-
-
 const { addAll, clearAll } = meetingsSlices.actions
 const reducer = meetingsSlices.reducer
 

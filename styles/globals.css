@@ -273,6 +273,15 @@ ul {
 .react-calendar__year-view__months button:hover, .react-calendar__decade-view__years button:hover, .react-calendar__century-view__decades button:hover {
 	background-color: var(--color-light-6);
 }
+
+.react-calendar__navigation__label {
+	cursor: default;
+}
+
+.react-calendar__navigation .react-calendar__navigation__label:hover {
+	background: var(--color-main-breadcrumbs);
+}
+
 @media (max-width: 576px) {
 	.react-calendar__navigation {
 		gap: 5px;

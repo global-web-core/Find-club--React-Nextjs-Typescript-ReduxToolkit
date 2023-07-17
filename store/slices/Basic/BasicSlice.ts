@@ -19,16 +19,12 @@ const basicSlices = createSlice({
 	}
 });
 
-
-
-
 const { changeOpenHamburger } = basicSlices.actions
 const reducer = basicSlices.reducer
 
 const basicSelect = (state: AppState) => {
 	return state.basic.openHamburger
 }
-
 
 export {
 	changeOpenHamburger,

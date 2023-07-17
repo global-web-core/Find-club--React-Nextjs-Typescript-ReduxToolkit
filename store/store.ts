@@ -1,15 +1,16 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
-import { AlertsSlice, MeetingsSlice, DesiresSlice, TextTranslationSlice, BasicSlice, UserSlice } from './slices'
+import * as ListSlices from './slices'
 
 export function makeStore() {
   return configureStore({
     reducer: {
-			alerts: AlertsSlice.reducer,
-			meetings: MeetingsSlice.reducer,
-			desires: DesiresSlice.reducer,
-			textTranslation: TextTranslationSlice.reducer,
-			basic: BasicSlice.reducer,
-			user: UserSlice.reducer,
+			alerts: ListSlices.AlertsSlice.reducer,
+			meetings: ListSlices.MeetingsSlice.reducer,
+			desires: ListSlices.DesiresSlice.reducer,
+			textTranslation: ListSlices.TextTranslationSlice.reducer,
+			basic: ListSlices.BasicSlice.reducer,
+			user: ListSlices.UserSlice.reducer,
+			selectFilter: ListSlices.SelectFilterSlice.reducer,
 		},
 		devTools: true
   })

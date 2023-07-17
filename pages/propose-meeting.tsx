@@ -315,7 +315,6 @@ export default function ProposeMeetingPage(): JSX.Element {
 									max={plusYearsDateYYYYMMDD()}
 									required
 									onChange={(value) => handleSelect(value.target.value, value.target.name)}
-									lang="fr"
 								/>
 								<textarea
 									name="selectPlaceMeeting" rows={3} placeholder={textTranslation[ML.key.writeMeetingPlace]}

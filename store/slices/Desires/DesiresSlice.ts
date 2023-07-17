@@ -19,16 +19,11 @@ const desiresSlices = createSlice({
 	initialState: initialState,
 	reducers: {
 		addAll: (state, action) => {
-			// console.log('--==state', state);
-			// console.log('--==action', action);
 			state.entities = action.payload
 		},
 		clearAll: () => initialState
 	}
 });
-
-
-
 
 const { addAll, clearAll } = desiresSlices.actions
 const reducer = desiresSlices.reducer
@@ -36,7 +31,6 @@ const reducer = desiresSlices.reducer
 const desiresSelect = (state: AppState) => {
 	return state.desires.entities
 }
-
 
 export {
 	addAll,
