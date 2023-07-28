@@ -97,7 +97,6 @@ a {
 }
 
 button {
-	text-transform:capitalize;
   padding: 6px 10px;
   border-radius: var(--border-radius-default);
   cursor: pointer;
@@ -111,6 +110,13 @@ button:hover {
   background-color: var(--color-green-1);
   color: var(--color-black);
   transition: background-color linear var(--time-transitioion-fast-2);
+}
+
+button:disabled {
+	background-color: var(--color-gray-2);
+  color: var(--color-white);
+  transition: background-color linear var(--time-transitioion-fast-2);
+	cursor: no-drop;
 }
 
 select, input, textarea {

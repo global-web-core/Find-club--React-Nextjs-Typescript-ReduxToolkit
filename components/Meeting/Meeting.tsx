@@ -158,7 +158,7 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 									{!checkOwnDesires(meeting.id) &&
 										<>
 											<div className={styles.minor}>{checkStatusWish(meeting.id) ? textTranslation[ML.key.iPlanToGo] : textTranslation[ML.key.iNotGoing]}</div>
-											<Button  name={checkStatusWish(meeting.id) ? textTranslation[ML.key.iNotGoing] : textTranslation[ML.key.planningToGo]} onClick={() => changeStatusWish(meeting.id)}/>
+											<Button  name={checkStatusWish(meeting.id) ? textTranslation[ML.key.iNotGoing] : textTranslation[ML.key.planningToGo]} onClick={() => changeStatusWish(meeting.id)} disabled={idUser ? false : true} />
 										</>
 									}
 								</div>
@@ -166,7 +166,7 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 									{!checkOwnDesires(meeting.id) &&
 										<>
 											<div className={styles.minor}>{checkStatusReadiness(meeting.id) ? textTranslation[ML.key.iDefinitelyComing] : textTranslation[ML.key.undecided]}</div>
-											<Button  name={checkStatusReadiness(meeting.id) ? textTranslation[ML.key.undecided] : textTranslation[ML.key.definitelyComing]} onClick={() => changeStatusReadiness(meeting.id)}/>
+											<Button  name={checkStatusReadiness(meeting.id) ? textTranslation[ML.key.undecided] : textTranslation[ML.key.definitelyComing]} onClick={() => changeStatusReadiness(meeting.id)} disabled={idUser ? false : true} />
 										</>
 									}
 								</div>
@@ -180,13 +180,13 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 								<div>{meeting.placeMeeting.length > 0 ? textTranslation[ML.key.meetingPoint] + ': ' + meeting.placeMeeting : textTranslation[ML.key.meetingNotSpecifiedDiscuss]}</div>
 								<div className={styles.statusMeeting}>
 									<div className={styles.controlButton}>
-										<Button  name={textTranslation[ML.key.goToChat]}/>
+										<Button  name={textTranslation[ML.key.goToChat]} disabled={idUser ? false : true} />
 									</div>
 									{checkOwnDesires(meeting.id)
 										?
 											<div className={cn(styles.controlButton, styles.minor)}>
 												<div className={styles.emptyBlock}>{meeting.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>
-												<Button  name={meeting.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.cancelMeeting] : textTranslation[ML.key.resumeMeeting]} onClick={() => changeStatusMeeting(meeting.status, meeting.id)}/>
+												<Button  name={meeting.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.cancelMeeting] : textTranslation[ML.key.resumeMeeting]} onClick={() => changeStatusMeeting(meeting.status, meeting.id)} disabled={idUser ? false : true} />
 											</div>
 										:
 											<div className={cn(styles.emptyBlock, styles.minor)}>{meeting.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>

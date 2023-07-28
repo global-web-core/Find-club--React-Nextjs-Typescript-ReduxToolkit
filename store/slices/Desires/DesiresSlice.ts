@@ -79,10 +79,15 @@ const desiresSelect = (state: AppState) => {
 	return state.desires.entities
 }
 
+const desiresSelectAllData = (state: AppState) => {
+	return state.desires
+}
+
 export {
 	addAll,
 	clearAll,
 	reducer,
 	desiresSelect,
+	desiresSelectAllData,
 	getDesiresByIdMeeting
 }

@@ -106,6 +106,10 @@ const meetingsSelect = (state: AppState) => {
 	return state.meetings.entities
 }
 
+const meetingsSelectAllData = (state: AppState) => {
+	return state.meetings
+}
+
 const listIdMeetingsSelect = (state: AppState) => {
 	return state.meetings.listIdMeetings
 }
@@ -116,5 +120,6 @@ export {
 	getMeetingsWithFullDataAsync,
 	reducer,
 	meetingsSelect,
+	meetingsSelectAllData,
 	listIdMeetingsSelect
 }
