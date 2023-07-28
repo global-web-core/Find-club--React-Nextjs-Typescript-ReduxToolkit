@@ -1,10 +1,8 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ML } from '../../../globals';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { AlertsSlice } from '../../slices';
 import { AppState, AppDispatch } from '../../store';
 import { LanguageTranslationInterface } from '../../../interfaces';
 import { Users } from '../../../models';
-import { stringify } from 'querystring';
 
 interface InitialState {
 	data: {id: string | null;};
@@ -48,8 +46,7 @@ const UserSlice = createSlice({
       })
       .addCase(getIdUserAsync.rejected, (state, action) => {
 				state.status = 'idle'
-				const error = 'Ошибка получения данных пользователя'
-        state.error = error + ' ' + action.payload
+        state.error = action.payload
       })
       .addCase(getIdUserAsync.fulfilled, (state, action) => {
         state.status = 'idle'

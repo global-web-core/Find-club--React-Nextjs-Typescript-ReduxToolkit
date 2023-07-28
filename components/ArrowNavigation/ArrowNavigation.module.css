@@ -1,0 +1,105 @@
+.boxArrow {
+	width: 40px;
+	height: 40px;
+	cursor: pointer;
+	padding: 0;
+	border: none;
+	border-radius: 0;
+	background-color: transparent;
+}
+
+.boxArrow:hover {
+	background-color: transparent;
+}
+
+.boxArrow:disabled {
+	cursor: default;
+}
+
+.boxArrow:before,
+.boxArrow:after {
+	background: var(--color-white);
+	content: "";
+	display: block;
+	height: 6px;
+	border-radius: 3px;
+	transition: transform var(--time-transitioion-fast);
+}
+
+.left:before {
+	transform-origin: left top;
+	transform: translateY(5px) rotate(-40deg);
+}
+
+.left:after {
+	transform-origin: left bottom;
+	transform: translateY(-5px) rotate(40deg);
+}
+
+.left:hover:before {
+	transform-origin: left top;
+	transform: translateY(5px) rotate(-34deg);
+}
+
+.left:hover:after {
+	transform-origin: left bottom;
+	transform: translateY(-5px) rotate(34deg);
+}
+
+.left:active:before {
+	transform: translateY(5px) rotate(-28deg);
+}
+
+.left:active:after {
+	transform: translateY(-5px) rotate(28deg);
+}
+
+.left:disabled:before {
+	background: var(--color-light-5);
+	transform: translateY(3px) rotate(0deg);
+}
+
+.left:disabled:after {
+	background: var(--color-light-5);
+	transform: translateY(-3px) rotate(0deg);
+}
+
+.right:before {
+	transform-origin: right top;
+	transform: translateY(5px) rotate(40deg);
+}
+
+.right:after {
+	transform-origin: right bottom;
+	transform: translateY(-5px) rotate(-40deg);
+}
+
+.right:hover:before {
+	transform-origin: right top;
+	transform: translateY(5px) rotate(34deg);
+}
+
+.right:hover:after {
+	transform-origin: right bottom;
+	transform: translateY(-5px) rotate(-34deg);
+}
+
+.right:active:before {
+	transform-origin: right top;
+	transform: translateY(5px) rotate(28deg);
+}
+
+.right:active:after {
+	transform-origin: right bottom;
+	transform: translateY(-5px) rotate(-28deg);
+}
+
+.right:disabled:before {
+	background: var(--color-light-5);
+	transform: translateY(3px) rotate(0deg);
+}
+
+.right:disabled:after {
+	background: var(--color-light-5);
+	transform: translateY(-3px) rotate(0deg);
+}

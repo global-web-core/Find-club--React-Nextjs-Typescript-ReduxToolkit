@@ -99,6 +99,8 @@ const keyText = {
 	noOneRecogniseYourPhoneNumberEmail: 'no-one-recognise-your-phone-number-email',
 	noOneSpamYou: 'no-one-spam-you',
 	noOneToSendUselessMessages: 'no-one-to-send-useless-messages',
+	month: 'month',
+	day: 'day',
 }
 
 export default keyText;

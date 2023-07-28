@@ -9,9 +9,10 @@ import { DesiresSlice, MeetingsSlice, TextTranslationSlice } from '../../store/s
 import { Desires, Meetings } from '../../models';
 import { DesiresInterface, MeetingsInterface } from '../../interfaces';
 
-export const Meeting = ({meeting, idUser, getListIdMeetings}: MeetingProps):JSX.Element => {
+export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	const meetings = useAppSelector(state => MeetingsSlice.meetingsSelect(state));
+	const listIdMeetings = useAppSelector(state => MeetingsSlice.listIdMeetingsSelect(state));
 	const desires = useAppSelector(state => DesiresSlice.desiresSelect(state));
 	const [lengthDesires, setLengthDesires] = useState<LengthDesires[]>([]);
 	const dispatch = useAppDispatch();
@@ -103,7 +104,6 @@ export const Meeting = ({meeting, idUser, getListIdMeetings}: MeetingProps):JSX.
 
 	const getLengthDesires = async () => {
 		const listLengthDesires: LengthDesires[] = [];
-		const listIdMeetings = getListIdMeetings();
 		
 		for await (const idMeeting of listIdMeetings) {
 			let lengthWish = 0;
@@ -139,10 +139,10 @@ export const Meeting = ({meeting, idUser, getListIdMeetings}: MeetingProps):JSX.
 							<div>{Helpers.currentDatetimeDbToDatetimeLocalString(meeting.dateMeeting)}</div>
 							<div className={styles.statistic}>
 								<div className={styles.itemStatistic}>
-									<div>{textTranslation[ML.key.wanted]}: {getLengthWish(meeting.id)}</div>
+									<div>{textTranslation[ML.key.wanted]}: {getLengthWish(meeting.id) > 0 && getLengthWish(meeting.id)}</div>
 								</div>
 								<div className={styles.itemStatistic}>
-									<div>{textTranslation[ML.key.confirmations]}: {getLengthReadiness(meeting.id)}</div>
+									<div>{textTranslation[ML.key.confirmations]}: {getLengthReadiness(meeting.id) > 0 && getLengthReadiness(meeting.id)}</div>
 								</div>
 							</div>
 						</div>

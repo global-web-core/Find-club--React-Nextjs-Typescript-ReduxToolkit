@@ -147,7 +147,6 @@ export default function CitiesPage({ listInterests, listLanguages, text, country
 			<Main>
 				<SelectInterest  listInterests={listInterests} text={textTranslation}></SelectInterest>
 				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
-				<Alert/>
 			</Main>
 		</>
 	)

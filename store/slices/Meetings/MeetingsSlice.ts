@@ -1,8 +1,8 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Meetings } from '../../../models';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { AlertsSlice } from '../../slices';
 import { AppState } from '../../store';
 import {MeetingsInterface} from '../../../interfaces'
+import { ML } from '../../../globals';
 
 interface InitialState {
 	entities: MeetingsInterface.MeetingsWithDependentData[];
@@ -12,19 +12,62 @@ interface InitialState {
 
 const initialState:InitialState = {
   entities: [],
+  listIdMeetings: [],
   status: 'idle',
 	error: null,
 }
 
-const getMeetingsAsync = createAsyncThunk(
-  'meetings/getMeetings',
-  async (_, {dispatch, rejectWithValue}) => {
-		const response = await Meetings.getAll()
-		if (!response) {
-			dispatch(AlertsSlice.add('Ошибка загрузки встреч', '', 'danger'));
-			return rejectWithValue('no get Meetings.getAll')
+const getMeetingsWithFullDataAsync = createAsyncThunk(
+  'meetings/getMeetingsWithFullDataAsync',
+  async (data, {dispatch, rejectWithValue}) => {
+		const error = () => {
+			const textError = data.textTranslation[ML.key.receivingMeeting]
+			dispatch(AlertsSlice.add(textError, data.textTranslation[ML.key.error], 'danger'));
+			return rejectWithValue(textError)
 		}
-		return response.data
+
+		const getListIdMeetings = (meetings) => {
+			const idMeetings: number[] = [];
+			for (let index = 0; index < meetings.length; index++) {
+				if (!idMeetings.includes(meetings[index]?.id)) idMeetings.push(meetings[index]?.id);
+			}
+			return idMeetings;
+		}
+
+		const dataMeetings: MeetingsInterface.MeetingsWithDependentData[] = [];
+
+		if (data.meetingsDb.length > 0) {
+			data.meetingsDb.forEach((meeting) => {
+				const country = data.listCountries.find(country => country.id === meeting.idCountry);
+				const city = data.listCities.find(city => city.id === meeting.idCity);
+				const interest = data.listInterests.find(interest => interest.id === meeting.idInterest);
+				const category = data.listCategories.find(category => category.id === meeting.idCategory);
+				const language = data.listLanguages.find(language => language.id === meeting.idLanguage);
+				if (country?.route && city?.route && interest?.route && category?.route && language?.name) {
+					const dataMeeting: MeetingsInterface.MeetingsWithDependentData = {
+						id: meeting.id,
+						country: data.textTranslation[country.route],
+						city: data.textTranslation[city.route],
+						interest: data.textTranslation[interest.route],
+						category: data.textTranslation[category.route],
+						language: language.name,
+						placeMeeting: meeting.placeMeeting,
+						dateMeeting: meeting.dateMeeting,
+						typeMeeting: meeting.typeMeeting,
+						status: meeting.status
+					};
+
+					if (!dataMeetings.includes(dataMeeting)) dataMeetings.push(dataMeeting);
+				} else {
+					error()
+				}
+			});
+		}
+		const listIdMeetings = getListIdMeetings(dataMeetings);
+		
+		if (!dataMeetings || !listIdMeetings) error()
+		
+		return {dataMeetings, listIdMeetings};
   }
 )
 
@@ -33,26 +76,24 @@ const meetingsSlices = createSlice({
 	initialState: initialState,
 	reducers: {
 		addAll: (state, action) => {
-			// console.log('--==state', state);
-			// console.log('--==action', action);
 			state.entities = action.payload
 		},
 		clearAll: () => initialState
 	},
 	extraReducers: (builder) => {
     builder
-      .addCase(getMeetingsAsync.pending, (state) => {
+      .addCase(getMeetingsWithFullDataAsync.pending, (state) => {
         state.status = 'loading'
 				state.error = null
       })
-      .addCase(getMeetingsAsync.rejected, (state, action) => {
+      .addCase(getMeetingsWithFullDataAsync.rejected, (state, action) => {
 				state.status = 'idle'
-				const error = 'Ошибка загрузки встреч'
-        state.error = error + ' ' + action.payload
+        state.error = action.payload
       })
-      .addCase(getMeetingsAsync.fulfilled, (state, action) => {
+      .addCase(getMeetingsWithFullDataAsync.fulfilled, (state, action) => {
         state.status = 'idle'
-        state.entities = action.payload
+        state.entities = action.payload.dataMeetings
+        state.listIdMeetings = action.payload.listIdMeetings
 				state.error = null
       })
   },
@@ -65,11 +106,15 @@ const meetingsSelect = (state: AppState) => {
 	return state.meetings.entities
 }
 
+const listIdMeetingsSelect = (state: AppState) => {
+	return state.meetings.listIdMeetings
+}
 
 export {
 	addAll,
 	clearAll,
-	getMeetingsAsync,
+	getMeetingsWithFullDataAsync,
 	reducer,
-	meetingsSelect
+	meetingsSelect,
+	listIdMeetingsSelect
 }

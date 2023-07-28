@@ -1,4 +1,5 @@
 .listEmpty {
 	color: var(--color-white);
 	text-align: center;
+	margin: 20px;
 }

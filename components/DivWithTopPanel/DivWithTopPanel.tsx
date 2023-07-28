@@ -1,11 +1,12 @@
 import { DivDefault } from '../../components';
 import styles from './DivWithTopPanel.module.css';
 import { DivWithTopPanelProps } from './DivWithTopPanel.props';
+import cn from 'classnames';
 
-export const DivWithTopPanel = ({topPanel, children}: DivWithTopPanelProps): JSX.Element => {
+export const DivWithTopPanel = ({topPanel, meetingsListMain=false, children}: DivWithTopPanelProps): JSX.Element => {
 	return (
 		<>
-			<DivDefault>
+			<DivDefault className={cn({[styles.meetingsListMain]: meetingsListMain})}>
 				<div className={styles.topPanel}>
 					{topPanel}
 				</div>

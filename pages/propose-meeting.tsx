@@ -326,7 +326,6 @@ export default function ProposeMeetingPage(): JSX.Element {
 						</DivDefault>
 					}
 					<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: '/your-meetings'})}} />
-					<Alert/>
 				</Main>
 			</div>
 		);

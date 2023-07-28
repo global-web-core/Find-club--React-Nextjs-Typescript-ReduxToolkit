@@ -162,7 +162,6 @@ export default function CategoriesPage({ listLanguages, text, country, metadata 
 			<Main>
 				page categories
 				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
-				<Alert/>
 			</Main>
 		</>
 	)

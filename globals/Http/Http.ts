@@ -31,6 +31,7 @@ const request = async (controller: string, method: string, data: any) => {
 };
 
 const get		= async (controller: string, data: any) => await request(controller, 'get', data);
+const getCount		= async (controller: string, data: any) => await request(controller, 'getCount', data);
 const post		= async (controller: string, data: any) => await request(controller, 'add', data);
 const put		= async (controller: string, data: any) => await request(controller, 'update', data);
 const remove	= async (controller: string, data: any) => await request(controller, 'delete', data);
@@ -39,6 +40,7 @@ const remove	= async (controller: string, data: any) => await request(controller
 
 export {
 	get,
+	getCount,
 	post,
 	put,
 	remove,

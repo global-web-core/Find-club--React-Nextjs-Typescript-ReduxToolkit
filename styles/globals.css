@@ -33,6 +33,7 @@ body {
   --color-light-7: rgba(255, 255, 255, 0.50);
   --color-light-8: rgba(255, 255, 255, 0.70);
   --color-light-9: rgba(255, 255, 255, 0.80);
+	--color-light-10: #ffffff00;
   --color-white: white;
   --color-black: black;
   --color-green-1: rgba(104, 255, 104, 0.5);
@@ -96,6 +97,7 @@ a {
 }
 
 button {
+	text-transform:capitalize;
   padding: 6px 10px;
   border-radius: var(--border-radius-default);
   cursor: pointer;
@@ -280,6 +282,14 @@ ul {
 
 .react-calendar__navigation .react-calendar__navigation__label:hover {
 	background: var(--color-main-breadcrumbs);
+}
+
+.react-calendar .react-calendar__navigation__prev2-button {
+	display: none;
+}
+
+.react-calendar .react-calendar__navigation__next2-button {
+	display: none;
 }
 
 @media (max-width: 576px) {

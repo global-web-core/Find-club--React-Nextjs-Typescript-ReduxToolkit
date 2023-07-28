@@ -1,17 +1,16 @@
-import { SelectCity, Main, Loading, DivWithTopPanel, ButtonList, MeetingsList, Alert, Button } from '../../components';
+import { SelectCity, Main, Loading, DivWithTopPanel, ButtonList, MeetingsList, Pagination, Button } from '../../components';
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
-import { Cities, Countries, CitiesByCountries, Languages } from '../../models';
+import { Cities, Countries, CitiesByCountries, Languages, Desires, Meetings, Interests, Categories } from '../../models';
 import { useRouter } from 'next/router';
 import { CitiesInterface, CountriesInterface, CitiesByCountriesInterface, LanguagesInterface, LanguageTranslationInterface, MetadataInterface } from '../../interfaces';
 import { ParsedUrlQuery } from 'querystring';
-import { ML } from '../../globals';
+import { Constants, Helpers, ML } from '../../globals';
 import { ReactElement, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { MeetingsSlice, SelectFilterSlice, TextTranslationSlice, UserSlice } from '../../store/slices';
+import { DesiresSlice, MeetingsSlice, PaginationSlice, SelectFilterSlice, TextTranslationSlice, UserSlice } from '../../store/slices';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { Layout } from '../../layout/Layout';
 import Calendar from 'react-calendar'
-// import 'react-calendar/dist/Calendar.css'
 import cn from 'classnames';
 import { useSession, signIn } from 'next-auth/react';
 
@@ -57,30 +56,42 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 	if (!idCities.length || !citiesData.data.length) return {props: {}};
 	const listCities = citiesData.data.filter((city: CitiesInterface.City) => idCities.includes(city.id));
 
+	const countriesDb = await Countries.getAll();
+	const listCountries = countriesDb.data;
+
+	const interestsDb = await Interests.getAll();
+	const listInterests = interestsDb.data;
+
+	const categoriesDb = await Categories.getAll();
+	const listCategories = categoriesDb.data;
+
 	let listLanguages = [];
 	const languagesDb = await Languages.getAll();
 	if (languagesDb) listLanguages = languagesDb.data
 	if (!languagesDb.data.length) return {props: {}};
 
-	let text = {};
+	let textTranslation = {};
 	let lang;
 	const pathLanguage = params.countries;
 	if (typeof pathLanguage === 'string') {
 		const languageByPath = ML.getLanguageByPath(pathLanguage, listLanguages, country);
 		lang = languageByPath;
 		const textDb = await ML.getTranslationText(languageByPath);
-		if (textDb) text = textDb
+		if (textDb) textTranslation = textDb
 		if (!textDb || !languageByPath) return {props: {}};
 	}
 	
 	let metadata;
-	if (typeof pathLanguage === 'string' && lang) metadata = generateMetadata(text, pathLanguage, lang);
+	if (typeof pathLanguage === 'string' && lang) metadata = generateMetadata(textTranslation, pathLanguage, lang);
 
 	return {
 		props: {
 			listCities,
 			listLanguages,
-			text,
+			listCountries,
+			listInterests,
+			listCategories,
+			textTranslation,
 			country,
 			metadata
 		}
@@ -109,56 +120,139 @@ export function generateMetadata(text: LanguageTranslationInterface.TextTranslat
 	}
 }
 
-export default function CountriesPage({ listCities, listLanguages, text, country, metadata }: CountriesPageProps): JSX.Element {
+export default function CountriesPage({ listCities, listLanguages, listCountries, listInterests, listCategories, textTranslation, country, metadata }: CountriesPageProps): JSX.Element {
 	const router = useRouter();
 	const dispatch = useAppDispatch();
 	const { data: session, status } = useSession();
 	
 	const [loading, setLoading] = useState(true);
 	const [mounted, setMounted] = useState(false);
-	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	const meetings = useAppSelector(state => MeetingsSlice.meetingsSelect(state));
+	const listIdMeetings = useAppSelector(state => MeetingsSlice.listIdMeetingsSelect(state));
 	const idUser = useAppSelector(state => UserSlice.userSelect(state));
 	const selectFilter = useAppSelector(state => SelectFilterSlice.selectFilter(state));
-	const [value, onChange] = useState(null);
-	// console.log('===value', value);
-	const updateLanguage = async () => {
-		const currentTranslationText = await ML.getChangeTranslationText(text)
-		dispatch(TextTranslationSlice.updateLanguageAsync(currentTranslationText))
+	const currentPagination = useAppSelector(state => PaginationSlice.paginationSelect(state, Constants.namePagination.meetingsList));
+	const [activeStartDateChange, setActiveStartDateChange] = useState(null);
+
+	const maxDate = Helpers.increaseDateByMonths(new Date(), 3);
+	const [nameMonth, setNameMonth] = useState(textTranslation[ML.key.month]);
+	const [nameDay, setDay] = useState(textTranslation[ML.key.day]);
+
+
+	const clearDataMeetings = () => {
+		dispatch(MeetingsSlice.clearAll());
+		dispatch(DesiresSlice.clearAll());
+		dispatch(PaginationSlice.clearAll());
+	}
+
+	const clearDataUsers = () => {
+		dispatch(UserSlice.clearAll());
 	}
 
 	const clearData = () => {
-		dispatch(UserSlice.clearAll());
-		dispatch(MeetingsSlice.clearAll());
-		// dispatch(DesiresSlice.clearAll());
+		clearDataUsers();
+		clearDataMeetings();
+	}
+
+	const getListMeetingsDb = async () => {
+		let listMeetings;
+
+		if (selectFilter.basic === Constants.nameBasicFilter.month) {
+			const currentDate = activeStartDateChange ? activeStartDateChange?.activeStartDate : new Date();
+			const startToday = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(currentDate));
+			const endMonth = Helpers.getEndMonthByDate(currentDate);
+			const lastDate = Helpers.convertDatetimeLocalForDb(endMonth < maxDate ? endMonth : maxDate);
+			const startDate = startToday;
+			const endDate = lastDate;
+			const meetingsDb = await Meetings.getByMoreDatePagination(startDate, endDate, currentPagination?.currentPage);
+			const countMeetingsDb = await Meetings.getCountByMoreDatePagination(startDate, endDate);
+			const countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
+			const nameCurrentMonth = Helpers.getNameMonthByDate(currentDate, ML.getLanguage());
+			if (nameCurrentMonth) setNameMonth(nameCurrentMonth);
+			if (currentDate) setDay(currentDate.toLocaleDateString());
+			if (meetingsDb.data.length > 0 && countMeetings > 0) {
+				listMeetings = meetingsDb.data;
+				if (!currentPagination) {
+					dispatch(PaginationSlice.setPagination({maxPage: countMeetings, namePagination: Constants.namePagination.meetingsList}));
+				}
+				if (currentPagination?.maxPage !== countMeetings) {
+					dispatch(PaginationSlice.setPagination({maxPage: countMeetings, namePagination: Constants.namePagination.meetingsList}));
+				}
+			} else {
+				clearDataMeetings();
+			}
+			return listMeetings;
+		}
+
+		if (selectFilter.basic === Constants.nameBasicFilter.day) {
+			const currentDate = activeStartDateChange ? activeStartDateChange?.activeStartDate : new Date();
+			const startDay = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(currentDate));
+			const endDay = Helpers.getEndDayByDate(currentDate);
+			const lastDate = Helpers.convertDatetimeLocalForDb(endDay);
+			const startDate = startDay;
+			const endDate = lastDate;
+			const meetingsDb = await Meetings.getByMoreDatePagination(startDate, endDate, currentPagination?.currentPage);
+			const countMeetingsDb = await Meetings.getCountByMoreDatePagination(startDate, endDate);
+			const countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
+			const nameCurrentMonth = Helpers.getNameMonthByDate(currentDate, ML.getLanguage());
+			if (nameCurrentMonth) setNameMonth(nameCurrentMonth);
+			if (currentDate) setDay(currentDate.toLocaleDateString());
+			if (meetingsDb.data.length > 0 && countMeetings > 0) {
+				listMeetings = meetingsDb.data;
+				if (!currentPagination) {
+					dispatch(PaginationSlice.setPagination({maxPage: countMeetings, namePagination: Constants.namePagination.meetingsList}));
+				}
+				if (currentPagination?.maxPage !== countMeetings) {
+					dispatch(PaginationSlice.setPagination({maxPage: countMeetings, namePagination: Constants.namePagination.meetingsList}));
+				}
+			} else {
+				clearDataMeetings();
+			}
+			return listMeetings;
+		}
+		clearDataMeetings();
+	}
+
+	const getDataByIdUser = async () => {
+		const meetingsDb = await getListMeetingsDb();
+		dispatch(MeetingsSlice.getMeetingsWithFullDataAsync({meetingsDb, listCountries, listCities, listInterests, listCategories, listLanguages, textTranslation}));
 	}
 
 	useEffect(() => {
+		clearData();
 		async function startFetching() {
 			ML.setLanguageByPath(router.query.countries as string, listLanguages, country);
-			updateLanguage();
+			setLoading(false);
 		}
 		startFetching();
 		setMounted(true);
 	}, [])
 
-	const maxDate = new Date();
-	maxDate.setMonth(maxDate.getMonth() + 3);
+	useEffect(() => {
+		if (session && status === 'authenticated' && !loading && Object.keys(textTranslation).length) {
+			getDataByIdUser();
+		}
+	}, [idUser, selectFilter, currentPagination?.currentPage, activeStartDateChange])
 
 	useEffect(() => {
 		dispatch(UserSlice.getIdUserAsync(session));
-	}, [session]);
-
-	useEffect(() => {
 		if (!session && status !== 'loading') {
 			clearData();
 			signIn();
 		}
+	}, [session, status]);
 
-		if (session && status === 'authenticated' && !loading) {
-			// getDataByIdUser();
+	useEffect(() => {
+		if (meetings?.length > 0) {
+			dispatch(DesiresSlice.getDesiresByIdMeeting({textTranslation, listIdMeetings}))
 		}
-	}, [session, status, loading, selectFilter, textTranslation])
+
+	}, [meetings]);
+
+	const changeActiveStartDateChange = (e) => {
+		dispatch(SelectFilterSlice.setBasicFilterFilter(Constants.nameBasicFilter.month));
+		setActiveStartDateChange(e);
+	}
 
 	return (
 		<>
@@ -170,11 +264,12 @@ export default function CountriesPage({ listCities, listLanguages, text, country
 				{mounted &&
 					<div>
 						<Calendar
-							onChange={onChange} value={value}
+							// onChange={onViewChange} value={value}
 							minDate={new Date()} maxDate={new Date(maxDate)}
 							minDetail={"month"} maxDetail={"month"}
 							// showWeekNumbers={true}
 							locale={metadata.lang}
+							onActiveStartDateChange={changeActiveStartDateChange}
 						/>
 					</div>
 				}
@@ -186,18 +281,18 @@ export default function CountriesPage({ listCities, listLanguages, text, country
 							topPanel={
 								<>
 									<ButtonList>
-										<Button name={textTranslation[ML.key.all]} selected={selectFilter.basic === nameFilter.all ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(nameFilter.all))} />
+										<Button name={nameMonth} selected={selectFilter.basic === Constants.nameBasicFilter.month ? true : false} onClick={() => dispatch(SelectFilterSlice.setBasicFilterFilter(Constants.nameBasicFilter.month))} />
+										<Button name={nameDay} selected={selectFilter.basic === Constants.nameBasicFilter.day ? true : false} onClick={() => dispatch(SelectFilterSlice.setBasicFilterFilter(Constants.nameBasicFilter.day))} />
 									</ButtonList>
 								</>
 							}
+							meetingsListMain={true}
 						>
-							<MeetingsList meetings={meetings} getListIdMeetings={() => getListIdMeetings()} />
+							<MeetingsList meetings={meetings} namePagination={Constants.namePagination.meetingsList} />
 						</DivWithTopPanel>
 				}
 				<Button name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
 				<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: '/your-meetings'})}} />
-				<Alert/>
-				<Alert/>
 			</Main>
 		</>
 	)

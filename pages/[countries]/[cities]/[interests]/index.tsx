@@ -165,7 +165,6 @@ export default function InterestsPage({ listCategories, listLanguages, text, cou
 				page interest
 				<SelectCategory listCategories={listCategories}  text={textTranslation}></SelectCategory>
 				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
-				<Alert/>
 			</Main>
 		</>
 	)

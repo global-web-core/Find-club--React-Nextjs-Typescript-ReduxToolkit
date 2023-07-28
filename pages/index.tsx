@@ -167,7 +167,6 @@ export default function Home({ listCountries, listLanguages, text, metadata }: H
 				</div>
 				<Button name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
 				<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: '/your-meetings'})}} />
-				<Alert/>
 			</Main>
     </div>
   )

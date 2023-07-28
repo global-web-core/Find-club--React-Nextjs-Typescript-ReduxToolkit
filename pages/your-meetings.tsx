@@ -26,6 +26,7 @@ export default function YourMeetingsPage(): JSX.Element {
 	const [listCategories, setListCategories] = useState<CategoryInterface.Category[]>([]);
 	const idUser = useAppSelector(state => UserSlice.userSelect(state));
 	const meetings = useAppSelector(state => MeetingsSlice.meetingsSelect(state));
+	const listIdMeetings = useAppSelector(state => MeetingsSlice.listIdMeetingsSelect(state));
 	const selectFilter = useAppSelector(state => SelectFilterSlice.selectFilter(state));
 
 	useEffect(() => {
@@ -69,14 +70,14 @@ export default function YourMeetingsPage(): JSX.Element {
 	}, [session, status, loading, selectFilter, textTranslation])
 
 	useEffect(() => {
-		if (meetings.length > 0) {
-			getDesiresByIdMeeting();
+		if (meetings?.length > 0) {
+			dispatch(DesiresSlice.getDesiresByIdMeeting({textTranslation, listIdMeetings}))
 		}
 
 	}, [meetings])
 
 	useEffect(() => {
-		getCurrentIdUser();
+		dispatch(UserSlice.getIdUserAsync(session));
 	}, [session]);
 	
 	const clearData = () => {
@@ -85,11 +86,7 @@ export default function YourMeetingsPage(): JSX.Element {
 		dispatch(DesiresSlice.clearAll());
 	}
 
-	const getCurrentIdUser = async () => {
-		dispatch(UserSlice.getIdUserAsync(session));
-	}
-
-	const getListMeetings = async () => {
+	const getListMeetingsDb = async () => {
 		const idUserSession = idUser;
 		let desiresDb;
 		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.all) desiresDb = await Desires.getByIdUser(idUserSession);
@@ -118,64 +115,8 @@ export default function YourMeetingsPage(): JSX.Element {
 	}
 
 	const getDataByIdUser = async () => {
-		const meetingsDb = await getListMeetings();
-
-		const dataMeetings: MeetingsInterface.MeetingsWithDependentData[] = [];
-
-		if (meetingsDb.length > 0) {
-			meetingsDb.forEach((meeting) => {
-				const country = listCountries.find(country => country.id === meeting.idCountry);
-				const city = listCities.find(city => city.id === meeting.idCity);
-				const interest = listInterests.find(interest => interest.id === meeting.idInterest);
-				const category = listCategories.find(category => category.id === meeting.idCategory);
-				const language = listLanguages.find(language => language.id === meeting.idLanguage);
-				if (country?.route && city?.route && interest?.route && category?.route && language?.name) {
-					const dataMeeting: MeetingsInterface.MeetingsWithDependentData = {
-						id: meeting.id,
-						country: textTranslation[country.route],
-						city: textTranslation[city.route],
-						interest: textTranslation[interest.route],
-						category: textTranslation[category.route],
-						language: language.name,
-						placeMeeting: meeting.placeMeeting,
-						dateMeeting: meeting.dateMeeting,
-						typeMeeting: meeting.typeMeeting,
-						status: meeting.status
-					};
-
-					if (!dataMeetings.includes(dataMeeting)) dataMeetings.push(dataMeeting);
-				} else {
-					dispatch(AlertsSlice.add(textTranslation[ML.key.receivingMeeting], textTranslation[ML.key.error], 'danger'));
-					return;
-				}
-			});
-		}
-		dispatch(MeetingsSlice.addAll(dataMeetings));
-	}
-
-	const getDesiresByIdMeeting = async () => {
-		const idMeetings = getListIdMeetings();
-
-		const listDesiresDb: DesiresInterface.Desires[] = [];
-		for await (const idMeeting of idMeetings) {
-			const listDesiresByIdMeeting: DesiresInterface.Desires[] = (await Desires.getByIdMeeting(idMeeting))?.data;
-			listDesiresByIdMeeting.forEach(desire => {
-				if (!listDesiresDb.includes(desire)) {
-					listDesiresDb.push(desire);
-				}
-			});
-			listDesiresDb.push();
-		}
-
-		dispatch(DesiresSlice.addAll(listDesiresDb));
-	}
-
-	const getListIdMeetings = () => {
-		const idMeetings: number[] = [];
-		for (let index = 0; index < meetings.length; index++) {
-			if (!idMeetings.includes(meetings[index]?.id)) idMeetings.push(meetings[index]?.id);
-		}
-		return idMeetings;
+		const meetingsDb = await getListMeetingsDb();
+		dispatch(MeetingsSlice.getMeetingsWithFullDataAsync({meetingsDb, listCountries, listCities, listInterests, listCategories, listLanguages, textTranslation}));
 	}
 
 	if (session && status === 'authenticated') {
@@ -202,11 +143,10 @@ export default function YourMeetingsPage(): JSX.Element {
 									</>
 								}
 							>
-								<MeetingsList meetings={meetings} getListIdMeetings={() => getListIdMeetings()} />
+								<MeetingsList meetings={meetings} />
 							</DivWithTopPanel>
 					}
 					<Button  name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
-					<Alert/>
 				</Main>
 			</>
 		);

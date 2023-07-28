@@ -6,3 +6,4 @@ export * as TextTranslationSlice from './TextTranslation/TextTranslationSlice';
 export * as BasicSlice from './Basic/BasicSlice';
 export * as UserSlice from './User/UserSlice';
 export * as SelectFilterSlice from './SelectFilter/SelectFilterSlice';
+export * as PaginationSlice from './Pagination/PaginationSlice';

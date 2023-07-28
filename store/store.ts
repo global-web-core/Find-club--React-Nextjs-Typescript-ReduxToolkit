@@ -11,6 +11,7 @@ export function makeStore() {
 			basic: ListSlices.BasicSlice.reducer,
 			user: ListSlices.UserSlice.reducer,
 			selectFilter: ListSlices.SelectFilterSlice.reducer,
+			pagination: ListSlices.PaginationSlice.reducer,
 		},
 		devTools: true
   })

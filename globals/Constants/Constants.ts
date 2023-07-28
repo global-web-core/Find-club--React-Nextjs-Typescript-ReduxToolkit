@@ -78,6 +78,14 @@ const nameBasicFilter = {
 	day: 'day'
 };
 
+const pagination = {
+	limit: 2
+};
+
+const namePagination = {
+	meetingsList: 'meetingsList'
+};
+
 
 export {
 	API,
@@ -93,7 +101,9 @@ export {
 	statusWish,
 	statusReadiness,
 	nameYourMeetingsFilter,
-	nameBasicFilter
+	nameBasicFilter,
+	pagination,
+	namePagination
 };
 
 interface Status {

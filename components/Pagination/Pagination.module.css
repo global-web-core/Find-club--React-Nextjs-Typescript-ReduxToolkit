@@ -1,0 +1,21 @@
+.pagination {
+	display: flex;
+	margin: 0 auto;
+	align-items: center;
+	color: white;
+	gap: 30px;
+}
+
+.pagination div {
+	display: flex;
+	align-items: center;
+}
+
+.pagination span {
+	color: var(--color-light-8);
+}
+
+.pagination span:first-child {
+	color: var(--color-white);
+	font-size: 40px;
+}

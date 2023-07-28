@@ -3,6 +3,7 @@ import store from '../store/store'
 import { Header } from "./Header/Header"
 import { SessionProvider } from "next-auth/react"
 import { ReactElement } from 'react';
+import { Alert } from '../components';
 
 export interface LayoutProps {
 	children: ReactElement;
@@ -15,6 +16,7 @@ function Layout({ children }: LayoutProps) {
 			<SessionProvider session={pageProps.session}>
 				<Header pageProps={pageProps} />
 				{children}
+				<Alert/>
 			</SessionProvider>
 		</Provider>
 	)
@@ -26,6 +28,7 @@ function WithoutLayout({ children }: LayoutProps) {
 		<Provider store={store}>
 			<SessionProvider session={pageProps.session}>
 				{children}
+				<Alert/>
 			</SessionProvider>
 		</Provider>
 	)

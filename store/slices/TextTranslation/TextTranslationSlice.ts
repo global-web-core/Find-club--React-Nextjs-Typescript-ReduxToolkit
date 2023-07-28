@@ -43,8 +43,7 @@ const textTranslationSlices = createSlice({
       })
       .addCase(updateLanguageAsync.rejected, (state, action) => {
 				state.status = 'idle'
-				const error = 'Ошибка загрузки переведенного текста'
-        state.error = error + ' ' + action.payload
+        state.error = action.payload
       })
       .addCase(updateLanguageAsync.fulfilled, (state, action) => {
         state.status = 'idle'
