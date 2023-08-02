@@ -108,6 +108,10 @@ const keyText = {
 	whenChangingAccessMeeting: 'when-changing-access-meeting',
 	attentionReadDescription: 'attention-read-description',
 	youNotConfirmMeeting: 'you-not-confirm-meeting',
+	yourWishComeAccepted: 'your-wish-come-accepted',
+	errorYourWishComeAccepted: 'error-your-wish-come-accepted',
+	yourConfirmationComeAccepted: 'your-confirmation-come-accepted',
+	errorYourConfirmationComeAccepted: 'error-your-confirmation-come-accepted',
 }
 
 export default keyText;
