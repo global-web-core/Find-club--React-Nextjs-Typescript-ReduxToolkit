@@ -101,6 +101,13 @@ const keyText = {
 	noOneToSendUselessMessages: 'no-one-to-send-useless-messages',
 	month: 'month',
 	day: 'day',
+	allUpcoming: 'all-upcoming',
+	whoSeeMeeting: 'who-see-meeting',
+	willDefinitelyGo: 'will-definitely-go',
+	whoGoAndWhoNotSure: 'who-go-and-who-not-sure',
+	whenChangingAccessMeeting: 'when-changing-access-meeting',
+	attentionReadDescription: 'attention-read-description',
+	youNotConfirmMeeting: 'you-not-confirm-meeting',
 }
 
 export default keyText;

@@ -1,18 +1,18 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ML } from '../../../globals';
+import { Constants, ML } from '../../../globals';
 import { AlertsSlice } from '../../slices';
 import { AppState, AppDispatch } from '../../store';
 import { LanguageTranslationInterface } from '../../../interfaces';
 
 interface InitialState {
 	entities: LanguageTranslationInterface.TextTranslation;
-  status: 'idle' | 'loading';
+  status: Constants.statusFetch.succeeded | Constants.statusFetch.failed | Constants.statusFetch.loading;
 	error: string | null;
 }
 
 const initialState: InitialState = {
   entities: {},
-  status: 'idle',
+  status: Constants.statusFetch.succeeded,
 	error: null,
 }
 
@@ -38,15 +38,15 @@ const textTranslationSlices = createSlice({
 	extraReducers: (builder) => {
     builder
       .addCase(updateLanguageAsync.pending, (state) => {
-        state.status = 'loading'
+        state.status = Constants.statusFetch.loading
 				state.error = null
       })
       .addCase(updateLanguageAsync.rejected, (state, action) => {
-				state.status = 'idle'
+				state.status = Constants.statusFetch.failed
         state.error = action.payload
       })
       .addCase(updateLanguageAsync.fulfilled, (state, action) => {
-        state.status = 'idle'
+        state.status = Constants.statusFetch.succeeded
         state.entities = action.payload
 				state.error = null
       })

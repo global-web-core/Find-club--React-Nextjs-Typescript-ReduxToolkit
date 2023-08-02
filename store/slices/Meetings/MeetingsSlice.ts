@@ -2,18 +2,18 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { AlertsSlice } from '../../slices';
 import { AppState } from '../../store';
 import {MeetingsInterface} from '../../../interfaces'
-import { ML } from '../../../globals';
+import { Constants, ML } from '../../../globals';
 
 interface InitialState {
 	entities: MeetingsInterface.MeetingsWithDependentData[];
-  status: 'idle' | 'loading';
+  status: Constants.statusFetch.succeeded | Constants.statusFetch.failed | Constants.statusFetch.loading;
 	error: string | null;
 }
 
 const initialState:InitialState = {
   entities: [],
   listIdMeetings: [],
-  status: 'idle',
+  status: Constants.statusFetch.succeeded,
 	error: null,
 }
 
@@ -25,7 +25,7 @@ const getMeetingsWithFullDataAsync = createAsyncThunk(
 			dispatch(AlertsSlice.add(textError, data.textTranslation[ML.key.error], 'danger'));
 			return rejectWithValue(textError)
 		}
-
+		
 		const getListIdMeetings = (meetings) => {
 			const idMeetings: number[] = [];
 			for (let index = 0; index < meetings.length; index++) {
@@ -54,6 +54,7 @@ const getMeetingsWithFullDataAsync = createAsyncThunk(
 						placeMeeting: meeting.placeMeeting,
 						dateMeeting: meeting.dateMeeting,
 						typeMeeting: meeting.typeMeeting,
+						accessMeeting: meeting.accessMeeting,
 						status: meeting.status
 					};
 
@@ -83,15 +84,15 @@ const meetingsSlices = createSlice({
 	extraReducers: (builder) => {
     builder
       .addCase(getMeetingsWithFullDataAsync.pending, (state) => {
-        state.status = 'loading'
+        state.status = Constants.statusFetch.loading
 				state.error = null
       })
       .addCase(getMeetingsWithFullDataAsync.rejected, (state, action) => {
-				state.status = 'idle'
+				state.status = Constants.statusFetch.failed
         state.error = action.payload
       })
       .addCase(getMeetingsWithFullDataAsync.fulfilled, (state, action) => {
-        state.status = 'idle'
+        state.status = Constants.statusFetch.succeeded
         state.entities = action.payload.dataMeetings
         state.listIdMeetings = action.payload.listIdMeetings
 				state.error = null

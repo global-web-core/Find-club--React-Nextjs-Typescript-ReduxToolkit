@@ -156,6 +156,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 				dataMeeting.dateMeeting = dataForm.selectDateMeeting;
 				dataMeeting.placeMeeting = dataForm.selectPlaceMeeting;
 				dataMeeting.typeMeeting = Constants.typeMeeting.OWN;
+				dataMeeting.accessMeeting = Constants.accessMeeting.all;
 				dataMeeting.dateCreation = Helpers.currentDatetimeForDb();
 				dataMeeting.status = Constants.activyStatus.ACTIVE;
 

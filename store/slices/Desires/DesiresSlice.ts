@@ -2,18 +2,18 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { AppState } from '../../store';
 import { AlertsSlice } from '../../slices';
 import {DesiresInterface} from '../../../interfaces'
-import { ML } from '../../../globals';
+import { Constants, ML } from '../../../globals';
 import { Desires } from '../../../models';
 
 interface InitialState {
 	entities: DesiresInterface.Desires[];
-  status: 'idle' | 'loading';
+  status: Constants.statusFetch.succeeded | Constants.statusFetch.failed | Constants.statusFetch.loading;
 	error: string | null;
 }
 
 const initialState:InitialState = {
   entities: [],
-  status: 'idle',
+  status: Constants.statusFetch.succeeded,
 	error: null,
 }
 
@@ -57,15 +57,15 @@ const desiresSlices = createSlice({
 	extraReducers: (builder) => {
     builder
       .addCase(getDesiresByIdMeeting.pending, (state) => {
-        state.status = 'loading'
+        state.status = Constants.statusFetch.loading;
 				state.error = null
       })
       .addCase(getDesiresByIdMeeting.rejected, (state, action) => {
-				state.status = 'idle'
+				state.status = Constants.statusFetch.failed
         state.error = action.payload
       })
       .addCase(getDesiresByIdMeeting.fulfilled, (state, action) => {
-        state.status = 'idle'
+        state.status = Constants.statusFetch.succeeded
         state.entities = action.payload
 				state.error = null
       })

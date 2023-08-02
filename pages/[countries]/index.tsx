@@ -159,16 +159,16 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 		let listMeetings;
 
 		if (selectFilter.basic === Constants.nameBasicFilter.month) {
-			const newDAte = new Date();
+			const newDate = new Date();
 			let currentDate;
 			if (activeStartDateChange) {
-				if (activeStartDateChange?.activeStartDate > newDAte) {
+				if (activeStartDateChange?.activeStartDate > newDate) {
 					currentDate = activeStartDateChange?.activeStartDate;
 				} else {
-					currentDate = newDAte;
+					currentDate = newDate;
 				}
 			} else {
-				currentDate = newDAte;
+				currentDate = newDate;
 			}
 
 			const startToday = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(currentDate));
@@ -176,8 +176,8 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 			const lastDate = Helpers.convertDatetimeLocalForDb(endMonth < maxDate ? endMonth : maxDate);
 			const startDate = startToday;
 			const endDate = lastDate;
-			const meetingsDb = await Meetings.getByMoreDatePagination(startDate, endDate, currentPagination?.currentPage);
-			const countMeetingsDb = await Meetings.getCountByMoreDatePagination(startDate, endDate);
+			const meetingsDb = await Meetings.getPageFromPaginationByDateMeeting(startDate, endDate, currentPagination?.currentPage);
+			const countMeetingsDb = await Meetings.getCountForPageFromPaginationByDateMeeting(startDate, endDate);
 			const countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
 			const nameCurrentMonth = Helpers.getNameMonthByDate(currentDate, ML.getLanguage());
 			if (nameCurrentMonth) setNameMonth(nameCurrentMonth);
@@ -197,18 +197,18 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 		}
 
 		if (selectFilter.basic === Constants.nameBasicFilter.day) {
-			const newDAte = new Date();
+			const newDate = new Date();
 			let currentDate;
 			if (activeStartDateChange && !selectedDay) {
-				if (activeStartDateChange?.activeStartDate > newDAte) {
+				if (activeStartDateChange?.activeStartDate > newDate) {
 					currentDate = activeStartDateChange?.activeStartDate;
 				} else {
-					currentDate = newDAte;
+					currentDate = newDate;
 				}
 			} else if (selectedDay) {
 				currentDate = selectedDay;
 			} else {
-				currentDate = newDAte;
+				currentDate = newDate;
 			}
 			setSelectedDay(currentDate);
 			const startDay = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(currentDate));
@@ -216,8 +216,8 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 			const lastDate = Helpers.convertDatetimeLocalForDb(endDay);
 			const startDate = startDay;
 			const endDate = lastDate;
-			const meetingsDb = await Meetings.getByMoreDatePagination(startDate, endDate, currentPagination?.currentPage);
-			const countMeetingsDb = await Meetings.getCountByMoreDatePagination(startDate, endDate);
+			const meetingsDb = await Meetings.getPageFromPaginationByDateMeeting(startDate, endDate, currentPagination?.currentPage);
+			const countMeetingsDb = await Meetings.getCountForPageFromPaginationByDateMeeting(startDate, endDate);
 			const countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
 			const nameCurrentMonth = Helpers.getNameMonthByDate(currentDate, ML.getLanguage());
 			if (nameCurrentMonth) setNameMonth(nameCurrentMonth);
@@ -296,6 +296,8 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 							minDetail={"month"} maxDetail={"month"}
 							locale={metadata.lang}
 							onActiveStartDateChange={changeActiveStartDateChange}
+							// selectMultiple={true}
+							// selectRange={true}
 						/>
 					</div>
 				}

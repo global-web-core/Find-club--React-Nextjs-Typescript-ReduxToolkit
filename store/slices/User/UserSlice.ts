@@ -3,16 +3,17 @@ import { AlertsSlice } from '../../slices';
 import { AppState, AppDispatch } from '../../store';
 import { LanguageTranslationInterface } from '../../../interfaces';
 import { Users } from '../../../models';
+import { Constants } from '../../../globals';
 
 interface InitialState {
 	data: {id: string | null;};
-  status: 'idle' | 'loading';
+  status: Constants.statusFetch.succeeded | Constants.statusFetch.failed | Constants.statusFetch.loading;
 	error: string | null;
 }
 
 const initialState: InitialState = {
   data: {id: null},
-  status: 'idle',
+  status: Constants.statusFetch.succeeded,
 	error: null,
 }
 
@@ -41,15 +42,15 @@ const UserSlice = createSlice({
 	extraReducers: (builder) => {
     builder
       .addCase(getIdUserAsync.pending, (state) => {
-        state.status = 'loading'
+        state.status = Constants.statusFetch.loading
 				state.error = null
       })
       .addCase(getIdUserAsync.rejected, (state, action) => {
-				state.status = 'idle'
+				state.status = Constants.statusFetch.failed
         state.error = action.payload
       })
       .addCase(getIdUserAsync.fulfilled, (state, action) => {
-        state.status = 'idle'
+        state.status = Constants.statusFetch.succeeded
         state.data = action.payload
 				state.error = null
       })

@@ -87,6 +87,7 @@ export default function YourMeetingsPage(): JSX.Element {
 	}
 
 	const getListMeetingsDb = async () => {
+		const currentDate = Helpers.convertDatetimeLocalForDb(new Date());
 		const idUserSession = idUser;
 		let desiresDb;
 		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.all) desiresDb = await Desires.getByIdUser(idUserSession);
@@ -94,23 +95,31 @@ export default function YourMeetingsPage(): JSX.Element {
 		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.other) desiresDb = await Desires.getByIdUserByStatusOrganizer(idUserSession, Constants.statusOrganizer.ANOTHER);
 		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.passed) desiresDb = await Desires.getByIdUser(idUserSession);
 		
-		const idMeetings: number[] = [];
+		const selectedMeetings: number[] = [];
 		let listMeetings: MeetingsInterface.Meetings[] = [];
 		
 		for (let index = 0; index < desiresDb.data.length; index++) {
-			if (!idMeetings.includes(desiresDb.data[index]?.idMeeting)) idMeetings.push(desiresDb.data[index]?.idMeeting);
-		}
-
-		for await (const idMeeting of idMeetings) {
-			listMeetings.push((await Meetings.getByIdMeeting(idMeeting))?.data[0]);
+			if (!selectedMeetings.includes(desiresDb.data[index]?.idMeeting)) {
+				selectedMeetings.push({idMeeting: desiresDb.data[index]?.idMeeting, statusWish: desiresDb.data[index]?.statusWish, statusReadiness: desiresDb.data[index]?.statusReadiness});
+			}
 		}
 
 		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.passed) {
-			const filteredListMeetings = Helpers.filterPastDate(listMeetings, 'dateMeeting');
-			
-			listMeetings = filteredListMeetings || listMeetings;
+			for await (const selectedMeeting of selectedMeetings) {
+				const meeting = (await Meetings.getByIdMeetingLessDate(selectedMeeting.idMeeting, currentDate))?.data[0];
+				if (meeting) listMeetings.push(meeting);
+			}
+		} else {
+			for await (const selectedMeeting of selectedMeetings) {
+				const meeting = (await Meetings.getByIdMeetingMoreDate(selectedMeeting.idMeeting, currentDate))?.data[0];
+				if (meeting) listMeetings.push(meeting);
+			}
 		}
-		
+
+		listMeetings.sort((a, b) => {
+			return new Date (a.dateMeeting) - new Date (b.dateMeeting);
+		});
+
 		return listMeetings;
 	}
 
@@ -135,7 +144,7 @@ export default function YourMeetingsPage(): JSX.Element {
 								topPanel={
 									<>
 										<ButtonList>
-											<Button name={textTranslation[ML.key.all]} selected={selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.all ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(Constants.nameYourMeetingsFilter.all))} />
+											<Button name={textTranslation[ML.key.allUpcoming]} selected={selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.all ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(Constants.nameYourMeetingsFilter.all))} />
 											<Button name={textTranslation[ML.key.iOrganise]} selected={selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.my ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(Constants.nameYourMeetingsFilter.my))} />
 											<Button name={textTranslation[ML.key.organizedByOthers]} selected={selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.other ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(Constants.nameYourMeetingsFilter.other))} />
 											<Button name={textTranslation[ML.key.alreadyGone]}  selected={selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.passed ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(Constants.nameYourMeetingsFilter.passed))} />

@@ -12,6 +12,7 @@
 	height: fit-content;
 }
 
+
 .accordion:hover {
 	background-color: transparent;
 	transition: background-color linear var(--time-transitioion), box-shadow linear var(--time-transitioion);
@@ -44,6 +45,15 @@
 
 .accordion hr {
 	border: var(--border-default-thin-2);
+}
+
+.noActive {
+	background-color: var(--color-gray-2);
+	color: var(--color-light-8);
+}
+
+.noActive:hover {
+	background-color: var(--color-gray-2);
 }
 
 @media (max-width: 500px) {

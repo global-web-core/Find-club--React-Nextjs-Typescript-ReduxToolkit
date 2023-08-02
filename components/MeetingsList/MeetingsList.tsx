@@ -4,7 +4,7 @@ import {MeetingsListProps} from './MeetingsList.props';
 import { Meeting, ListEmpty, Pagination, Loading } from '../../components';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { DesiresSlice, MeetingsSlice, TextTranslationSlice, UserSlice } from '../../store/slices';
-import { ML } from '../../globals';
+import { Constants, ML } from '../../globals';
 
 export const MeetingsList = ({namePagination}: MeetingsListProps):JSX.Element => {
 	const dispatch = useAppDispatch();
@@ -14,7 +14,7 @@ export const MeetingsList = ({namePagination}: MeetingsListProps):JSX.Element =>
 	const meetingsAllData = useAppSelector(state => MeetingsSlice.meetingsSelectAllData(state));
 	const listIdMeetings = useAppSelector(state => MeetingsSlice.listIdMeetingsSelect(state));
 	const desiresAllData = useAppSelector(state => DesiresSlice.desiresSelectAllData(state));
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 
 
 	useEffect(() => {
@@ -24,7 +24,7 @@ export const MeetingsList = ({namePagination}: MeetingsListProps):JSX.Element =>
 	}, [meetings]);
 
 	useEffect(() => {
-		if (desiresAllData.status === 'idle' && desiresAllData.error === null && meetingsAllData.error === null && meetings?.length > 0) {
+		if (desiresAllData.status === Constants.statusFetch.succeeded && meetingsAllData.status === Constants.statusFetch.succeeded && meetings?.length > 0) {
 			setLoading(false);
 		}
 	}, [desiresAllData]);
@@ -40,7 +40,7 @@ export const MeetingsList = ({namePagination}: MeetingsListProps):JSX.Element =>
 					<Pagination namePagination={namePagination} />
 				</div>
 			}
-			{meetings?.length === 0 && <ListEmpty/>}
+			{meetings?.length === 0 && !loading && <ListEmpty/>}
 			{loading && <Loading textTranslation={textTranslation[ML.key.loading]} />}
 		</>
 	);

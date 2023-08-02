@@ -5,7 +5,7 @@ import { Accordion, Button } from '../../components';
 import { Constants, Helpers, ML } from '../../globals';
 import cn from 'classnames';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
-import { DesiresSlice, MeetingsSlice, TextTranslationSlice } from '../../store/slices';
+import { AlertsSlice, DesiresSlice, MeetingsSlice, TextTranslationSlice } from '../../store/slices';
 import { Desires, Meetings } from '../../models';
 import { DesiresInterface, MeetingsInterface } from '../../interfaces';
 
@@ -15,6 +15,8 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 	const listIdMeetings = useAppSelector(state => MeetingsSlice.listIdMeetingsSelect(state));
 	const desires = useAppSelector(state => DesiresSlice.desiresSelect(state));
 	const [lengthDesires, setLengthDesires] = useState<LengthDesires[]>([]);
+	const [ownDesires, setOwnDesires] = useState(false);
+	const [noAccessToControl, setNoAccessToControl] = useState(false);
 	const dispatch = useAppDispatch();
 
 	const changeStatusMeeting = async (status: number, idMeeting: number) => {
@@ -48,7 +50,7 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 		const currentDesires = desires.find(desire => desire.idMeeting === idMeeting && desire.idUser === idUser);
 
 		if (currentDesires && currentDesires?.id) {
-			const newStatusReadiness = currentDesires.statusReadiness === Constants.statusReadiness.READINESS ? {statusReadiness: Constants.statusReadiness.NOREADINESS} : {statusReadiness: Constants.statusReadiness.READINESS};
+			const newStatusReadiness = currentDesires.statusReadiness === Constants.statusReadiness.READINESS ? {statusReadiness: Constants.statusReadiness.NOREADINESS} : {statusWish: Constants.statusWish.WISH, statusReadiness: Constants.statusReadiness.READINESS};
 			await Desires.update(currentDesires.id, newStatusReadiness);
 			const getUpdateDesire = await Desires.getById(currentDesires.id);
 			if (getUpdateDesire?.data.length > 0) {
@@ -71,7 +73,7 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 		const currentDesires = desires.find(desire => desire.idMeeting === idMeeting && desire.idUser === idUser);
 		
 		if (currentDesires && currentDesires?.id) {
-			const newStatusWish = currentDesires.statusWish === Constants.statusWish.WISH ? {statusWish: Constants.statusWish.NOWISH} : {statusWish: Constants.statusWish.WISH};
+			const newStatusWish = currentDesires.statusWish === Constants.statusWish.WISH ? {statusReadiness: Constants.statusReadiness.NOREADINESS, statusWish: Constants.statusWish.NOWISH} : {statusWish: Constants.statusWish.WISH};
 			await Desires.update(currentDesires.id, newStatusWish);
 			const getUpdateDesire = await Desires.getById(currentDesires.id);
 			if (getUpdateDesire?.data.length > 0) {
@@ -85,9 +87,10 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 	const checkOwnDesires = (idMeeting: number) => {
 		const currentDesires = desires.find(desire => desire.idMeeting === idMeeting && desire.idUser === idUser);
 		if (currentDesires?.statusOrganizer === Constants.statusOrganizer.MY) {
-			return true;
+			setOwnDesires(true);
+		} else {
+			setOwnDesires(false);
 		}
-		return false;
 	}
 
 	const getLengthWish = (idMeeting: number) => {
@@ -119,11 +122,36 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 		setLengthDesires(listLengthDesires);
 	}
 
+	const checkAccessMeeting = () => {
+		const currentDesire = desires.find((desire) => desire.idMeeting === meeting.id && desire.idUser === idUser);
+
+		if (currentDesire) {
+			if (meeting?.accessMeeting === Constants.accessMeeting.wishing) {
+				if (currentDesire.statusWish === Constants.statusWish.NOWISH) setNoAccessToControl(true);
+				if (currentDesire.statusWish === Constants.statusWish.WISH) setNoAccessToControl(false);
+			}
+			if (meeting?.accessMeeting === Constants.accessMeeting.ready) {
+				if (currentDesire.statusReadiness === Constants.statusReadiness.NOREADINESS) setNoAccessToControl(true);
+				if (currentDesire.statusReadiness === Constants.statusReadiness.READINESS) setNoAccessToControl(false);
+			}
+		}
+	}
+
 	useEffect(() => {
 		if (desires.length > 0) {
+			checkOwnDesires(meeting.id);
 			getLengthDesires();
+			checkAccessMeeting();
 		}
 	}, [desires])
+
+	const handleChangeAccessMeeting = async (e) => {
+		if (e?.target?.value) {
+			const data = {accessMeeting: e.target.value}
+			const result = await Meetings.update(meeting.id, data);
+			if (!result) dispatch(AlertsSlice.add(textTranslation[ML.key.whenChangingAccessMeeting], textTranslation[ML.key.error], 'danger'));
+		}
+	}
 
 	return (
 		<>
@@ -131,6 +159,7 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 				header={
 					<>
 						<div className={styles.meeting}>
+							{noAccessToControl && <h2 className={styles.noControlTitle}>{textTranslation[ML.key.attentionReadDescription]}</h2>}
 							<div className={styles.nameMeeting}>
 								<h2>{meeting.interest}</h2>
 								<span className={styles.helperArrow}>&nbsp;→&nbsp;</span>
@@ -155,48 +184,61 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 							<div className={styles.mainContent}>
 							<div className={cn(styles.statistic, styles.statisticWithoutArrow)}>
 								<div className={styles.itemStatistic}>
-									{!checkOwnDesires(meeting.id) &&
+									{!ownDesires &&
 										<>
 											<div className={styles.minor}>{checkStatusWish(meeting.id) ? textTranslation[ML.key.iPlanToGo] : textTranslation[ML.key.iNotGoing]}</div>
-											<Button  name={checkStatusWish(meeting.id) ? textTranslation[ML.key.iNotGoing] : textTranslation[ML.key.planningToGo]} onClick={() => changeStatusWish(meeting.id)} disabled={idUser ? false : true} />
+											<Button  name={checkStatusWish(meeting.id) ? textTranslation[ML.key.iNotGoing] : textTranslation[ML.key.planningToGo]} onClick={() => changeStatusWish(meeting.id)} disabled={idUser && !noAccessToControl ? false : true} />
 										</>
 									}
 								</div>
 								<div className={styles.itemStatistic}>
-									{!checkOwnDesires(meeting.id) &&
+									{!ownDesires &&
 										<>
 											<div className={styles.minor}>{checkStatusReadiness(meeting.id) ? textTranslation[ML.key.iDefinitelyComing] : textTranslation[ML.key.undecided]}</div>
-											<Button  name={checkStatusReadiness(meeting.id) ? textTranslation[ML.key.undecided] : textTranslation[ML.key.definitelyComing]} onClick={() => changeStatusReadiness(meeting.id)} disabled={idUser ? false : true} />
+											<Button  name={checkStatusReadiness(meeting.id) ? textTranslation[ML.key.undecided] : textTranslation[ML.key.definitelyComing]} onClick={() => changeStatusReadiness(meeting.id)} disabled={idUser && !noAccessToControl ? false : true} />
 										</>
 									}
 								</div>
 							</div>
-								<div className={styles.minor}>{checkOwnDesires(meeting.id) ? textTranslation[ML.key.iOrganise] : textTranslation[ML.key.organisesAnother]}</div>
+								<div className={styles.minor}>{ownDesires ? textTranslation[ML.key.iOrganise] : textTranslation[ML.key.organisesAnother]}</div>
 								<div className={styles.minor}>{textTranslation[ML.key.languagePeopleMeeting]} {meeting.language}</div>
 								<div className={cn(styles.location, styles.minor)}>
 									<div>{meeting.country}&nbsp;→&nbsp;</div>
 									<div>{meeting.city}</div>
 								</div>
 								<div>{meeting.placeMeeting.length > 0 ? textTranslation[ML.key.meetingPoint] + ': ' + meeting.placeMeeting : textTranslation[ML.key.meetingNotSpecifiedDiscuss]}</div>
+								{noAccessToControl && <div>{textTranslation[ML.key.youNotConfirmMeeting]}</div>}
+								{ownDesires &&
+									<div className={styles.accessMeeting}>
+										<div>{textTranslation[ML.key.whoSeeMeeting]}</div>
+										<div className={styles.selectAccess}>
+											<select name="accessMeeting" id="accessMeeting" onChange={handleChangeAccessMeeting} defaultValue={meeting.accessMeeting}>
+												<option value={Constants.accessMeeting.all}>{textTranslation[ML.key.all]}</option>
+												<option value={Constants.accessMeeting.ready}>{textTranslation[ML.key.willDefinitelyGo]}</option>
+												<option value={Constants.accessMeeting.wishing}>{textTranslation[ML.key.whoGoAndWhoNotSure]}</option>
+											</select>
+										</div>
+									</div>
+								}
 								<div className={styles.statusMeeting}>
 									<div className={styles.controlButton}>
-										<Button  name={textTranslation[ML.key.goToChat]} disabled={idUser ? false : true} />
+										<Button  name={textTranslation[ML.key.goToChat]} disabled={idUser && !noAccessToControl ? false : true} />
 									</div>
-									{checkOwnDesires(meeting.id)
+									{ownDesires
 										?
 											<div className={cn(styles.controlButton, styles.minor)}>
 												<div className={styles.emptyBlock}>{meeting.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>
 												<Button  name={meeting.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.cancelMeeting] : textTranslation[ML.key.resumeMeeting]} onClick={() => changeStatusMeeting(meeting.status, meeting.id)} disabled={idUser ? false : true} />
 											</div>
 										:
-											<div className={cn(styles.emptyBlock, styles.minor)}>{meeting.status === Constants.activyStatus.ACTIVE ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>
+											<div className={cn(styles.emptyBlock, styles.minor)}>{meeting.status === Constants.activyStatus.ACTIVE && !noAccessToControl ? textTranslation[ML.key.meetingWill] : textTranslation[ML.key.meetingCancelled]}</div>
 									}
-									
 								</div>
 							</div>
 						</div>
 					</>
 				}
+				noActive={noAccessToControl}
 			/>
 		</>
 	);

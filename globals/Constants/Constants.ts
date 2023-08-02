@@ -79,11 +79,23 @@ const nameBasicFilter = {
 };
 
 const pagination = {
-	limit: 2
+	limit: 20
 };
 
 const namePagination = {
 	meetingsList: 'meetingsList'
+};
+
+const statusFetch = {
+	succeeded: 'succeeded',
+	failed: 'failed',
+	loading: 'loading',
+};
+
+const accessMeeting = {
+	all: 0,
+	ready: 1,
+	wishing: 2,
 };
 
 
@@ -103,7 +115,9 @@ export {
 	nameYourMeetingsFilter,
 	nameBasicFilter,
 	pagination,
-	namePagination
+	namePagination,
+	statusFetch,
+	accessMeeting
 };
 
 interface Status {

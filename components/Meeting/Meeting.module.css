@@ -79,6 +79,29 @@
 	color: var(--color-light-8);
 }
 
+.accessMeeting {
+	display: flex;
+	flex-direction: column;
+}
+
+.selectAccess {
+	display: flex;
+	flex-wrap: wrap;
+	column-gap: 20px;
+	/* justify-content: center; */
+	flex-direction: column;
+}
+
+.selectAccess div {
+	width: max-content;
+}
+
+.noControlTitle {
+	margin: 0;
+	color: var(--color-yellow-1);
+	text-align: center;
+}
+
 
 @media (max-width: 800px) {
 	.nameMeeting {

@@ -48,6 +48,7 @@ body {
   --color-silver-1: silver;
   --color-purple-1: #7b5fac;
   --color-burgundy-1: #cc6b8e;
+  --color-yellow-1: #ffe900;
 
   /* Component BreadCrumbs */
   --color-main-breadcrumbs: var(--color-green-2);
