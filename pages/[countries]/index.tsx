@@ -134,6 +134,7 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 	const currentPagination = useAppSelector(state => PaginationSlice.paginationSelect(state, Constants.namePagination.meetingsList));
 	const [activeStartDateChange, setActiveStartDateChange] = useState(null);
 	const [selectedDay, setSelectedDay] = useState(null);
+	const meetings = useAppSelector(state => MeetingsSlice.meetingsSelect(state));
 
 	const maxDate = Helpers.increaseDateByMonths(new Date(), 3);
 	const [nameMonth, setNameMonth] = useState(textTranslation[ML.key.month]);
@@ -296,8 +297,16 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 							minDetail={"month"} maxDetail={"month"}
 							locale={metadata.lang}
 							onActiveStartDateChange={changeActiveStartDateChange}
-							// selectMultiple={true}
-							// selectRange={true}
+							tileClassName={({ date }) => {
+								if (meetings) {
+									const dateMark = meetings.find(meeting => {
+										const meetingDate = new Date(meeting.dateMeeting);
+										if (date.getYear() === meetingDate.getYear() && date.getMonth() === meetingDate.getMonth() && date.getDate() === meetingDate.getDate()) return true;
+									});
+									
+									return dateMark ? 'highlight' : '';
+								}
+							}}
 						/>
 					</div>
 				}

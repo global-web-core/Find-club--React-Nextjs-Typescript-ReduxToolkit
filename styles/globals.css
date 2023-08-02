@@ -72,6 +72,7 @@ body {
   --border-radius-topcorner: 20px 20px 0 0;
   --border-default: 5px solid #c3c3c3;
   --border-default-red: 5px solid rgba(255, 0, 0, 0.547);
+  --border-default-darkgreen: 5px solid var(--color-main-breadcrumbs);
 	--border-default-2: 5px solid rgba(255, 255, 255, 0.10);
 	--border-default-3: 5px solid rgba(255, 255, 255, 0.50);
 	--border-default-4: 5px solid rgba(255, 255, 255, 0.30);
@@ -297,6 +298,15 @@ ul {
 
 .react-calendar .react-calendar__navigation__next2-button {
 	display: none;
+}
+
+.react-calendar .highlight {
+	border-bottom: var(--border-default-darkgreen);
+	border-radius: 20px 20px 0px 0px;
+}
+
+.react-calendar .highlight:hover {
+	border-radius: 20px 20px 0px 0px;
 }
 
 @media (max-width: 576px) {
