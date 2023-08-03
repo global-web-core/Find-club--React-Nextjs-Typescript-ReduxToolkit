@@ -52,6 +52,7 @@ export const Alert = (): JSX.Element => {
 								<Image src={message.typeAlert ? pathCurrentIcon[message.typeAlert] : ''}
 									fill
 									alt='icon'
+									sizes="34, 41"
 								/>
 							</div>
 							<div className={styles.text}>

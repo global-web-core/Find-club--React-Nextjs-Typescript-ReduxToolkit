@@ -177,8 +177,10 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 			const lastDate = Helpers.convertDatetimeLocalForDb(endMonth < maxDate ? endMonth : maxDate);
 			const startDate = startToday;
 			const endDate = lastDate;
-			const meetingsDb = await Meetings.getPageFromPaginationByDateMeeting(startDate, endDate, currentPagination?.currentPage);
-			const countMeetingsDb = await Meetings.getCountForPageFromPaginationByDateMeeting(startDate, endDate);
+			const meetingsDb = await Meetings.getPageByDateMeetingsAndCountry(country.id, startDate, endDate, currentPagination?.currentPage);
+			if (meetingsDb.data.length === 0) return [];
+			
+			const countMeetingsDb = await Meetings.getCountByDateMeetingAndCountry(country.id, startDate, endDate);
 			const countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
 			const nameCurrentMonth = Helpers.getNameMonthByDate(currentDate, ML.getLanguage());
 			if (nameCurrentMonth) setNameMonth(nameCurrentMonth);
@@ -217,8 +219,10 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 			const lastDate = Helpers.convertDatetimeLocalForDb(endDay);
 			const startDate = startDay;
 			const endDate = lastDate;
-			const meetingsDb = await Meetings.getPageFromPaginationByDateMeeting(startDate, endDate, currentPagination?.currentPage);
-			const countMeetingsDb = await Meetings.getCountForPageFromPaginationByDateMeeting(startDate, endDate);
+			const meetingsDb = await Meetings.getPageByDateMeetingsAndCountry(country.id, startDate, endDate, currentPagination?.currentPage);
+			if (meetingsDb.data.length === 0) return [];
+
+			const countMeetingsDb = await Meetings.getCountByDateMeetingAndCountry(country.id, startDate, endDate);
 			const countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
 			const nameCurrentMonth = Helpers.getNameMonthByDate(currentDate, ML.getLanguage());
 			if (nameCurrentMonth) setNameMonth(nameCurrentMonth);

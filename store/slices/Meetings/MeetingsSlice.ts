@@ -66,8 +66,7 @@ const getMeetingsWithFullDataAsync = createAsyncThunk(
 		}
 		const listIdMeetings = getListIdMeetings(dataMeetings);
 		
-		if (!dataMeetings || !listIdMeetings) error()
-		
+		if (!dataMeetings && !listIdMeetings) return;
 		return {dataMeetings, listIdMeetings};
   }
 )

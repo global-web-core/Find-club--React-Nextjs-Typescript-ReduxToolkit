@@ -61,7 +61,7 @@ export default function Home({ listCountries, listLanguages, text, metadata }: H
 						<h2>{textTranslation[ML.key.findPeopleInterest]}</h2>
 						<div>{textTranslation[ML.key.doNotKnowWhereFindPeopleWhoPassionate]}</div>
 						<div>{textTranslation[ML.key.lotsOfPeopleReadyToSupportYourIdeas]}</div>
-						<SelectCountry listCountries={listCountries} listLanguages={listLanguages} text={textTranslation}></SelectCountry>
+						<SelectCountry listCountries={listCountries} listLanguages={listLanguages} text={textTranslation}/>
 						<TypingText listText={[textTranslation[ML.key.whoGoingOutWithMe], textTranslation[ML.key.whoDoingIt]]} />
 						<CircleAnimation/>
 					</div>

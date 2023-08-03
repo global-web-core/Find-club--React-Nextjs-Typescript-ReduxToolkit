@@ -44,7 +44,7 @@ export const Header = ({pageProps}: HeaderProps):JSX.Element => {
 	return (
 		<>
 			<div className={styles.header}>
-				<Link href="/" className={styles.iconLogo}><Image src={iconLogo} width={80} height={80} alt='logo' /></Link>
+				<Link href="/" className={styles.iconLogo}><Image src={iconLogo} width={80} height={80} alt='logo' priority /></Link>
 				<h1 className={styles.titleLogo}>{textTranslation[ML.key.whoGoWithMe]}</h1>
 				<div className={styles.controlLogo}>
 					<div className={styles.controlDesktop}>

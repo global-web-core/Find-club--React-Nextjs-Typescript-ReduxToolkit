@@ -19,8 +19,9 @@ const getByIdMeetingMoreDate	= async (id, date)		=> await Http.get('meetings', {
 	{k:'id',v:id},
 	{k:'dateMeeting',v:date,op:Constants.requestConditionType.MORE}]
 });
-const getPageFromPaginationByDateMeeting = async (startDate, endDate, page?) => await Http.get('meetings',
+const getPageByDateMeetingsAndCountry = async (idCountry, startDate, endDate, page?) => await Http.get('meetings',
 	{conditions:[
+		{k:'idCountry',v:idCountry},
 		{k:'dateMeeting',v:startDate,op:Constants.requestConditionType.MORE},
 		{k:'dateMeeting',v:endDate,op:Constants.requestConditionType.LESS},
 		{k:'accessMeeting',v:Constants.accessMeeting.all},
@@ -30,8 +31,9 @@ const getPageFromPaginationByDateMeeting = async (startDate, endDate, page?) => 
 		{limit:Constants.pagination.limit, offset:(page ? (page - 1) * Constants.pagination.limit : 0)}
 	]
 });
-const getCountForPageFromPaginationByDateMeeting	= async (startDate, endDate)		=> await Http.getCount('meetings',
+const getCountByDateMeetingAndCountry	= async (idCountry, startDate, endDate)		=> await Http.getCount('meetings',
 	{conditions:[
+		{k:'idCountry',v:idCountry},
 		{k:'dateMeeting',v:startDate,op:Constants.requestConditionType.MORE},
 		{k:'dateMeeting',v:endDate,op:Constants.requestConditionType.LESS},
 		{k:'accessMeeting',v:Constants.accessMeeting.all},
@@ -46,8 +48,8 @@ export {
 	getByDataForm,
 	getByIdUser,
 	getByIdMeeting,
-	getPageFromPaginationByDateMeeting,
-	getCountForPageFromPaginationByDateMeeting,
+	getPageByDateMeetingsAndCountry,
+	getCountByDateMeetingAndCountry,
 	getByIdMeetingLessDate,
 	getByIdMeetingMoreDate,
 	add,
