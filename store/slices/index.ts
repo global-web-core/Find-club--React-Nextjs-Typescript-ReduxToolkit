@@ -7,3 +7,4 @@ export * as BasicSlice from './Basic/BasicSlice';
 export * as UserSlice from './User/UserSlice';
 export * as SelectFilterSlice from './SelectFilter/SelectFilterSlice';
 export * as PaginationSlice from './Pagination/PaginationSlice';
+export * as CalendarMeetingsSlice from './CalendarMeetings/CalendarMeetings';

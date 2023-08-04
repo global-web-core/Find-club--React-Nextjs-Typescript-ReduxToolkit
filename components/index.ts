@@ -27,3 +27,4 @@ export * from './MeetingsList/MeetingsList';
 export * from './DivWithTopPanel/DivWithTopPanel';
 export * from './ButtonList/ButtonList';
 export * from './Pagination/Pagination';
+export * from './CalendarMeetings/CalendarMeetings';
