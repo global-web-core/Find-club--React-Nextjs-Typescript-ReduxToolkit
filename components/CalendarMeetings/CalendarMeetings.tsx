@@ -45,37 +45,9 @@ export const CalendarMeetings = ({language, country, ...props}: CalendarMeetings
 	}, [selectFilter])
 
 	useEffect(() => {
-		addInlistDatemeetingsPerMonth();
+		const request = dispatch(CalendarMeetingsSlice.setListDatemeetingsPerMonthAsync({country}));
+		return () => request.abort()
 	}, [activeStartDateChange])
-
-
-	const addInlistDatemeetingsPerMonth = async () => {
-		console.log('===addInlistDatemeetingsPerMonth')
-		const dateStartMonth = Helpers.convertFromReduxToDatetimeLocal(calendarMeetings.activePeriod.start);
-		const startDayMonth = dateStartMonth.getDate()
-		const endDayMonth = Helpers.convertFromReduxToDatetimeLocal(calendarMeetings.activePeriod.end).getDate()
-
-		const listDatePerMonth = [];
-		const listDatemeetingsPerMonth = [];
-
-		for (let day = startDayMonth; day <= endDayMonth; day++) {
-			const month = dateStartMonth.getMonth();
-			const year = dateStartMonth.getFullYear();
-			const currentDate = new Date(year, month, day);
-			if (currentDate && !listDatePerMonth.includes(currentDate)) listDatePerMonth.push(currentDate)
-		}
-
-		for await (const date of listDatePerMonth) {
-			const startDay = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(date));
-			const endDay = Helpers.convertDatetimeLocalForDb(Helpers.getEndDayByDate(date));
-	
-			const meetingDb = await Meetings.getOneByDateMeetingsAndCountry(country, startDay, endDay);
-			if (meetingDb && meetingDb.data.length > 0) listDatemeetingsPerMonth.push(date)
-		}
-		
-		console.log('===listDatemeetingsPerMonth', listDatemeetingsPerMonth)
-		dispatch(CalendarMeetingsSlice.setListDatemeetingsPerMonthAsync(listDatemeetingsPerMonth));
-	}
 
 	return (
 		<>
@@ -87,8 +59,8 @@ export const CalendarMeetings = ({language, country, ...props}: CalendarMeetings
 				onActiveStartDateChange={changeActiveStartDateChange}
 				tileClassName={({ date }) => {		
 					// console.log('===tileClassName')
-					if (calendarMeetings.listDatemeetingsPerMonth.length > 0) {
-						const listDatemeetingsPerMonth = calendarMeetings.listDatemeetingsPerMonth
+					if (calendarMeetings.listDatemeetingsPerMonth.data.length > 0) {
+						const listDatemeetingsPerMonth = calendarMeetings.listDatemeetingsPerMonth.data
 					
 						const dateMark = listDatemeetingsPerMonth.find(meetingDate => {
 							meetingDate = new Date(meetingDate);
