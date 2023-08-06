@@ -286,7 +286,7 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 			<Main>
 				{mounted &&
 					<div>
-						<CalendarMeetings language={metadata.lang} />
+						<CalendarMeetings language={metadata.lang} country={country.id} />
 					</div>
 				}
 				<SelectCity listCities={listCities} text={textTranslation}></SelectCity>

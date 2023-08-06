@@ -40,6 +40,17 @@ const getCountByDateMeetingAndCountry	= async (idCountry, startDate, endDate)		=
 		{k:'status',v:Constants.activyStatus.ACTIVE}
 	]
 });
+const getOneByDateMeetingsAndCountry = async (idCountry, startDate, endDate) => await Http.get('meetings',
+	{conditions:[
+		{k:'idCountry',v:idCountry},
+		{k:'dateMeeting',v:startDate,op:Constants.requestConditionType.MORE},
+		{k:'dateMeeting',v:endDate,op:Constants.requestConditionType.LESS},
+		{k:'accessMeeting',v:Constants.accessMeeting.all},
+		{k:'status',v:Constants.activyStatus.ACTIVE}],
+	limits:[
+		{limit:1}
+	]
+});
 const add = async (data) => await Http.post('meetings', {data});
 const update = async (id, data) => await Http.put('meetings', {data,conditions:[{k:'id',v:id}]});
 
@@ -52,6 +63,7 @@ export {
 	getCountByDateMeetingAndCountry,
 	getByIdMeetingLessDate,
 	getByIdMeetingMoreDate,
+	getOneByDateMeetingsAndCountry,
 	add,
 	update
 }

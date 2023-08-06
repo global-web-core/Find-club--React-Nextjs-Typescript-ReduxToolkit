@@ -140,19 +140,19 @@ const increaseDateByMonths = (date, countMonths) => {
 
 const getStartDayByDate = (date) => {
 	if (date) {
-		return date.setHours(0, 0, 0, 0);
+		return new Date(date.setHours(0, 0, 0, 0));
 	}
 };
 
 const getEndDayByDate = (date) => {
 	if (date) {
-		return date.setHours(23, 59, 59, 999);
+		return new Date(date.setHours(23, 59, 59, 999));
 	}
 };
 
 const getEndMonthByDate = (date) => {
 	if (date) {
-		return new Date(date.getFullYear(), date.getMonth()+1, 0).setHours(23, 59, 59, 999);
+		return new Date(date.getFullYear(), date.getMonth()+1, 0, 23, 59, 59, 999);
 	}
 };
 
@@ -197,5 +197,6 @@ export {
 	getDatetimeLocalToStringShiftDateToUtc,
 	convertDatetimeForRedux,
 	convertFromReduxToDatetime,
-	getNameDayByDate
+	getNameDayByDate,
+	removeTimezoneShiftDateToTimezone
 };

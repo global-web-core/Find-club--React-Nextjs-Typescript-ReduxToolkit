@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { AppState } from '../../store';
 import { Helpers, ML } from '../../../globals';
 
@@ -10,7 +10,6 @@ interface InitialState {
 	// activeStartDateChange: null;
 }
 
-// const now = new Date();
 const now = new Date();
 
 const initialState:InitialState = {
@@ -19,10 +18,23 @@ const initialState:InitialState = {
 	activeStartDateChange: null,
 	activePeriod: {
 		nameMonth: Helpers.getNameMonthByDate(now, ML.getLanguage()),
-		start: Helpers.convertDatetimeForRedux(now),
-		// end: Helpers.convertDatetimeForRedux(Helpers.getEndMonthByDate(now))
-	}
+		start: Helpers.convertDatetimeForRedux(Helpers.getStartDayByDate(now)),
+		end: Helpers.convertDatetimeForRedux(Helpers.getEndMonthByDate(now))
+	},
+	listDatemeetingsPerMonth: []
 }
+
+const setListDatemeetingsPerMonthAsync = createAsyncThunk<LanguageTranslationInterface.TextTranslation, LanguageTranslationInterface.TextTranslation | undefined, {dispatch: AppDispatch}>(
+  'calendarMeetings/setListDatemeetingsPerMonthAsync',
+  async (listDate, {dispatch, rejectWithValue}) => {
+		const listResult = [];
+		listDate.forEach(date => {
+			if (typeof date === 'object') listResult.push(Helpers.convertDatetimeLocalForRedux(date))
+		});
+
+		return listResult;
+  }
+)
 
 const calendarMeetingsSlices = createSlice({
 	name: 'calendarMeetings',
@@ -39,13 +51,19 @@ const calendarMeetingsSlices = createSlice({
 		},
 		setActiveStartDateChange: {
 			reducer: (state, action) => {
-				// console.log('===action', action.payload)
-				state.activeStartDateChange = action.payload;
+				const activeStartDate = new Date(action.payload.activeStartDate);
+				const startPeriod = activeStartDate > now ? Helpers.getStartDayByDate(activeStartDate) : Helpers.getStartDayByDate(now);
+				const endMonth = Helpers.getEndMonthByDate(activeStartDate);
+				const endPeriod = endMonth < new Date(state.maxDate) ? endMonth : new Date(state.maxDate);
+
 				const activePeriod = {
-					nameMonth: Helpers.getNameMonthByDate(action.payload.activeStartDate, ML.getLanguage()),
-					start: new Date(action.payload.activeStartDate) > now ? action.payload.activeStartDate : Helpers.convertDatetimeForRedux(now)
+					nameMonth: Helpers.getNameMonthByDate(activeStartDate, ML.getLanguage()),
+					start: Helpers.convertDatetimeForRedux(startPeriod),
+					end: Helpers.convertDatetimeForRedux(endPeriod)
 				}
-				state.activePeriod = activePeriod
+
+				state.activePeriod = activePeriod;
+				state.activeStartDateChange = action.payload;
 			},
 			prepare: (dateChange) => {
 				const data = {
@@ -58,10 +76,41 @@ const calendarMeetingsSlices = createSlice({
 				return {payload: data};
 			}
 		},
-	}
+		// setListDatemeetingsPerMonth: {
+		// 	reducer: (state, action) => {
+		// 		state.listDatemeetingsPerMonth = action.payload
+		// 	},
+		// 	prepare: (listDate) => {
+		// 		const listResult = [];
+		// 		listDate.forEach(date => {
+		// 			if (typeof date === 'object') listResult.push(Helpers.convertDatetimeLocalForRedux(date))
+		// 		});
+		// 		return {payload: listResult};
+		// 	}
+		// },
+	},
+	extraReducers: (builder) => {
+    builder
+      .addCase(setListDatemeetingsPerMonthAsync.pending, (state) => {
+        // state.status = Constants.statusFetch.loading
+				// state.error = null
+      })
+      .addCase(setListDatemeetingsPerMonthAsync.rejected, (state, action) => {
+				// state.status = Constants.statusFetch.failed
+        // state.error = action.payload
+      })
+      .addCase(setListDatemeetingsPerMonthAsync.fulfilled, (state, action) => {
+				// console.log('===action', action.payload)
+        // state.status = Constants.statusFetch.succeeded
+        // state.entities = action.payload.dataMeetings
+        // state.listIdMeetings = action.payload.listIdMeetings
+				// state.error = null
+				state.listDatemeetingsPerMonth = action.payload
+      })
+  },
 });
 
-const { setSelectedDay, setActiveStartDateChange } = calendarMeetingsSlices.actions
+const { setSelectedDay, setActiveStartDateChange, setListDatemeetingsPerMonth } = calendarMeetingsSlices.actions
 const reducer = calendarMeetingsSlices.reducer
 
 const selectedDaySelect = (state: AppState) => {
@@ -83,4 +132,6 @@ export {
 	calendarMeetingsSelect,
 	activeStartDateChangeSelect,
 	setActiveStartDateChange,
+	// setListDatemeetingsPerMonth,
+	setListDatemeetingsPerMonthAsync
 }
