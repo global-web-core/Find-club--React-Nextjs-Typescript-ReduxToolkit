@@ -128,8 +128,6 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 	const [loading, setLoading] = useState(true);
 	const [mounted, setMounted] = useState(false);
 	
-	const listIdMeetings = useAppSelector(state => MeetingsSlice.listIdMeetingsSelect(state));
-	const idUser = useAppSelector(state => UserSlice.userSelect(state));
 	const selectFilter = useAppSelector(state => SelectFilterSlice.selectFilter(state));
 	const currentPagination = useAppSelector(state => PaginationSlice.paginationSelect(state, Constants.namePagination.meetingsList));
 	const activeStartDateChange = useAppSelector(state => CalendarMeetingsSlice.activeStartDateChangeSelect(state));
@@ -137,7 +135,6 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 	const selectedDay = Helpers.convertFromReduxToDatetimeLocal(selectedDayCalendar);
 
 	const calendarMeetings = useAppSelector(state => CalendarMeetingsSlice.calendarMeetingsSelect(state));
-	const maxDate = Helpers.convertFromReduxToDatetimeLocal(calendarMeetings.maxDate);
 
 	const clearDataMeetings = () => {
 		dispatch(MeetingsSlice.clearAll());
@@ -154,29 +151,35 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 		clearDataMeetings();
 	}
 
-	const getListMeetingsDb = async () => {
+	const getMeetingsFromDb = async (startDate, endDate) => {
 		let listMeetings;
 
+		const meetingsDb = await Meetings.getPageByDateMeetingsAndCountry(country.id, startDate, endDate, currentPagination?.currentPage);
+		if (meetingsDb.data.length === 0) return [];
+
+		const countMeetingsDb = await Meetings.getCountByDateMeetingAndCountry(country.id, startDate, endDate);
+		const countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
+
+		if (meetingsDb.data.length > 0 && countMeetings > 0) {
+			listMeetings = meetingsDb.data;
+			if (!currentPagination) {
+				dispatch(PaginationSlice.setPagination({maxPage: countMeetings, namePagination: Constants.namePagination.meetingsList}));
+			}
+			if (currentPagination?.maxPage !== countMeetings) {
+				dispatch(PaginationSlice.setPagination({maxPage: countMeetings, namePagination: Constants.namePagination.meetingsList}));
+			}
+		} else {
+			clearDataMeetings();
+		}
+		return listMeetings;
+	}
+
+	const getListMeetings = async () => {
 		if (selectFilter.basic === Constants.nameBasicFilter.month) {
 			const startDate = calendarMeetings.activePeriod.start;
 			const endDate = calendarMeetings.activePeriod.end;
-			const meetingsDb = await Meetings.getPageByDateMeetingsAndCountry(country.id, startDate, endDate, currentPagination?.currentPage);
-			if (meetingsDb.data.length === 0) return [];
-			
-			const countMeetingsDb = await Meetings.getCountByDateMeetingAndCountry(country.id, startDate, endDate);
-			const countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
-			if (meetingsDb.data.length > 0 && countMeetings > 0) {
-				listMeetings = meetingsDb.data;
-				if (!currentPagination) {
-					dispatch(PaginationSlice.setPagination({maxPage: countMeetings, namePagination: Constants.namePagination.meetingsList}));
-				}
-				if (currentPagination?.maxPage !== countMeetings) {
-					dispatch(PaginationSlice.setPagination({maxPage: countMeetings, namePagination: Constants.namePagination.meetingsList}));
-				}
-			} else {
-				clearDataMeetings();
-			}
-			return listMeetings;
+
+			return getMeetingsFromDb(startDate, endDate);
 		}
 
 		if (selectFilter.basic === Constants.nameBasicFilter.day) {
@@ -200,29 +203,14 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 			const lastDate = Helpers.convertDatetimeLocalForDb(endDay);
 			const startDate = startDay;
 			const endDate = lastDate;
-			const meetingsDb = await Meetings.getPageByDateMeetingsAndCountry(country.id, startDate, endDate, currentPagination?.currentPage);
-			if (meetingsDb.data.length === 0) return [];
 
-			const countMeetingsDb = await Meetings.getCountByDateMeetingAndCountry(country.id, startDate, endDate);
-			const countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
-			if (meetingsDb.data.length > 0 && countMeetings > 0) {
-				listMeetings = meetingsDb.data;
-				if (!currentPagination) {
-					dispatch(PaginationSlice.setPagination({maxPage: countMeetings, namePagination: Constants.namePagination.meetingsList}));
-				}
-				if (currentPagination?.maxPage !== countMeetings) {
-					dispatch(PaginationSlice.setPagination({maxPage: countMeetings, namePagination: Constants.namePagination.meetingsList}));
-				}
-			} else {
-				clearDataMeetings();
-			}
-			return listMeetings;
+			return getMeetingsFromDb(startDate, endDate);
 		}
 		clearDataMeetings();
 	}
 
-	const getDataByIdUser = async () => {
-		const meetingsDb = await getListMeetingsDb();
+	const getMainData = async () => {
+		const meetingsDb = await getListMeetings();
 		dispatch(MeetingsSlice.getMeetingsWithFullDataAsync({meetingsDb, listCountries, listCities, listInterests, listCategories, listLanguages, textTranslation}));
 	}
 
@@ -238,7 +226,7 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 
 	useEffect(() => {
 		if (!loading && Object.keys(textTranslation).length) {
-			getDataByIdUser();
+			getMainData();
 		}
 	}, [loading, selectFilter, currentPagination?.currentPage, activeStartDateChange, selectedDayCalendar])
 
