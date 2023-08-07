@@ -1,5 +1,5 @@
 import styles from '../styles/YourMeetingsPage.module.css'
-import { Main, Loading, Alert, Button, DivWithTopPanel, MeetingsList, ButtonList } from '../components';
+import { Main, Loading, Alert, Button, DivWithTopPanel, MeetingsList, ButtonList, FilterMeetings, BlockMeetings } from '../components';
 import { Cities, Countries, Interests, Languages, Categories, Meetings, Users, Desires } from '../models';
 import { useRouter } from 'next/router';
 import { CountriesInterface, InterestsInterface, CitiesInterface, LanguagesInterface, CategoryInterface, MeetingsInterface, DesiresInterface } from '../interfaces';
@@ -139,21 +139,8 @@ export default function YourMeetingsPage(): JSX.Element {
 					<h1 className={styles.title}>{textTranslation[ML.key.yourMeetings]}</h1>
 					{loading
 						? <Loading textTranslation={textTranslation[ML.key.loading]} />
-						: 
-							<DivWithTopPanel
-								topPanel={
-									<>
-										<ButtonList>
-											<Button name={textTranslation[ML.key.allUpcoming]} selected={selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.all ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(Constants.nameYourMeetingsFilter.all))} />
-											<Button name={textTranslation[ML.key.iOrganise]} selected={selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.my ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(Constants.nameYourMeetingsFilter.my))} />
-											<Button name={textTranslation[ML.key.organizedByOthers]} selected={selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.other ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(Constants.nameYourMeetingsFilter.other))} />
-											<Button name={textTranslation[ML.key.alreadyGone]}  selected={selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.passed ? true : false} onClick={() => dispatch(SelectFilterSlice.setYourMeetingsFilter(Constants.nameYourMeetingsFilter.passed))} />
-										</ButtonList>
-									</>
-								}
-							>
-								<MeetingsList meetings={meetings} />
-							</DivWithTopPanel>
+						:
+							<BlockMeetings/>
 					}
 					<Button  name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
 				</Main>

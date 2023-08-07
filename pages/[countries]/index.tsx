@@ -1,4 +1,4 @@
-import { SelectCity, Main, Loading, DivWithTopPanel, ButtonList, MeetingsList, Pagination, Button, CalendarMeetings } from '../../components';
+import { SelectCity, Main, Loading, DivWithTopPanel, ButtonList, MeetingsList, Pagination, Button, CalendarMeetings,FilterMeetings, BlockMeetings } from '../../components';
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { Cities, Countries, CitiesByCountries, Languages, Desires, Meetings, Interests, Categories } from '../../models';
 import { useRouter } from 'next/router';
@@ -293,19 +293,7 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 				{loading
 					? <Loading textTranslation={textTranslation[ML.key.loading]} />
 					: 
-						<DivWithTopPanel
-							topPanel={
-								<>
-									<ButtonList>
-										<Button name={calendarMeetings?.activePeriod?.nameMonth} selected={selectFilter.basic === Constants.nameBasicFilter.month ? true : false} onClick={() => dispatch(SelectFilterSlice.setBasicFilterFilter(Constants.nameBasicFilter.month))} />
-										<Button name={Helpers.getNameDayByDate(calendarMeetings?.selectedDay || calendarMeetings?.activePeriod?.start)} selected={selectFilter.basic === Constants.nameBasicFilter.day ? true : false} onClick={() => dispatch(SelectFilterSlice.setBasicFilterFilter(Constants.nameBasicFilter.day))} />
-									</ButtonList>
-								</>
-							}
-							meetingsListMain={true}
-						>
-							<MeetingsList namePagination={Constants.namePagination.meetingsList} />
-						</DivWithTopPanel>
+						<BlockMeetings/>
 				}
 				<Button name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
 				<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: '/your-meetings'})}} />
