@@ -10,6 +10,7 @@ import { Button } from '../../components';
 import { useAppSelector } from '../../store/hook';
 import { TextTranslationSlice } from '../../store/slices';
 import { ML } from '../../globals';
+import { useOutsideClick } from '../../hooks';
 
 export const Login = (): JSX.Element => {
 	const router = useRouter();
@@ -46,20 +47,11 @@ export const Login = (): JSX.Element => {
 		signOut({ callbackUrl: router.asPath });
 	}
 
-	function useOutsideClick(ref: RefObject<HTMLSelectElement>) {
-		useEffect(() => {
-			function handleClickOutside(event: Event) {
-				if (ref.current && !ref.current.contains(event.target as Node)) setUserHover(false);
-			}
-			document.addEventListener("mousedown", handleClickOutside);
-			
-			return () => {
-				document.removeEventListener("mousedown", handleClickOutside);
-			};
-		}, [ref]);
+	const handleOutsideClick = () => {
+		setUserHover(false)
 	}
 
-	useOutsideClick(loginRef);
+	useOutsideClick(loginRef, () => handleOutsideClick())
 	
 	return (
 		<>

@@ -1,0 +1,23 @@
+/* .navigationMeetings {
+}
+
+.input {
+	padding: 6px 30px 6px 10px;
+	border-radius: var(--border-radius-default);
+	background-image: url(../Select/images/arrow.png);
+	background-repeat: no-repeat;
+	background-size: 17px 17px;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	background-position: calc(100% - 8px) center;
+}
+
+.input::placeholder {
+	color: var(--color-light-9);
+}
+
+
+.error {
+	background-color: var(--color-red-1);
+	border: var(--border-default-red);
+} */

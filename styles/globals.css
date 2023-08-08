@@ -34,6 +34,7 @@ body {
   --color-light-8: rgba(255, 255, 255, 0.70);
   --color-light-9: rgba(255, 255, 255, 0.80);
 	--color-light-10: #ffffff00;
+  --color-light-11: rgba(255, 255, 255, 0.20);
   --color-white: white;
   --color-black: black;
   --color-green-1: rgba(104, 255, 104, 0.5);
@@ -70,6 +71,7 @@ body {
   --border-radius-rightcorner: 20px 0 0 20px;
   --border-radius-leftcorner: 0 20px 20px 0;
   --border-radius-topcorner: 20px 20px 0 0;
+  --border-radius-bottomcorner: 0 0 20px 20px;
   --border-default: 5px solid #c3c3c3;
   --border-default-red: 5px solid rgba(255, 0, 0, 0.547);
   --border-default-darkgreen: 5px solid var(--color-main-breadcrumbs);
@@ -135,9 +137,13 @@ input::placeholder, textarea::placeholder {
   box-sizing: border-box;
 }
 
-input[type=datetime-local] {
-  padding: 6px 10px;
+input {
+	padding: 6px 10px;
 }
+
+/* input[type=datetime-local] {
+  padding: 6px 10px;
+} */
 
 input[type=datetime-local]::-webkit-calendar-picker-indicator{
 	filter: invert(1);

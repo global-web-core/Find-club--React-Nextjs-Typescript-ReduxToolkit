@@ -5,6 +5,7 @@ import React, { useEffect, useState, useRef, useLayoutEffect, MouseEvent, RefObj
 import Image from 'next/image';
 import {iconList} from './images';
 import { ArrowOpen, Button } from '../../components';
+import { useOutsideClick } from '../../hooks';
 
 export const SelectWithImage = ({ list, nameKeyOption, nameValueOption, nameInnerOption, nameEmptyOption, nameSelectedOption, settingPathsImages, extensionFilesImages, button=false, nameButton='', clickButton, ...props }: SelectWithImageProps): JSX.Element => {
 	const [selectValue, setSelectValue] = useState('');
@@ -66,20 +67,11 @@ export const SelectWithImage = ({ list, nameKeyOption, nameValueOption, nameInne
 		if (nameSelectedOption) setSelectValue(nameSelectedOption);
 	}, [nameSelectedOption]);
 
-	function useOutsideClick(ref: RefObject<HTMLSelectElement>) {
-		useEffect(() => {
-			function handleClickOutside(event: Event) {
-				if (ref.current && !ref.current.contains(event.target as Node)) setOpenList(false);
-			}
-			document.addEventListener("mousedown", handleClickOutside);
-			
-			return () => {
-				document.removeEventListener("mousedown", handleClickOutside);
-			};
-		}, [ref]);
+	const handleOutsideClick = () => {
+		setOpenList(false);
 	}
 
-	useOutsideClick(selectRef);
+	useOutsideClick(selectRef, () => handleOutsideClick())
 
 	const styleOptionsMargin = {
 		marginRight: 15 + widthButton + 'px'

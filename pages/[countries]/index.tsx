@@ -1,4 +1,4 @@
-import { SelectCity, Main, Loading, DivWithTopPanel, ButtonList, MeetingsList, Pagination, Button, CalendarMeetings,FilterMeetings, BlockMeetings } from '../../components';
+import { SelectCity, Main, Loading, DivWithTopPanel, ButtonList, MeetingsList, Pagination, Button, CalendarMeetings,FilterMeetings, BlockMeetings, NavigationMeetings } from '../../components';
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { Cities, Countries, CitiesByCountries, Languages, Desires, Meetings, Interests, Categories } from '../../models';
 import { useRouter } from 'next/router';
@@ -247,6 +247,7 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 					</div>
 				}
 				<SelectCity listCities={listCities} text={textTranslation}></SelectCity>
+				<NavigationMeetings country={country}  listCountries={listCountries} listLanguages={listLanguages} />
 				{loading
 					? <Loading textTranslation={textTranslation[ML.key.loading]} />
 					: 
