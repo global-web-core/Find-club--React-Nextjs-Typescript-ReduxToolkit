@@ -4,4 +4,5 @@ export interface SelectWithSearchProps extends DetailedHTMLProps<HTMLAttributes<
 	// children: ReactNode;
 	placeholder: string;
 	options: {value: string; label: string;}[];
+	name: string;
 }

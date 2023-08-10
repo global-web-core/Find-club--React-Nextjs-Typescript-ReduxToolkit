@@ -98,6 +98,10 @@ const accessMeeting = {
 	wishing: 2,
 };
 
+const navigationMeetings = {
+	country: 'country'
+}
+
 
 export {
 	API,
@@ -117,7 +121,8 @@ export {
 	pagination,
 	namePagination,
 	statusFetch,
-	accessMeeting
+	accessMeeting,
+	navigationMeetings
 };
 
 interface Status {

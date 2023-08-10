@@ -3,7 +3,7 @@ import styles from './NavigationMeetings.module.css';
 import { NavigationMeetingsProps } from './NavigationMeetings.props';
 import cn from 'classnames';
 import { useRouter } from 'next/router';
-import { ML } from '../../globals';
+import { Constants, ML } from '../../globals';
 import { useAppSelector } from '../../store/hook';
 import { TextTranslationSlice } from '../../store/slices';
 import {SelectCountry, SelectWithImage, SelectWithSearch} from '../../components';
@@ -12,30 +12,7 @@ export const NavigationMeetings = ({country, listCountries, listLanguages}: Navi
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	const [optionsCountries, setOptionsCountries] = useState([]);
 
-	const [navigation, setNavigation] = useState({
-    country: country,
-  });
-
-	const handleCityChange = (event) => {
-		// console.log('===event', event.target.attributes)
-    const { name, value } = event.target;
-		console.log('===1', ML.key[value])
-		console.log('===name', name)
-		console.log('===value', value)
-    setNavigation((prevCities) => ({
-      ...prevCities,
-      [name]: value,
-    }));
-    // Обработка значения для конкретного города
-  }
-
-	// useEffect(() => {
-	// 	console.log('===listCountries', listCountries)
-	// }, [])
-
-	const handleSelect = () => {
-		console.log('===test')
-	}
+	const [navigation, setNavigation] = useState({});
 
 
 
@@ -58,18 +35,24 @@ export const NavigationMeetings = ({country, listCountries, listLanguages}: Navi
 	}, [listCountries, textTranslation]);
 
 
-	const handleSelectCountry = (selectValue) => {
-		console.log('===handleSelectCountry', selectValue)
+	const handleSelects = (selectValue) => {
+    const { name, value } = selectValue;
+    setNavigation((prevState) => ({...prevState, [name]: value}));
 	}
+
+	useEffect(() => {
+		console.log('===navigation', navigation)
+	}, [navigation])
 
 
 	return (
 		<>
 			<div className={styles.navigationMeetings}>
 				<SelectWithSearch
+					name={Constants.navigationMeetings.country}
 					placeholder={textTranslation[ML.key.selectCountry as keyof typeof textTranslation]}
 					options={optionsCountries}
-					onChange={handleSelectCountry}
+					onChange={handleSelects}
 					defaultValue={country.route}
 				/>
 			</div>

@@ -17,7 +17,7 @@ const getLabelFromOptions = (options, selectValue) => {
 	}
 }
 
-export const SelectWithSearch = ({options, placeholder, defaultValue, onChange}: SelectWithSearchProps): JSX.Element => {
+export const SelectWithSearch = ({name, options, placeholder, defaultValue, onChange}: SelectWithSearchProps): JSX.Element => {
 	const blockRef = useRef(null);
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState('');
@@ -31,10 +31,9 @@ export const SelectWithSearch = ({options, placeholder, defaultValue, onChange}:
 	const selectedOption = (selectValue) => {
 		if (selectValue) {
 			setOpen(false);
-			onChange(selectValue);
+			onChange({name: name, value: selectValue});
 	
 			setValue(getLabelFromOptions(options, selectValue))
-
 		}
 	}
 
@@ -60,6 +59,10 @@ export const SelectWithSearch = ({options, placeholder, defaultValue, onChange}:
 			setValue(getLabelFromOptions(options, defaultValue))
 		}
 	}, [options, defaultValue])
+
+	useEffect(() => {
+		selectedOption(defaultValue);
+	}, [defaultValue]);
 
 	return (
 		<>
