@@ -65,7 +65,7 @@ export default function Home({ listCountries, listLanguages, text, metadata }: H
 						<TypingText listText={[textTranslation[ML.key.whoGoingOutWithMe], textTranslation[ML.key.whoDoingIt]]} />
 						<CircleAnimation/>
 					</div>
-					<Image className={styles.imageTeaser} src={imageTeaser} width={642} height={720} alt='teaser' />
+					<Image className={styles.imageTeaser} src={imageTeaser} width={642} height={720} alt='teaser' priority  />
 				</div>
 
 				<MapFolding/>
