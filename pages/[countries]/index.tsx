@@ -246,8 +246,8 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 						<CalendarMeetings language={metadata.lang} country={country.id} />
 					</div>
 				}
-				<SelectCity listCities={listCities} text={textTranslation}></SelectCity>
-				<NavigationMeetings country={country}  listCountries={listCountries} listLanguages={listLanguages} />
+				{/* <SelectCity listCities={listCities} text={textTranslation}></SelectCity> */}
+				<NavigationMeetings country={country}  listCountries={listCountries} listLanguages={listLanguages} textTranslation={textTranslation} />
 				{loading
 					? <Loading textTranslation={textTranslation[ML.key.loading]} />
 					: 

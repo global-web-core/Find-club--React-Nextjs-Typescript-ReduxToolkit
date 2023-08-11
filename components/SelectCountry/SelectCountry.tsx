@@ -2,7 +2,7 @@ import {SelectCountryProps} from './SelectCountry.props';
 import {CountriesInterface, LanguagesInterface} from '../../interfaces';
 import React, {useState} from 'react';
 import {useRouter} from "next/router";
-import {ML} from '../../globals';
+import {Helpers, ML} from '../../globals';
 import {SelectWithImage} from '../../components';
 import styles from './SelectCountry.module.css';
 
@@ -20,15 +20,8 @@ export const SelectCountry = ({listCountries, listLanguages, text}: SelectCountr
 	const [pathCountry, setPathCountry] = useState<string | null>(null);
 
 	const handleClick = () => {
-		let urlCountry = pathCountry;
+		const urlCountry = Helpers.getUrlCountry(pathCountry, countries, languages);
 		if (urlCountry) {
-			const settingLanguage = ML.getLanguage();
-			const currentCountry = countries.find(country => country.route === urlCountry);
-			const currentLanguage = languages.find((language: LanguagesInterface.Languages) => currentCountry && language.idCountry === currentCountry.id);
-			if (!settingLanguage && currentLanguage) ML.setLanguage(currentLanguage.route);
-
-			urlCountry = urlCountry + ML.addInPathLanguage(settingLanguage, currentLanguage, urlCountry);
-
 			router.push({
 				pathname: '[countries]',
 				query: {countries: urlCountry}

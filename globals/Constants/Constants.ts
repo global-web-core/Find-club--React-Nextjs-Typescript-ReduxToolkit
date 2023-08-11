@@ -99,7 +99,10 @@ const accessMeeting = {
 };
 
 const navigationMeetings = {
-	country: 'country'
+	country: 'country',
+	city: 'city',
+	interest: 'interest',
+	category: 'category',
 }
 
 

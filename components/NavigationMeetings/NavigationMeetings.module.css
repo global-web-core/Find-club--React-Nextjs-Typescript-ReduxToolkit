@@ -21,3 +21,14 @@
 	background-color: var(--color-red-1);
 	border: var(--border-default-red);
 } */
+
+.navigationMeetings {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: center;
+}
+
+.navigationMeetings button {
+	width: max-content;
+}

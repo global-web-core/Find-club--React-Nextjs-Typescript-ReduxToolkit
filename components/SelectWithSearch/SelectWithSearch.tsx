@@ -21,6 +21,7 @@ export const SelectWithSearch = ({name, options, placeholder, defaultValue, onCh
 	const blockRef = useRef(null);
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState('');
+	const [selectedOption, setSelectedOption] = useState({name, value: ''});
 	const [activeOptions, setActiveOptions] = useState(options || []);
 
 	const handleOutsideClick = () => {
@@ -28,10 +29,12 @@ export const SelectWithSearch = ({name, options, placeholder, defaultValue, onCh
 	}
 	useOutsideClick(blockRef, () => handleOutsideClick())
 
-	const selectedOption = (selectValue) => {
-		if (selectValue) {
+	const changeSelectedOption = (selectValue) => {
+		if (selectValue?.length >= 0) {
 			setOpen(false);
-			onChange({name: name, value: selectValue});
+			const result = {name: name, value: selectValue};
+			onChange(result);
+			setSelectedOption(result)
 	
 			setValue(getLabelFromOptions(options, selectValue))
 		}
@@ -43,11 +46,15 @@ export const SelectWithSearch = ({name, options, placeholder, defaultValue, onCh
 		setValue(e.target.value)
 		if (e.target.value === '') {
 			setActiveOptions(options);
-			return
+			// return
 		}
 		
 		const filterOption = options.filter(option => option.label.toLowerCase().includes(e.target.value.toLowerCase()))
 		setActiveOptions(filterOption);
+
+		if (e.target.value === '' && selectedOption.value.length > 0) {
+			changeSelectedOption('');
+		}
 	}
 
 	useEffect(() => {
@@ -55,14 +62,24 @@ export const SelectWithSearch = ({name, options, placeholder, defaultValue, onCh
 	}, [options])
 
 	useEffect(() => {
-		if (options, defaultValue) {
+		if (options && defaultValue) {
 			setValue(getLabelFromOptions(options, defaultValue))
+		} else if (options && !defaultValue && value?.length > 0) {
+			const selectedValue = options.find(option => option.label === value);
+			if (!selectedValue) setValue('')
 		}
 	}, [options, defaultValue])
 
 	useEffect(() => {
-		selectedOption(defaultValue);
+		changeSelectedOption(defaultValue);
 	}, [defaultValue]);
+
+	// useEffect(() => {
+	// 	// if 
+	// 	console.log('===value', value)
+	// }, [value]);
+
+
 
 	return (
 		<>
@@ -79,7 +96,7 @@ export const SelectWithSearch = ({name, options, placeholder, defaultValue, onCh
 				<div className={styles.list}>
 					<ul>
 						{activeOptions?.map((v, i) => (
-							<li key={i} value={v.value} onClick={() => selectedOption(v.value)}>{v.label}</li>
+							<li key={i} value={v.value} onClick={() => changeSelectedOption(v.value)}>{v.label}</li>
 						))}
 						{activeOptions?.length === 0  && <ListEmpty/>}
 					</ul>

@@ -1,4 +1,6 @@
 import { Constants } from "..";
+import {ML} from '../../globals';
+import { LanguagesInterface } from "../../interfaces";
 
 const copyOfDateInStringTimezoneUTC = (date) => {
 	if (typeof date === 'object') return JSON.parse(JSON.stringify(date))
@@ -176,6 +178,20 @@ const getNameDayByDate = (date) => {
 	}
 }
 
+const getUrlCountry = (pathCountry, countries, languages) => {
+	let urlCountry = pathCountry;
+	if (urlCountry) {
+		const settingLanguage = ML.getLanguage();
+		const currentCountry = countries.find(country => country.route === urlCountry);
+		const currentLanguage = languages.find((language: LanguagesInterface.Languages) => currentCountry && language.idCountry === currentCountry.id);
+		if (!settingLanguage && currentLanguage) ML.setLanguage(currentLanguage.route);
+
+		urlCountry = urlCountry + ML.addInPathLanguage(settingLanguage, currentLanguage, urlCountry);
+
+		return urlCountry;
+	}
+}
+
 export {
 	convertDatetimeForDb,
 	convertDatetimeLocalForDb,
@@ -198,5 +214,6 @@ export {
 	convertDatetimeForRedux,
 	convertFromReduxToDatetime,
 	getNameDayByDate,
-	removeTimezoneShiftDateToTimezone
+	removeTimezoneShiftDateToTimezone,
+	getUrlCountry
 };
