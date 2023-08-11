@@ -192,6 +192,39 @@ const getUrlCountry = (pathCountry, countries, languages) => {
 	}
 }
 
+const getStartDateAndEndDateBySelectFilter = (selectFilter, calendarMeetings, activeStartDateChange, selectedDay) => {
+	if (selectFilter.basic === Constants.nameBasicFilter.month) {
+		const startDate = calendarMeetings.activePeriod.start;
+		const endDate = calendarMeetings.activePeriod.end;
+
+		return {startDate, endDate};
+	}
+
+	if (selectFilter.basic === Constants.nameBasicFilter.day) {
+		const newDate = new Date();
+		let currentDate;
+		if (activeStartDateChange && !selectedDay) {
+			const activeStartDate = convertFromReduxToDatetimeLocalAndShiftTimezone(activeStartDateChange?.activeStartDate);
+			if (activeStartDate > newDate) {
+				currentDate = activeStartDate;
+			} else {
+				currentDate = newDate;
+			}
+		} else if (selectedDay) {
+			currentDate = selectedDay;
+		} else {
+			currentDate = newDate;
+		}
+		const startDay = convertDatetimeLocalForDb(getStartDayByDate(currentDate));
+		const endDay = getEndDayByDate(currentDate);
+		const lastDate = convertDatetimeLocalForDb(endDay);
+		const startDate = startDay;
+		const endDate = lastDate;
+
+		return {startDate, endDate, selectedDay: currentDate};
+	}
+}
+
 export {
 	convertDatetimeForDb,
 	convertDatetimeLocalForDb,
@@ -215,5 +248,6 @@ export {
 	convertFromReduxToDatetime,
 	getNameDayByDate,
 	removeTimezoneShiftDateToTimezone,
-	getUrlCountry
+	getUrlCountry,
+	getStartDateAndEndDateBySelectFilter
 };

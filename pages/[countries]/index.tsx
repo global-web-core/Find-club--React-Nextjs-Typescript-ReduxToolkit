@@ -175,43 +175,19 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 		return listMeetings;
 	}
 
-	const getListMeetings = async () => {
-		if (selectFilter.basic === Constants.nameBasicFilter.month) {
-			const startDate = calendarMeetings.activePeriod.start;
-			const endDate = calendarMeetings.activePeriod.end;
-
-			return getMeetingsFromDb(startDate, endDate);
-		}
-
-		if (selectFilter.basic === Constants.nameBasicFilter.day) {
-			const newDate = new Date();
-			let currentDate;
-			if (activeStartDateChange && !selectedDay) {
-				const activeStartDate = Helpers.convertFromReduxToDatetimeLocalAndShiftTimezone(activeStartDateChange?.activeStartDate);
-				if (activeStartDate > newDate) {
-					currentDate = activeStartDate;
-				} else {
-					currentDate = newDate;
-				}
-			} else if (selectedDay) {
-				currentDate = selectedDay;
-			} else {
-				currentDate = newDate;
+	const getFilteredMeetings = () => {
+		if (selectFilter.basic === Constants.nameBasicFilter.month || selectFilter.basic === Constants.nameBasicFilter.day) {
+			const dates = Helpers.getStartDateAndEndDateBySelectFilter(selectFilter, calendarMeetings, activeStartDateChange, selectedDay);
+			if (selectFilter.basic === Constants.nameBasicFilter.day) {
+				dispatch(CalendarMeetingsSlice.setSelectedDay(dates.selectedDay));
 			}
-			dispatch(CalendarMeetingsSlice.setSelectedDay(currentDate));
-			const startDay = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(currentDate));
-			const endDay = Helpers.getEndDayByDate(currentDate);
-			const lastDate = Helpers.convertDatetimeLocalForDb(endDay);
-			const startDate = startDay;
-			const endDate = lastDate;
-
-			return getMeetingsFromDb(startDate, endDate);
+			return getMeetingsFromDb(dates.startDate, dates.endDate);
 		}
 		clearDataMeetings();
 	}
 
 	const getMainData = async () => {
-		const meetingsDb = await getListMeetings();
+		const meetingsDb = await getFilteredMeetings();
 		dispatch(MeetingsSlice.getMeetingsWithFullDataAsync({meetingsDb, listCountries, listCities, listInterests, listCategories, listLanguages, textTranslation}));
 	}
 
