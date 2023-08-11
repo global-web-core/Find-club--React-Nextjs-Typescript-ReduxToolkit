@@ -167,6 +167,10 @@ ul {
 	padding-left: 20px;
 }
 
+h1 {
+	color: var(--color-white);
+}
+
 /* Start styles for the react-calendar */
 .react-calendar {
 	border: var(--border-default-4);

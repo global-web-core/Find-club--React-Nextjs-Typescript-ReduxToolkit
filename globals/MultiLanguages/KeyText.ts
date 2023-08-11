@@ -112,6 +112,7 @@ const keyText = {
 	errorYourWishComeAccepted: 'error-your-wish-come-accepted',
 	yourConfirmationComeAccepted: 'your-confirmation-come-accepted',
 	errorYourConfirmationComeAccepted: 'error-your-confirmation-come-accepted',
+	allAvailableMeetings: 'all-available-meetings',
 }
 
 export default keyText;

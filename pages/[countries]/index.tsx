@@ -13,6 +13,7 @@ import { Layout } from '../../layout/Layout';
 import Calendar from 'react-calendar'
 import cn from 'classnames';
 import { useSession, signIn } from 'next-auth/react';
+import styles from '../../styles/Countries.module.css'
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const countriesData = await Countries.getAll();
@@ -246,8 +247,8 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 						<CalendarMeetings language={metadata.lang} country={country.id} />
 					</div>
 				}
-				{/* <SelectCity listCities={listCities} text={textTranslation}></SelectCity> */}
 				<NavigationMeetings country={country}  listCountries={listCountries} listLanguages={listLanguages} textTranslation={textTranslation} />
+				<h1 className={styles.title}>{textTranslation[ML.key[country.route]] + ' - ' + textTranslation[ML.key.allAvailableMeetings]}</h1>
 				{loading
 					? <Loading textTranslation={textTranslation[ML.key.loading]} />
 					: 
