@@ -1,4 +1,4 @@
-import { SelectCity, Main, Loading, DivWithTopPanel, ButtonList, MeetingsList, Pagination, Button, CalendarMeetings,FilterMeetings, BlockMeetings, NavigationMeetings } from '../../components';
+import { SelectCity, Main, Loading, DivWithTopPanel, ButtonList, MeetingsList, Pagination, Button, CalendarMeetings,FilterMeetings, BlockMeetings, NavigationMeetings, PublicMeetings } from '../../components';
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { Cities, Countries, CitiesByCountries, Languages, Desires, Meetings, Interests, Categories } from '../../models';
 import { useRouter } from 'next/router';
@@ -125,31 +125,12 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 	const router = useRouter();
 	const dispatch = useAppDispatch();
 	const { data: session, status } = useSession();
-	
-	const [loading, setLoading] = useState(true);
-	const [mounted, setMounted] = useState(false);
-	
-	const selectFilter = useAppSelector(state => SelectFilterSlice.selectFilter(state));
 	const currentPagination = useAppSelector(state => PaginationSlice.paginationSelect(state, Constants.namePagination.meetingsList));
-	const activeStartDateChange = useAppSelector(state => CalendarMeetingsSlice.activeStartDateChangeSelect(state));
-	const selectedDayCalendar = useAppSelector(state => CalendarMeetingsSlice.selectedDaySelect(state));
-	const selectedDay = Helpers.convertFromReduxToDatetimeLocal(selectedDayCalendar);
-
-	const calendarMeetings = useAppSelector(state => CalendarMeetingsSlice.calendarMeetingsSelect(state));
 
 	const clearDataMeetings = () => {
 		dispatch(MeetingsSlice.clearAll());
 		dispatch(DesiresSlice.clearAll());
 		dispatch(PaginationSlice.clearAll());
-	}
-
-	const clearDataUsers = () => {
-		dispatch(UserSlice.clearAll());
-	}
-
-	const clearData = () => {
-		clearDataUsers();
-		clearDataMeetings();
 	}
 
 	const getMeetingsFromDb = async (startDate, endDate) => {
@@ -175,37 +156,6 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 		return listMeetings;
 	}
 
-	const getFilteredMeetings = () => {
-		if (selectFilter.basic === Constants.nameBasicFilter.month || selectFilter.basic === Constants.nameBasicFilter.day) {
-			const dates = Helpers.getStartDateAndEndDateBySelectFilter(selectFilter, calendarMeetings, activeStartDateChange, selectedDay);
-			if (selectFilter.basic === Constants.nameBasicFilter.day) {
-				dispatch(CalendarMeetingsSlice.setSelectedDay(dates.selectedDay));
-			}
-			return getMeetingsFromDb(dates.startDate, dates.endDate);
-		}
-		clearDataMeetings();
-	}
-
-	const getMainData = async () => {
-		const meetingsDb = await getFilteredMeetings();
-		dispatch(MeetingsSlice.getMeetingsWithFullDataAsync({meetingsDb, listCountries, listCities, listInterests, listCategories, listLanguages, textTranslation}));
-	}
-
-	useEffect(() => {
-		clearData();
-		async function startFetching() {
-			ML.setLanguageByPath(router.query.countries as string, listLanguages, country);
-			setLoading(false);
-		}
-		startFetching();
-		setMounted(true);
-	}, [])
-
-	useEffect(() => {
-		if (!loading && Object.keys(textTranslation).length) {
-			getMainData();
-		}
-	}, [loading, selectFilter, currentPagination?.currentPage, activeStartDateChange, selectedDayCalendar])
 
 	useEffect(() => {
 		dispatch(UserSlice.getIdUserAsync(session));
@@ -218,18 +168,18 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 				<meta name="description" content={metadata.description} />
 			</Head>
 			<Main>
-				{mounted &&
-					<div>
-						<CalendarMeetings language={metadata.lang} country={country.id} />
-					</div>
-				}
-				<NavigationMeetings country={country}  listCountries={listCountries} listLanguages={listLanguages} textTranslation={textTranslation} />
-				<h1 className={styles.title}>{textTranslation[ML.key[country.route]] + ' - ' + textTranslation[ML.key.allAvailableMeetings]}</h1>
-				{loading
-					? <Loading textTranslation={textTranslation[ML.key.loading]} />
-					: 
-						<BlockMeetings/>
-				}
+				<PublicMeetings
+					listCountries={listCountries}
+					listLanguages={listLanguages}
+					country={country}
+					textTranslation={textTranslation}
+					metadata={metadata}
+					listCities={listCities}
+					listInterests={listInterests}
+					listCategories={listCategories}
+					getMeetingsFromDb={(startDate, endDate) => getMeetingsFromDb(startDate, endDate)}
+					clearDataMeetings={clearDataMeetings}
+				/>
 				<Button name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
 				<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: '/your-meetings'})}} />
 			</Main>

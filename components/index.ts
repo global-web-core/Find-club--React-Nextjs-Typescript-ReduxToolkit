@@ -32,3 +32,4 @@ export * from './FilterMeetings/FilterMeetings';
 export * from './BlockMeetings/BlockMeetings';
 export * from './NavigationMeetings/NavigationMeetings';
 export * from './SelectWithSearch/SelectWithSearch';
+export * from './PublicMeetings/PublicMeetings';
