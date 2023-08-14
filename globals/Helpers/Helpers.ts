@@ -225,6 +225,12 @@ const getStartDateAndEndDateBySelectFilter = (selectFilter, calendarMeetings, ac
 	}
 }
 
+const getCountryByUrlCountry = (urlCountry) => {
+	if (typeof urlCountry === 'string') {
+		return urlCountry.slice(0,2);
+	}
+}
+
 export {
 	convertDatetimeForDb,
 	convertDatetimeLocalForDb,
@@ -249,5 +255,6 @@ export {
 	getNameDayByDate,
 	removeTimezoneShiftDateToTimezone,
 	getUrlCountry,
-	getStartDateAndEndDateBySelectFilter
+	getStartDateAndEndDateBySelectFilter,
+	getCountryByUrlCountry
 };

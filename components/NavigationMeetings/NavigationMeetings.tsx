@@ -10,7 +10,7 @@ import {Button, SelectCountry, SelectWithImage, SelectWithSearch} from '../../co
 import { Categories, CategoriesByInterests, Cities, CitiesByCountries, Interests, InterestsByCities } from '../../models';
 import { CitiesByCountriesInterface, CitiesInterface } from '../../interfaces';
 
-export const NavigationMeetings = ({country, listCountries, listLanguages, textTranslation}: NavigationMeetingsProps): JSX.Element => {
+export const NavigationMeetings = ({listCountries, listLanguages, textTranslation}: NavigationMeetingsProps): JSX.Element => {
 	const router = useRouter();
 	const [optionsCountries, setOptionsCountries] = useState([]);
 	const [optionsCities, setOptionsCities] = useState([]);
@@ -102,6 +102,7 @@ export const NavigationMeetings = ({country, listCountries, listLanguages, textT
 	}
 
 	useEffect(() => {
+		console.log('===route', router.query.cities)
 		if (listCountries && Object.keys(textTranslation).length > 0) {
 			createListCountriesForOptions(listCountries);
 		}
@@ -109,6 +110,7 @@ export const NavigationMeetings = ({country, listCountries, listLanguages, textT
 
 
 	const handleSelects = (selectValue) => {
+		console.log('===selectValue', selectValue)
     const { name, value } = selectValue;
 		if (name === Constants.navigationMeetings.country && navigation?.city) {
 			
@@ -165,25 +167,25 @@ export const NavigationMeetings = ({country, listCountries, listLanguages, textT
 		const urlCategory = navigation?.category;
 		if (urlCountry && !urlCity) {
 			router.push({
-				pathname: '[countries]',
+				pathname: '/[countries]',
 				query: {countries: urlCountry}
 			}).then(() => router.reload());
 		}
 		if (urlCountry && urlCity && !urlInterest) {
 			router.push({
-				pathname: '[countries]/[cities]',
+				pathname: '/[countries]/[cities]',
 				query: {countries: urlCountry, cities:urlCity}
 			}).then(() => router.reload());
 		}
 		if (urlCountry && urlCity && urlInterest && !urlCategory) {
 			router.push({
-				pathname: '[countries]/[cities]/[interests]',
+				pathname: '/[countries]/[cities]/[interests]',
 				query: {countries: urlCountry, cities:urlCity, interests:urlInterest}
 			}).then(() => router.reload());
 		}
 		if (urlCountry && urlCity && urlInterest && urlCategory) {
 			router.push({
-				pathname: '[countries]/[cities]/[interests]/[categories]',
+				pathname: '/[countries]/[cities]/[interests]/[categories]',
 				query: {countries: urlCountry, cities:urlCity, interests:urlInterest, categories:urlCategory}
 			}).then(() => router.reload());
 		}
@@ -198,13 +200,14 @@ export const NavigationMeetings = ({country, listCountries, listLanguages, textT
 					placeholder={textTranslation[ML.key.selectCountry as keyof typeof textTranslation]}
 					options={optionsCountries}
 					onChange={handleSelects}
-					defaultValue={country.route}
+					defaultValue={Helpers.getCountryByUrlCountry(router.query.countries)}
 				/>
 				<SelectWithSearch
 					name={Constants.navigationMeetings.city}
 					placeholder={textTranslation[ML.key.selectCity as keyof typeof textTranslation]}
 					options={optionsCities}
 					onChange={handleSelects}
+					defaultValue={router.query.cities}
 				/>
 				<SelectWithSearch
 					name={Constants.navigationMeetings.interest}

@@ -1,16 +1,17 @@
-import { Alert, SelectInterest, SelectLanguage } from '../../../components';
+import { Alert, Button, PublicMeetings, SelectInterest, SelectLanguage } from '../../../components';
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
-import { Cities, Countries, CitiesByCountries, Interests, InterestsByCities, Languages } from '../../../models';
+import { Cities, Countries, CitiesByCountries, Interests, InterestsByCities, Languages, Meetings, Categories } from '../../../models';
 import { useRouter } from 'next/router';
 import { CountriesInterface, InterestsInterface, CitiesInterface, CitiesByCountriesInterface, LanguagesInterface, LanguageTranslationInterface, MetadataInterface } from '../../../interfaces';
 import { ParsedUrlQuery } from 'querystring';
-import { ML } from '../../../globals';
+import { Constants, Helpers, ML } from '../../../globals';
 import { ReactElement, useEffect } from 'react';
 import { Main } from '../../../components';
 import Head from 'next/head';
 import { useAppDispatch, useAppSelector } from '../../../store/hook';
-import { TextTranslationSlice } from '../../../store/slices';
+import { DesiresSlice, MeetingsSlice, PaginationSlice, TextTranslationSlice, UserSlice } from '../../../store/slices';
 import { Layout } from '../../../layout/Layout';
+import { useSession } from 'next-auth/react';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const listCountries = await Countries.getAll();
@@ -55,6 +56,9 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 		};
 	}
 
+	const countriesDb = await Countries.getAll();
+	const listCountries = countriesDb.data;
+
 	const countryDb = await Countries.getByRoute((params.countries as string).slice(0, 2) as string);
 	const country = countryDb.data[0];
 
@@ -74,26 +78,34 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 	const languagesDb = await Languages.getAll();
 	if (languagesDb) listLanguages = languagesDb.data
 
-	let text = {};
+	const categoriesDb = await Categories.getAll();
+	const listCategories = categoriesDb.data;
+
+	const listCities = cityData.data;
+
+	let textTranslation = {};
 	let lang;
 	const pathLanguage = params.countries;
 	if (typeof pathLanguage === 'string') {
 		const languageByPath = ML.getLanguageByPath(pathLanguage, listLanguages, country);
 		lang = languageByPath;
 		const textDb = await ML.getTranslationText(languageByPath);
-		if (textDb) text = textDb
+		if (textDb) textTranslation = textDb
 		if (!textDb || !languageByPath) return {props: {}};
 	}
 
 	let metadata;
 	const pathCity = params.cities;
-	if (typeof pathCity === 'string' && lang) metadata = generateMetadata(text, pathCity, lang);
+	if (typeof pathCity === 'string' && lang) metadata = generateMetadata(textTranslation, pathCity, lang);
 
 	return {
 		props: {
+			listCountries,
 			listInterests,
 			listLanguages,
-			text,
+			listCategories,
+			listCities,
+			textTranslation,
 			country,
 			metadata
 		}
@@ -122,21 +134,45 @@ export function generateMetadata(text: LanguageTranslationInterface.TextTranslat
 	}
 }
 
-export default function CitiesPage({ listInterests, listLanguages, text, country, metadata }: CitiesPageProps): JSX.Element {
+export default function CitiesPage({ listCountries, listCities, listInterests, listCategories, listLanguages, textTranslation, country, metadata }: CitiesPageProps): JSX.Element {
 	const router = useRouter();
 	const dispatch = useAppDispatch();
-	
-	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
-	
-	const updateLanguage = async () => {
-		const currentTranslationText = await ML.getChangeTranslationText(text)
-		dispatch(TextTranslationSlice.updateLanguageAsync(currentTranslationText))
+	const { data: session, status } = useSession();
+	const currentPagination = useAppSelector(state => PaginationSlice.paginationSelect(state, Constants.namePagination.meetingsList));
+
+	const clearDataMeetings = () => {
+		dispatch(MeetingsSlice.clearAll());
+		dispatch(DesiresSlice.clearAll());
+		dispatch(PaginationSlice.clearAll());
 	}
-	
+
+	const getMeetingsFromDb = async (startDate, endDate) => {
+		let listMeetings;
+
+		const meetingsDb = await Meetings.getPageByDateMeetingsAndCountry(country.id, startDate, endDate, currentPagination?.currentPage);
+		if (meetingsDb.data.length === 0) return [];
+
+		const countMeetingsDb = await Meetings.getCountByDateMeetingAndCountry(country.id, startDate, endDate);
+		const countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
+
+		if (meetingsDb.data.length > 0 && countMeetings > 0) {
+			listMeetings = meetingsDb.data;
+			if (!currentPagination) {
+				dispatch(PaginationSlice.setPagination({maxPage: countMeetings, namePagination: Constants.namePagination.meetingsList}));
+			}
+			if (currentPagination?.maxPage !== countMeetings) {
+				dispatch(PaginationSlice.setPagination({maxPage: countMeetings, namePagination: Constants.namePagination.meetingsList}));
+			}
+		} else {
+			clearDataMeetings();
+		}
+		return listMeetings;
+	}
+
+
 	useEffect(() => {
-		ML.setLanguageByPath(router.query.countries as string, listLanguages, country);
-		updateLanguage();
-	}, []);
+		dispatch(UserSlice.getIdUserAsync(session));
+	}, [session, status]);
 
 	return (
 		<>
@@ -145,8 +181,20 @@ export default function CitiesPage({ listInterests, listLanguages, text, country
 				<meta name="description" content={metadata.description} />
 			</Head>
 			<Main>
-				<SelectInterest  listInterests={listInterests} text={textTranslation}></SelectInterest>
-				<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()} country={country}></SelectLanguage>
+				<PublicMeetings
+					listCountries={listCountries}
+					listLanguages={listLanguages}
+					country={country}
+					textTranslation={textTranslation}
+					metadata={metadata}
+					listCities={listCities}
+					listInterests={listInterests}
+					listCategories={listCategories}
+					getMeetingsFromDb={(startDate, endDate) => getMeetingsFromDb(startDate, endDate)}
+					clearDataMeetings={clearDataMeetings}
+				/>
+				<Button name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
+				<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: '/your-meetings'})}} />
 			</Main>
 		</>
 	)

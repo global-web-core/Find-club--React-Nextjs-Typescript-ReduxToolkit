@@ -59,14 +59,15 @@ const getMeetingsWithFullDataAsync = createAsyncThunk(
 					};
 
 					if (!dataMeetings.includes(dataMeeting)) dataMeetings.push(dataMeeting);
-				} else {
-					error()
 				}
 			});
 		}
 		const listIdMeetings = getListIdMeetings(dataMeetings);
 		
-		if (!dataMeetings && !listIdMeetings) return;
+		if (!dataMeetings && !listIdMeetings) {
+			error();
+			return;
+		}
 		return {dataMeetings, listIdMeetings};
   }
 )

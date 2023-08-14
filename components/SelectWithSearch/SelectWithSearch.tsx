@@ -46,7 +46,6 @@ export const SelectWithSearch = ({name, options, placeholder, defaultValue, onCh
 		setValue(e.target.value)
 		if (e.target.value === '') {
 			setActiveOptions(options);
-			// return
 		}
 		
 		const filterOption = options.filter(option => option.label.toLowerCase().includes(e.target.value.toLowerCase()))
@@ -63,7 +62,8 @@ export const SelectWithSearch = ({name, options, placeholder, defaultValue, onCh
 
 	useEffect(() => {
 		if (options && defaultValue) {
-			setValue(getLabelFromOptions(options, defaultValue))
+			if (selectedOption.value == defaultValue) setValue(getLabelFromOptions(options, defaultValue))
+			if (selectedOption.value != defaultValue) setValue(getLabelFromOptions(options, selectedOption.value))
 		} else if (options && !defaultValue && value?.length > 0) {
 			const selectedValue = options.find(option => option.label === value);
 			if (!selectedValue) setValue('')
@@ -73,13 +73,6 @@ export const SelectWithSearch = ({name, options, placeholder, defaultValue, onCh
 	useEffect(() => {
 		changeSelectedOption(defaultValue);
 	}, [defaultValue]);
-
-	// useEffect(() => {
-	// 	// if 
-	// 	console.log('===value', value)
-	// }, [value]);
-
-
 
 	return (
 		<>

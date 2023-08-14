@@ -19,6 +19,7 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 	const selectFilter = useAppSelector(state => SelectFilterSlice.selectFilter(state));
 	const [loading, setLoading] = useState(true);
 	const [mounted, setMounted] = useState(false);
+	const [title, setTitle] = useState('');
 
 	const clearDataUsers = () => {
 		dispatch(UserSlice.clearAll());
@@ -54,6 +55,7 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 		}
 		startFetching();
 		setMounted(true);
+		getTitle();
 	}, [])
 
 	useEffect(() => {
@@ -62,6 +64,14 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 		}
 	}, [loading, selectFilter, currentPagination?.currentPage, activeStartDateChange, selectedDayCalendar])
 
+	const getTitle = () => {
+		let currentTitle;
+		console.log('===router', router.query)
+		if (Object.keys(router.query).length === 1 && router.query.countries) currentTitle = textTranslation[ML.key[router.query.countries]] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+		if (Object.keys(router.query).length === 2 && router.query.cities) currentTitle = textTranslation[ML.key[router.query.cities]] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+		setTitle(currentTitle);
+	}
+
 	return (
 		<>
 			{mounted &&
@@ -69,8 +79,8 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 					<CalendarMeetings language={metadata.lang} country={country.id} />
 				</div>
 			}
-			<NavigationMeetings country={country}  listCountries={listCountries} listLanguages={listLanguages} textTranslation={textTranslation} />
-			<h1 className={styles.title}>{textTranslation[ML.key[country.route]] + ' - ' + textTranslation[ML.key.allAvailableMeetings]}</h1>
+			<NavigationMeetings listCountries={listCountries} listLanguages={listLanguages} textTranslation={textTranslation} />
+			<h1 className={styles.title}>{title}</h1>
 			{loading
 				? <Loading textTranslation={textTranslation[ML.key.loading]} />
 				: 
