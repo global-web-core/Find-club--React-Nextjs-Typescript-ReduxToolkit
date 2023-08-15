@@ -17,6 +17,12 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 	const [optionsInterest, setOptionsInterest] = useState([]);
 	const [optionsCategories, setOptionsCategories] = useState([]);
 	const [navigation, setNavigation] = useState({});
+	const [defaultValues, setDefaultValues] = useState({
+		country: Helpers.getCountryByUrlCountry(router.query.countries),
+		city: router.query.cities,
+		interest: router.query.interests,
+		category: router.query.categories
+	});
 
 	const createListCountriesForOptions = (listCountries) => {
 		const options = [];
@@ -113,6 +119,14 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 		// console.log('===selectValue', selectValue)
     const { name, value } = selectValue;
 		if (name === Constants.navigationMeetings.country && navigation?.city) {
+			if (router.query.cities) {
+				setDefaultValues(prevValues => ({
+					...prevValues,
+					city: null,
+					interest: null,
+					category: null
+				}));
+			}
 			
 			// Remove city, interest from another country and add new country
 			setNavigation(prevState => {
@@ -126,6 +140,14 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 				}
 			});
 		} else if (name === Constants.navigationMeetings.city && navigation?.interest) {
+			if (router.query.interests) {
+				setDefaultValues(prevValues => ({
+					...prevValues,
+					interest: null,
+					category: null
+				}));
+			}
+
 			// Remove interest from another country and add new city
 			setNavigation(prevState => {
 				if (prevState[Constants.navigationMeetings.country] !== value) {
@@ -138,6 +160,13 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 			});
 			setOptionsInterest([]);
 		} else if (name === Constants.navigationMeetings.interest && navigation?.category) {
+			if (router.query.categories) {
+				setDefaultValues(prevValues => ({
+					...prevValues,
+					category: null
+				}));
+			}
+
 			// Remove category from another country and add new interest
 			setNavigation(prevState => {
 				if (prevState[Constants.navigationMeetings.category] !== value) {
@@ -158,6 +187,7 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 			createListInterestForOptions();
 			createListCategoriesForOptions();
 		}
+		// console.log('===navigation', navigation)
 	}, [navigation])
 
 	const handleGoTo = () => {
@@ -200,28 +230,28 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 					placeholder={textTranslation[ML.key.selectCountry as keyof typeof textTranslation]}
 					options={optionsCountries}
 					onChange={handleSelects}
-					defaultValue={Helpers.getCountryByUrlCountry(router.query.countries)}
+					defaultValue={defaultValues.country}
 				/>
 				<SelectWithSearch
 					name={Constants.navigationMeetings.city}
 					placeholder={textTranslation[ML.key.selectCity as keyof typeof textTranslation]}
 					options={optionsCities}
 					onChange={handleSelects}
-					defaultValue={router.query.cities}
+					defaultValue={defaultValues.city}
 				/>
 				<SelectWithSearch
 					name={Constants.navigationMeetings.interest}
 					placeholder={textTranslation[ML.key.selectInterest as keyof typeof textTranslation]}
 					options={optionsInterest}
 					onChange={handleSelects}
-					defaultValue={router.query.interests}
+					defaultValue={defaultValues.interest}
 				/>
 				<SelectWithSearch
 					name={Constants.navigationMeetings.category}
 					placeholder={textTranslation[ML.key.selectCategory as keyof typeof textTranslation]}
 					options={optionsCategories}
 					onChange={handleSelects}
-					defaultValue={router.query.categories}
+					defaultValue={defaultValues.category}
 				/>
 				<Button name={textTranslation[ML.key.goTo]} onClick={handleGoTo} />
 			</div>

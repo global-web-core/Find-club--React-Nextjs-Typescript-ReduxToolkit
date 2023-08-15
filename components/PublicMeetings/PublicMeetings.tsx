@@ -67,7 +67,7 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 	const getTitle = () => {
 		let currentTitle;
 		if (Object.keys(router.query).length === 1 && router.query.countries) {
-			currentTitle = textTranslation[router.query.countries] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+			currentTitle = textTranslation[Helpers.getCountryByUrlCountry(router.query.countries)] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
 		} else if (Object.keys(router.query).length === 2 && router.query.cities) {
 			currentTitle = textTranslation[router.query.cities] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
 		} else if (Object.keys(router.query).length === 3 && router.query.interests) {
