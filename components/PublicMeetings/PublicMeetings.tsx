@@ -67,13 +67,13 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 	const getTitle = () => {
 		let currentTitle;
 		if (Object.keys(router.query).length === 1 && router.query.countries) {
-			currentTitle = textTranslation[ML.key[router.query.countries]] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+			currentTitle = textTranslation[router.query.countries] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
 		} else if (Object.keys(router.query).length === 2 && router.query.cities) {
-			currentTitle = textTranslation[ML.key[router.query.cities]] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+			currentTitle = textTranslation[router.query.cities] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
 		} else if (Object.keys(router.query).length === 3 && router.query.interests) {
-			currentTitle = textTranslation[ML.key[router.query.interests]] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+			currentTitle = textTranslation[router.query.interests] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
 		} else if (Object.keys(router.query).length === 4 && router.query.categories) {
-			currentTitle = textTranslation[ML.key[router.query.categories]] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+			currentTitle = textTranslation[router.query.categories] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
 		}
 		setTitle(currentTitle);
 	}
