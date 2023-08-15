@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { AppState } from '../../store';
 import { Constants, Helpers, ML } from '../../../globals';
-import { Meetings } from '../../../models';
+import { Categories, CategoriesByInterests, Cities, CitiesByCountries, Countries, Interests, InterestsByCities, Meetings } from '../../../models';
 
 const maxDate =  Helpers.increaseDateByMonths(new Date(), 3);
 
@@ -44,12 +44,112 @@ const setListDatemeetingsPerMonthAsync = createAsyncThunk<LanguageTranslationInt
 			if (currentDate && !listDatePerMonth.includes(currentDate)) listDatePerMonth.push(currentDate)
 		}
 
-		for await (const date of listDatePerMonth) {
-			const startDay = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(date));
-			const endDay = Helpers.convertDatetimeLocalForDb(Helpers.getEndDayByDate(date));
+		const country = (await Countries.getByRoute(Helpers.getCountryByUrlCountry(parametersRequest.router.query.countries))).data[0]
+		if (Object.keys(parametersRequest.router.query).length === 1 && parametersRequest.router.query.countries) {
+			for await (const date of listDatePerMonth) {
+				const startDay = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(date));
+				const endDay = Helpers.convertDatetimeLocalForDb(Helpers.getEndDayByDate(date));
 	
-			const meetingDb = await Meetings.getOneByDateMeetingsAndCountry(parametersRequest.country, startDay, endDay);
-			if (meetingDb && meetingDb.data.length > 0) listDatemeetingsPerMonth.push(date)
+				const meetingDb = await Meetings.getOneByDateMeetingsAndCountry(country.id, parametersRequest.language.id, startDay, endDay);
+				if (meetingDb && meetingDb.data.length > 0) listDatemeetingsPerMonth.push(date)
+			}
+		} else if (Object.keys(parametersRequest.router.query).length === 2 && parametersRequest.router.query.cities) {
+			const citiesByCountry = (await CitiesByCountries.getAllByCountry(country.id)).data
+			const citiesByRoute = (await Cities.getAllByRouteCity(parametersRequest.router.query.cities)).data
+
+			let city;
+			for (const cityByCountry of citiesByCountry) {
+				for (const cityByRoute of citiesByRoute) {
+					if (cityByRoute.id === cityByCountry.idCity) {
+						city = cityByRoute;
+						break;
+					}
+				}
+			}
+
+			for await (const date of listDatePerMonth) {
+				const startDay = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(date));
+				const endDay = Helpers.convertDatetimeLocalForDb(Helpers.getEndDayByDate(date));
+	
+				const meetingDb = await Meetings.getOneByDateMeetingsAndCity(country.id, city.id, parametersRequest.language.id, startDay, endDay);
+				if (meetingDb && meetingDb.data.length > 0) listDatemeetingsPerMonth.push(date)
+			}
+		} else if (Object.keys(parametersRequest.router.query).length === 3 && parametersRequest.router.query.interests) {
+			const citiesByCountry = (await CitiesByCountries.getAllByCountry(country.id)).data
+			const citiesByRoute = (await Cities.getAllByRouteCity(parametersRequest.router.query.cities)).data
+			let city;
+			for (const cityByCountry of citiesByCountry) {
+				for (const cityByRoute of citiesByRoute) {
+					if (cityByRoute.id === cityByCountry.idCity) {
+						city = cityByRoute;
+						break;
+					}
+				}
+			}
+
+			const interestsByCity = (await InterestsByCities.getAllByCity(city.id))?.data;
+			const interestsByRoute = (await Interests.getAllByRouteInterest(parametersRequest.router.query.interests))?.data;
+			let interest;
+			for (const interestByCity of interestsByCity) {
+				for (const interestByRoute of interestsByRoute) {
+					if (interestByRoute.id === interestByCity.idInterest) {
+						interest = interestByRoute;
+						break;
+					}
+				}
+			}
+
+			for await (const date of listDatePerMonth) {
+				const startDay = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(date));
+				const endDay = Helpers.convertDatetimeLocalForDb(Helpers.getEndDayByDate(date));
+	
+				const meetingDb = await Meetings.getOneByDateMeetingsAndInterest(country.id, city.id, interest.id, parametersRequest.language.id, startDay, endDay);
+				if (meetingDb && meetingDb.data.length > 0) listDatemeetingsPerMonth.push(date)
+			}
+		} else if (Object.keys(parametersRequest.router.query).length === 4 && parametersRequest.router.query.categories) {
+			const citiesByCountry = (await CitiesByCountries.getAllByCountry(country.id)).data
+			const citiesByRoute = (await Cities.getAllByRouteCity(parametersRequest.router.query.cities)).data
+			let city;
+			for (const cityByCountry of citiesByCountry) {
+				for (const cityByRoute of citiesByRoute) {
+					if (cityByRoute.id === cityByCountry.idCity) {
+						city = cityByRoute;
+						break;
+					}
+				}
+			}
+
+			const interestsByCity = (await InterestsByCities.getAllByCity(city.id))?.data;
+			const interestsByRoute = (await Interests.getAllByRouteInterest(parametersRequest.router.query.interests))?.data;
+			let interest;
+			for (const interestByCity of interestsByCity) {
+				for (const interestByRoute of interestsByRoute) {
+					if (interestByRoute.id === interestByCity.idInterest) {
+						interest = interestByRoute;
+						break;
+					}
+				}
+			}
+
+			let category;
+			const categoriesByInterest = (await CategoriesByInterests.getAllByIdInterest(interest.id))?.data;
+			const categoriesByRoute = (await Categories.getAllByRoute(parametersRequest.router.query.categories))?.data;
+			for (const categoryByInterest of categoriesByInterest) {
+				for (const categoryByRoute of categoriesByRoute) {
+					if (categoryByRoute.id === categoryByInterest.idCategory) {
+						category = categoryByRoute;
+						break;
+					}
+				}
+			}
+
+			for await (const date of listDatePerMonth) {
+				const startDay = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(date));
+				const endDay = Helpers.convertDatetimeLocalForDb(Helpers.getEndDayByDate(date));
+	
+				const meetingDb = await Meetings.getOneByDateMeetingsAndCategory(country.id, city.id, interest.id, category.id, parametersRequest.language.id, startDay, endDay);
+				if (meetingDb && meetingDb.data.length > 0) listDatemeetingsPerMonth.push(date)
+			}
 		}
 
 		const listResult = [];

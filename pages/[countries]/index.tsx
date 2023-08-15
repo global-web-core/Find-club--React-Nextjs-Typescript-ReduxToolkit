@@ -73,9 +73,11 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 
 	let textTranslation = {};
 	let lang;
+	let language;
 	const pathLanguage = params.countries;
 	if (typeof pathLanguage === 'string') {
 		const languageByPath = ML.getLanguageByPath(pathLanguage, listLanguages, country);
+		language = listLanguages.find(lang => lang.route === languageByPath)
 		lang = languageByPath;
 		const textDb = await ML.getTranslationText(languageByPath);
 		if (textDb) textTranslation = textDb
@@ -94,6 +96,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 			listCategories,
 			textTranslation,
 			country,
+			language,
 			metadata
 		}
 	};
@@ -121,7 +124,7 @@ export function generateMetadata(text: LanguageTranslationInterface.TextTranslat
 	}
 }
 
-export default function CountriesPage({ listCities, listLanguages, listCountries, listInterests, listCategories, textTranslation, country, metadata }: CountriesPageProps): JSX.Element {
+export default function CountriesPage({ listCities, listLanguages, listCountries, listInterests, listCategories, textTranslation, country, language, metadata }: CountriesPageProps): JSX.Element {
 	const router = useRouter();
 	const dispatch = useAppDispatch();
 	const { data: session, status } = useSession();
@@ -136,10 +139,10 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 	const getMeetingsFromDb = async (startDate, endDate) => {
 		let listMeetings;
 
-		const meetingsDb = await Meetings.getPageByDateMeetingsAndCountry(country.id, startDate, endDate, currentPagination?.currentPage);
+		const meetingsDb = await Meetings.getPageByDateMeetingsAndCountry(country.id, language.id, startDate, endDate, currentPagination?.currentPage);
 		if (meetingsDb.data.length === 0) return [];
 
-		const countMeetingsDb = await Meetings.getCountByDateMeetingAndCountry(country.id, startDate, endDate);
+		const countMeetingsDb = await Meetings.getCountByDateMeetingAndCountry(country.id, language.id, startDate, endDate);
 		const countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
 
 		if (meetingsDb.data.length > 0 && countMeetings > 0) {
@@ -179,6 +182,7 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 					listCategories={listCategories}
 					getMeetingsFromDb={(startDate, endDate) => getMeetingsFromDb(startDate, endDate)}
 					clearDataMeetings={clearDataMeetings}
+					language={language}
 				/>
 				<Button name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
 				<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: '/your-meetings'})}} />

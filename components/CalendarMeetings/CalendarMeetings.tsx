@@ -6,8 +6,10 @@ import { CalendarMeetingsSlice, MeetingsSlice, SelectFilterSlice } from '../../s
 import { Constants, Helpers } from '../../globals';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { Meetings } from '../../models';
+import { useRouter } from 'next/router';
 
-export const CalendarMeetings = ({language, country, ...props}: CalendarMeetingsProps):JSX.Element => {
+export const CalendarMeetings = ({language, metadataLanguage, country, ...props}: CalendarMeetingsProps):JSX.Element => {
+	const router = useRouter();
 	const dispatch = useAppDispatch();
 	const selectedDayCalendar = useAppSelector(state => CalendarMeetingsSlice.selectedDaySelect(state));
 	const selectedDay = Helpers.convertFromReduxToDatetimeLocal(selectedDayCalendar);
@@ -45,7 +47,7 @@ export const CalendarMeetings = ({language, country, ...props}: CalendarMeetings
 	}, [selectFilter])
 
 	useEffect(() => {
-		const request = dispatch(CalendarMeetingsSlice.setListDatemeetingsPerMonthAsync({country}));
+		const request = dispatch(CalendarMeetingsSlice.setListDatemeetingsPerMonthAsync({country, router, language}));
 		return () => request.abort()
 	}, [activeStartDateChange])
 
@@ -55,7 +57,7 @@ export const CalendarMeetings = ({language, country, ...props}: CalendarMeetings
 				onChange={changeSelectedDay} value={selectedDay}
 				minDate={new Date()} maxDate={new Date(maxDate)}
 				minDetail={"month"} maxDetail={"month"}
-				locale={language}
+				locale={metadataLanguage}
 				onActiveStartDateChange={changeActiveStartDateChange}
 				tileClassName={({ date }) => {		
 					// console.log('===tileClassName')

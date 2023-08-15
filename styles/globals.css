@@ -317,6 +317,7 @@ h1 {
 
 .react-calendar .highlight:hover {
 	border-radius: 20px 20px 0px 0px;
+	border-bottom: var(--border-default-darkgreen);
 }
 
 @media (max-width: 576px) {

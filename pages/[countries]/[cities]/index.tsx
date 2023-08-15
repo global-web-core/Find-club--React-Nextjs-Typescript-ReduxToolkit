@@ -61,15 +61,26 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 
 	const countryDb = await Countries.getByRoute((params.countries as string).slice(0, 2) as string);
 	const country = countryDb.data[0];
+	const citiesByCountry = (await CitiesByCountries.getAllByCountry(country.id)).data
+	const citiesByRoute = (await Cities.getAllByRouteCity(params.cities as string)).data
+	let cityData = [];
+	for (const cityByCountry of citiesByCountry) {
+		for (const cityByRoute of citiesByRoute) {
+			if (cityByRoute.id === cityByCountry.idCity) {
+				cityData.push(cityByRoute);
+				break;
+			}
+		}
+	}
+	const city = cityData[0];
 
-	const cityData = await Cities.getAllByRouteCity(params.cities as string);
 	const interestsData = await Interests.getAll();
 	const interestsByCitiesData = await InterestsByCities.getAll();
-	if (!country || !cityData.data.length || !interestsData.data.length || !interestsByCitiesData.data.length || !countryDb.data.length) return {props: {}};
+	if (!country || !cityData.length || !interestsData.data.length || !interestsByCitiesData.data.length || !countryDb.data.length) return {props: {}};
 
 	const idInterests: number[] = [];
 	for (let index = 0; index < interestsByCitiesData.data.length; index++) {
-		if (interestsByCitiesData.data[index].idCity === cityData.data[0].id) idInterests.push(interestsByCitiesData.data[index].idInterest);
+		if (interestsByCitiesData.data[index].idCity === cityData[0].id) idInterests.push(interestsByCitiesData.data[index].idInterest);
 	}
 
 	const listInterests: InterestsInterface.Interest[] = interestsData.data.filter((interest: InterestsInterface.Interest) => idInterests.includes(interest.id));
@@ -81,13 +92,15 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 	const categoriesDb = await Categories.getAll();
 	const listCategories = categoriesDb.data;
 
-	const listCities = cityData.data;
+	const listCities = cityData;
 
 	let textTranslation = {};
 	let lang;
+	let language;
 	const pathLanguage = params.countries;
 	if (typeof pathLanguage === 'string') {
 		const languageByPath = ML.getLanguageByPath(pathLanguage, listLanguages, country);
+		language = listLanguages.find(lang => lang.route === languageByPath)
 		lang = languageByPath;
 		const textDb = await ML.getTranslationText(languageByPath);
 		if (textDb) textTranslation = textDb
@@ -107,6 +120,8 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 			listCities,
 			textTranslation,
 			country,
+			city,
+			language,
 			metadata
 		}
 	};
@@ -134,7 +149,7 @@ export function generateMetadata(text: LanguageTranslationInterface.TextTranslat
 	}
 }
 
-export default function CitiesPage({ listCountries, listCities, listInterests, listCategories, listLanguages, textTranslation, country, metadata }: CitiesPageProps): JSX.Element {
+export default function CitiesPage({ listCountries, listCities, listInterests, listCategories, listLanguages, textTranslation, country, city, language, metadata }: CitiesPageProps): JSX.Element {
 	const router = useRouter();
 	const dispatch = useAppDispatch();
 	const { data: session, status } = useSession();
@@ -149,10 +164,10 @@ export default function CitiesPage({ listCountries, listCities, listInterests, l
 	const getMeetingsFromDb = async (startDate, endDate) => {
 		let listMeetings;
 
-		const meetingsDb = await Meetings.getPageByDateMeetingsAndCountry(country.id, startDate, endDate, currentPagination?.currentPage);
+		const meetingsDb = await Meetings.getPageByDateMeetingsAndCity(country.id, city.id, language.id, startDate, endDate, currentPagination?.currentPage);
 		if (meetingsDb.data.length === 0) return [];
 
-		const countMeetingsDb = await Meetings.getCountByDateMeetingAndCountry(country.id, startDate, endDate);
+		const countMeetingsDb = await Meetings.getCountByDateMeetingAndCity(country.id, city.id, language.id, startDate, endDate);
 		const countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
 
 		if (meetingsDb.data.length > 0 && countMeetings > 0) {
@@ -192,6 +207,7 @@ export default function CitiesPage({ listCountries, listCities, listInterests, l
 					listCategories={listCategories}
 					getMeetingsFromDb={(startDate, endDate) => getMeetingsFromDb(startDate, endDate)}
 					clearDataMeetings={clearDataMeetings}
+					language={language}
 				/>
 				<Button name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
 				<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: '/your-meetings'})}} />

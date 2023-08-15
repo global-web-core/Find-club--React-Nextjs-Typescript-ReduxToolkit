@@ -102,7 +102,7 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 	}
 
 	useEffect(() => {
-		console.log('===route', router.query.cities)
+		// console.log('===route', router.query.cities)
 		if (listCountries && Object.keys(textTranslation).length > 0) {
 			createListCountriesForOptions(listCountries);
 		}
@@ -110,7 +110,7 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 
 
 	const handleSelects = (selectValue) => {
-		console.log('===selectValue', selectValue)
+		// console.log('===selectValue', selectValue)
     const { name, value } = selectValue;
 		if (name === Constants.navigationMeetings.country && navigation?.city) {
 			
@@ -214,12 +214,14 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 					placeholder={textTranslation[ML.key.selectInterest as keyof typeof textTranslation]}
 					options={optionsInterest}
 					onChange={handleSelects}
+					defaultValue={router.query.interests}
 				/>
 				<SelectWithSearch
 					name={Constants.navigationMeetings.category}
 					placeholder={textTranslation[ML.key.selectCategory as keyof typeof textTranslation]}
 					options={optionsCategories}
 					onChange={handleSelects}
+					defaultValue={router.query.categories}
 				/>
 				<Button name={textTranslation[ML.key.goTo]} onClick={handleGoTo} />
 			</div>

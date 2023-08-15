@@ -20,6 +20,7 @@ const initialState:InitialState = {
 const getMeetingsWithFullDataAsync = createAsyncThunk(
   'meetings/getMeetingsWithFullDataAsync',
   async (data, {dispatch, rejectWithValue}) => {
+		// console.log('===data', data)
 		const error = () => {
 			const textError = data.textTranslation[ML.key.receivingMeeting]
 			dispatch(AlertsSlice.add(textError, data.textTranslation[ML.key.error], 'danger'));
@@ -68,6 +69,8 @@ const getMeetingsWithFullDataAsync = createAsyncThunk(
 			error();
 			return;
 		}
+		// console.log('===dataMeetings', dataMeetings)
+		// console.log('===listIdMeetings', listIdMeetings)
 		return {dataMeetings, listIdMeetings};
   }
 )

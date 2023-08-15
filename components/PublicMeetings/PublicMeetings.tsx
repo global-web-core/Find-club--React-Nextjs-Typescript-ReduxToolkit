@@ -8,7 +8,7 @@ import cn from 'classnames';
 import { useRouter } from 'next/router';
 import {BlockMeetings, CalendarMeetings, Loading, NavigationMeetings} from '../../components';
 
-export const PublicMeetings = ({listCountries, listLanguages, country, textTranslation, metadata, getMeetingsFromDb, listCities, listInterests, listCategories, clearDataMeetings}: PublicMeetingsProps): JSX.Element => {
+export const PublicMeetings = ({listCountries, listLanguages, country, textTranslation, metadata, getMeetingsFromDb, listCities, listInterests, listCategories, clearDataMeetings, language}: PublicMeetingsProps): JSX.Element => {
 	const dispatch = useAppDispatch();
 	const router = useRouter();
 	const selectedDayCalendar = useAppSelector(state => CalendarMeetingsSlice.selectedDaySelect(state));
@@ -66,9 +66,15 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 
 	const getTitle = () => {
 		let currentTitle;
-		console.log('===router', router.query)
-		if (Object.keys(router.query).length === 1 && router.query.countries) currentTitle = textTranslation[ML.key[router.query.countries]] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
-		if (Object.keys(router.query).length === 2 && router.query.cities) currentTitle = textTranslation[ML.key[router.query.cities]] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+		if (Object.keys(router.query).length === 1 && router.query.countries) {
+			currentTitle = textTranslation[ML.key[router.query.countries]] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+		} else if (Object.keys(router.query).length === 2 && router.query.cities) {
+			currentTitle = textTranslation[ML.key[router.query.cities]] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+		} else if (Object.keys(router.query).length === 3 && router.query.interests) {
+			currentTitle = textTranslation[ML.key[router.query.interests]] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+		} else if (Object.keys(router.query).length === 4 && router.query.categories) {
+			currentTitle = textTranslation[ML.key[router.query.categories]] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+		}
 		setTitle(currentTitle);
 	}
 
@@ -76,7 +82,7 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 		<>
 			{mounted &&
 				<div>
-					<CalendarMeetings language={metadata.lang} country={country.id} />
+					<CalendarMeetings metadataLanguage={metadata.lang} country={country.id} language={language} />
 				</div>
 			}
 			<NavigationMeetings listCountries={listCountries} listLanguages={listLanguages} textTranslation={textTranslation} />

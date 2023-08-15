@@ -321,7 +321,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 									name="selectPlaceMeeting" rows={3} placeholder={textTranslation[ML.key.writeMeetingPlace]}
 									onChange={(value) => handleSelect(value.target.value, value.target.name)}
 								/>
-								<button type='submit'>{textTranslation[ML.key.continue]}</button>
+								<button type='submit'>{textTranslation[ML.key.add]}</button>
 								
 							</form>
 						</DivDefault>

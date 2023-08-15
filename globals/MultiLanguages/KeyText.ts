@@ -113,6 +113,7 @@ const keyText = {
 	yourConfirmationComeAccepted: 'your-confirmation-come-accepted',
 	errorYourConfirmationComeAccepted: 'error-your-confirmation-come-accepted',
 	allAvailableMeetings: 'all-available-meetings',
+	add: 'add',
 }
 
 export default keyText;
