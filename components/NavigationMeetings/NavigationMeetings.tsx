@@ -117,6 +117,7 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 
 	const handleSelects = (selectValue) => {
 		// console.log('===selectValue', selectValue)
+		// console.log('===navigation-1', navigation)
     const { name, value } = selectValue;
 		if (name === Constants.navigationMeetings.country && navigation?.city) {
 			if (router.query.cities) {
@@ -138,6 +139,7 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 					newState[name] = value;
 					return newState;
 				}
+				return prevState;
 			});
 		} else if (name === Constants.navigationMeetings.city && navigation?.interest) {
 			if (router.query.interests) {
@@ -157,6 +159,7 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 					newState[name] = value;
 					return newState;
 				}
+				return prevState;
 			});
 			setOptionsInterest([]);
 		} else if (name === Constants.navigationMeetings.interest && navigation?.category) {
@@ -175,6 +178,7 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 					newState[name] = value;
 					return newState;
 				}
+				return prevState;
 			});
 		} else {
 			setNavigation((prevState) => ({...prevState, [name]: value}));
@@ -187,7 +191,6 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 			createListInterestForOptions();
 			createListCategoriesForOptions();
 		}
-		// console.log('===navigation', navigation)
 	}, [navigation])
 
 	const handleGoTo = () => {
