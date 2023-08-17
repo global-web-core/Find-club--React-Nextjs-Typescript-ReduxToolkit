@@ -107,6 +107,8 @@ const navigationMeetings = {
 	category: 'category',
 }
 
+const basicNameLanguagetranslation = 'languagetranslation';
+
 const controllers: Record<TypeController, TypeController> = {
 	countries: 'countries',
 	accounts: 'accounts',
@@ -118,7 +120,8 @@ const controllers: Record<TypeController, TypeController> = {
 	interests: 'interests',
 	interestsbycities: 'interestsbycities',
 	languages: 'languages',
-	languagetranslation: 'languagetranslation',
+	languagetranslationru: 'languagetranslationru',
+	languagetranslationen: 'languagetranslationen',
 	meetings: 'meetings',
 	sessions: 'sessions',
 	users: 'users',
@@ -155,7 +158,8 @@ export {
 	accessMeeting,
 	navigationMeetings,
 	controllers,
-	methodHttp
+	methodHttp,
+	basicNameLanguagetranslation
 };
 
 interface Status {
