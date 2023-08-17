@@ -24,7 +24,7 @@ const getTranslationText = async (language = Constants.settingDefault.LANGUAGE) 
 	const textDb = await LanguageTranslation.get(language);
 	
 	const text: LanguageTranslationInterface.TextTranslation = {};
-	if (textDb) {
+	if (textDb.data) {
 		const listText = textDb.data;
 		
 		listText.forEach((fieldText: LanguageTranslationInterface.Translation) => {
