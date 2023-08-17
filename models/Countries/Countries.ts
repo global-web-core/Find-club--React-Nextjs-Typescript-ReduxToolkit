@@ -1,15 +1,11 @@
 import { Http } from '../../globals';
+import {HttpInterface, CountriesInterface} from '../../interfaces'
+import { controllers } from '../../globals/Constants/Constants';
 
-const getByRoute	= async (route: string)		=> await Http.get('countries', {conditions:[{k:'route',v:route}]});
-const getById	= async (id: number)		=> await Http.get('countries', {conditions:[{k:'id',v:id}]});
-const getAll	= async ()		=> await Http.get('countries', {});
+const getByRoute = async (route: string): Promise<HttpInterface.Http<CountriesInterface.Country>> => await Http.get(controllers.countries, {conditions:[{k:'route',v:route}]});
+const getAll = async (): Promise<HttpInterface.Http<CountriesInterface.Country>> => await Http.get(controllers.countries, {});
 
 export {
-	// getInactiveAll,
-	// get,
-	// add,
-	// update,
 	getByRoute,
-	getAll,
-	getById
+	getAll
 }

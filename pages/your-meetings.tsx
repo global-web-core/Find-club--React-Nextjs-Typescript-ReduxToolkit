@@ -37,6 +37,7 @@ export default function YourMeetingsPage(): JSX.Element {
 			ML.setLanguageByBrowser(listLanguagesDb);
 
 			const countriesDb = await Countries.getAll();
+			console.log('===countriesDb', countriesDb)
 			const listCountriesDb = countriesDb.data;
 			
 			const citiesDb = await Cities.getAll();

@@ -10,6 +10,7 @@ import * as CategoriesByInterestsInterface from './categoriesByInterests.interfa
 import * as MeetingsInterface from './meetings.interface';
 import * as DesiresInterface from './desires.interface';
 import * as MetadataInterface from './metadata.interface';
+import * as HttpInterface from './http.interface';
 
 export {
 	CitiesInterface,
@@ -23,5 +24,6 @@ export {
 	CategoriesByInterestsInterface,
 	MeetingsInterface,
 	DesiresInterface,
-	MetadataInterface
+	MetadataInterface,
+	HttpInterface
 }

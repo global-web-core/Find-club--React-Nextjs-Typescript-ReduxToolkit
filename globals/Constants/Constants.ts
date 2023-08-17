@@ -1,3 +1,5 @@
+import { TypeController, TypeMethodHttp } from "../../types";
+
 const isDeveloperMode = process.env.NODE_ENV !== 'production';
 const url = isDeveloperMode ? 'http://localhost' : '//api.myApiInInternet.ru';
 // const url = isDeveloperMode ? '//localhost' : '//api.myApiInInternet.ru';  It is original version
@@ -105,6 +107,33 @@ const navigationMeetings = {
 	category: 'category',
 }
 
+const controllers: Record<TypeController, TypeController> = {
+	countries: 'countries',
+	accounts: 'accounts',
+	categories: 'categories',
+	categoriesbyinterests: 'categoriesbyinterests',
+	cities: 'cities',
+	citiesbycountries: 'citiesbycountries',
+	desires: 'desires',
+	interests: 'interests',
+	interestsbycities: 'interestsbycities',
+	languages: 'languages',
+	languagetranslationru: 'languagetranslationru',
+	languagetranslationen: 'languagetranslationen',
+	meetings: 'meetings',
+	sessions: 'sessions',
+	users: 'users',
+	verificationtokens: 'verificationtokens',
+}
+
+const methodHttp: Record<TypeMethodHttp, TypeMethodHttp> = {
+	get: 'get',
+	getCount: 'getCount',
+	add: 'add',
+	update: 'update',
+	delete: 'delete',
+}
+
 
 export {
 	API,
@@ -125,7 +154,9 @@ export {
 	namePagination,
 	statusFetch,
 	accessMeeting,
-	navigationMeetings
+	navigationMeetings,
+	controllers,
+	methodHttp
 };
 
 interface Status {

@@ -1,6 +1,7 @@
 import { Http } from '../../globals';
+import { controllers } from '../../globals/Constants/Constants';
 
-const getAll	= async ()		=> await Http.get('languages', {});
+const getAll = async () => await Http.get(controllers.languages, {});
 
 export {
 	getAll

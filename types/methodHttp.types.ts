@@ -1,0 +1,1 @@
+export type TypeMethodHttp = 'get' | 'getCount' | 'add' | 'update' | 'delete';
