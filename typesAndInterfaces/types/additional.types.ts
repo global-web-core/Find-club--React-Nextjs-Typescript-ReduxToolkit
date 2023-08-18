@@ -1,0 +1,1 @@
+export type TypeOneOrZero = 0 | 1;

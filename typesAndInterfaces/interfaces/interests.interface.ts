@@ -1,7 +1,9 @@
+import {TypeOneOrZero} from '../types'
+
 export interface Interest {
 	id: number;
 	interest: string;
 	route: string;
-	status: 1 | 0;
+	status: TypeOneOrZero;
 	translation?: string;
 }

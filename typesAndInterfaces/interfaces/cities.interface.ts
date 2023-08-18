@@ -1,7 +1,9 @@
+import {TypeOneOrZero} from '../types'
+
 export interface City {
 	id: number;
 	nameCity: string;
 	route: string;
-	status: 1 | 0;
+	status: TypeOneOrZero;
 	translation?: string;
 }

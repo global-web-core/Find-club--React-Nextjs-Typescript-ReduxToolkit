@@ -1,3 +1,4 @@
+import { AdditionalInterface } from "../../interfaces";
 import { TypeController, TypeMethodHttp } from "../../types";
 
 const isDeveloperMode = process.env.NODE_ENV !== 'production';
@@ -23,17 +24,17 @@ const requestConditionType = {
 	LIKE: 6
 };
 
-const requestConcatinationType: Status = {
+const requestConcatinationType: AdditionalInterface.OneOrZero = {
 	AND: 0,
 	OR: 1
 };
 
-const requestOderType: Status = {
+const requestOderType: AdditionalInterface.OneOrZero = {
 	ASC: 0,
 	DESC: 1
 };
 
-const comonStatus: Status = {
+const comonStatus: AdditionalInterface.OneOrZero = {
 	IN_ACTIVE: 0,
 	ACTIVE: 1
 };
@@ -42,27 +43,27 @@ const settingDefault = {
 	LANGUAGE: 'ru'
 };
 
-const activyStatus: Status = {
+const activyStatus: AdditionalInterface.OneOrZero = {
 	ACTIVE: 1,
 	NOT_ACTIVE: 0
 };
 
-const statusOrganizer: Status = {
+const statusOrganizer: AdditionalInterface.OneOrZero = {
 	MY: 1,
 	ANOTHER: 0
 };
 
-const statusWish: Status = {
+const statusWish: AdditionalInterface.OneOrZero = {
 	WISH: 1,
 	NOWISH: 0
 };
 
-const statusReadiness: Status = {
+const statusReadiness: AdditionalInterface.OneOrZero = {
 	READINESS: 1,
 	NOREADINESS: 0
 };
 
-const typeMeeting: Status = {
+const typeMeeting: AdditionalInterface.OneOrZero = {
 	OWN: 0,
 	ALIEN: 1
 };
@@ -161,7 +162,3 @@ export {
 	methodHttp,
 	basicNameLanguagetranslation
 };
-
-interface Status {
-	[key:string]: 0 | 1,
-}

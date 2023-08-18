@@ -21,10 +21,10 @@ export default function ProposeMeetingPage(): JSX.Element {
 	const [listCountries, setListCountries] = useState<CountriesInterface.Country[]>([]);
 	const [listCities, setListCities] = useState<CitiesInterface.City[]>([]);
 	const [listInterests, setListInterests] = useState<InterestsInterface.Interest[]>([]);
-	const [listCategories, setListCategories] = useState<CategoryInterface.Category[]>([]);
+	const [listCategories, setListCategories] = useState<CategoryInterface.Db[]>([]);
 	const [listCitiesByCountries, setListCitiesByCountries] = useState<CitiesByCountriesInterface.CityByCountries[]>([]);
 	const [listInterestsByCities, setListInterestsByCities] = useState<InterestsByCitiesInterface.InterestsByCity[]>([]);
-	const [listCategoriesByInterests, setListCategoriesByInterests] = useState<CategoriesByInterestsInterface.CategoryByInterest[]>([]);
+	const [listCategoriesByInterests, setListCategoriesByInterests] = useState<CategoriesByInterestsInterface.Db[]>([]);
 	const [dataForm, setDataForm] = useState<TypeDataForm>({selectCountry: '', selectCity: '', selectInterest: '', selectCategory: '', selectLanguage: '', selectDateMeeting: '', selectPlaceMeeting: ''});
 	const [dataSelects, setDataSelects] = useState({listCities: [], listInterests: [], listCategories: []})
 	const [trySubmit, setTrySubmit] = useState(false);

@@ -2,7 +2,7 @@ import { DetailedHTMLProps, SelectHTMLAttributes } from 'react';
 import { CitiesInterface, CountriesInterface, InterestsInterface, LanguagesInterface, CategoryInterface } from '../../interfaces';
 
 export interface SelectProps extends DetailedHTMLProps<SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement> {
-	list: CitiesInterface.City[] |  CountriesInterface.Country[] | InterestsInterface.Interest[] | LanguagesInterface.Languages[] | CategoryInterface.Category[];
+	list: CitiesInterface.City[] |  CountriesInterface.Country[] | InterestsInterface.Interest[] | LanguagesInterface.Languages[] | CategoryInterface.Db[];
 	nameSelect?: string;
 	nameKeyOption: string;
 	nameValueOption: string;

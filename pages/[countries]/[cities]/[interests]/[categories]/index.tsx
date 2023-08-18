@@ -25,9 +25,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	const paths: string[] = [];
 
 	if (listCountries.data.length && listCities.data.length && listCitiesByCountries.data.length && listInterests.data.length && listInterestsByCities.data.length && listCategories.data.length && listCategoriesByInterests.data.length && listLanguages.data.length) {
-		listCategoriesByInterests.data.forEach((categoryByInterest: CategoriesByInterestsInterface.CategoryByInterest) => {
+		listCategoriesByInterests.data.forEach((categoryByInterest: CategoriesByInterestsInterface.Db) => {
 			let categoryRoute: string | null = null;
-			listCategories.data.forEach((category: CategoryInterface.Category) => {
+			listCategories.data.forEach((category: CategoryInterface.Db) => {
 				if (categoryByInterest.idCategory === category.id) {
 					listInterestsByCities.data.forEach((interestByCity: InterestsByCitiesInterface.InterestsByCity) => {
 						let interestRoute: string | null = null;
@@ -118,7 +118,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 	for (let index = 0; index < categoriesByInterestsData.data.length; index++) {
 		idCategories.push(categoriesByInterestsData.data[index].idCategory);
 	}
-	const listCategories = categoriesData.data.filter((category: CategoryInterface.Category) => idCategories.includes(category.id));
+	const listCategories = categoriesData.data.filter((category: CategoryInterface.Db) => idCategories.includes(category.id));
 	// console.log('===listCategories', listCategories)
 
 	const interestsByCity = (await InterestsByCities.getAllByCity(city.id))?.data;

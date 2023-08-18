@@ -15,7 +15,7 @@ export const SelectCategory = ({ listCategories, text }: SelectCategoryProps): J
 	}
 	translateInterests();
 
-	const [list, setList] = useState<CategoryInterface.Category[]>(listCategories || []);
+	const [list, setList] = useState<CategoryInterface.Db[]>(listCategories || []);
 	const [pathCategory, setPathCategory] = useState<string | null>(null);
 
 	const handleClick = () => {

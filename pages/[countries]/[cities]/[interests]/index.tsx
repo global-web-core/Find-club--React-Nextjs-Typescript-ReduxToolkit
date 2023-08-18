@@ -128,7 +128,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 		idCategories.push(categoriesByInterestsData.data[index].idCategory);
 	}
 	
-	const listCategories = categoriesData.data.filter((category: CategoryInterface.Category) => idCategories.includes(category.id));
+	const listCategories = categoriesData.data.filter((category: CategoryInterface.Db) => idCategories.includes(category.id));
 
 	const listLanguages = languagesDb.data;
 	
@@ -265,7 +265,7 @@ InterestsPage.getLayout = function getLayout(page: ReactElement) {
 }
 
 interface InterestsPageProps {
-	listCategories: CategoryInterface.Category[];
+	listCategories: CategoryInterface.Db[];
 	listLanguages: LanguagesInterface.Languages[];
 	text: LanguageTranslationInterface.TextTranslation;
 	country: CountriesInterface.Country;
