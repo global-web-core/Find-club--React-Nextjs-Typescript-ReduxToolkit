@@ -118,3 +118,9 @@ export const usersColumns = {
   emailVerified: 'emailVerified',
   image: 'image',
 };
+
+export const verificationTokensColumns = {
+  identifier: 'identifier',
+  token: 'token',
+  expires: 'expires',
+};
