@@ -49,3 +49,13 @@ export const countriesColumns = {
   route: 'route',
   status: 'status',
 };
+
+export const desiresColumns = {
+  id: 'id',
+  idUser: 'idUser',
+  idMeeting: 'idMeeting',
+  statusOrganizer: 'statusOrganizer',
+  statusWish: 'statusWish',
+  statusReadiness: 'statusReadiness',
+  status: 'status',
+};

@@ -6,7 +6,7 @@ import { Constants, ML } from '../../../globals';
 import { Desires } from '../../../models';
 
 interface InitialState {
-	entities: DesiresInterface.Desires[];
+	entities: DesiresInterface.Db[];
   status: Constants.statusFetch.succeeded | Constants.statusFetch.failed | Constants.statusFetch.loading;
 	error: string | null;
 }
@@ -28,9 +28,9 @@ const getDesiresByIdMeeting = createAsyncThunk(
 
 		const idMeetings = data.listIdMeetings;
 
-		const listDesiresDb: DesiresInterface.Desires[] = [];
+		const listDesiresDb: DesiresInterface.Db[] = [];
 		for await (const idMeeting of idMeetings) {
-			const listDesiresByIdMeeting: DesiresInterface.Desires[] = (await Desires.getByIdMeeting(idMeeting))?.data;
+			const listDesiresByIdMeeting: DesiresInterface.Db[] = (await Desires.getByIdMeeting(idMeeting))?.data;
 			listDesiresByIdMeeting.forEach(desire => {
 				if (!listDesiresDb.includes(desire)) {
 					listDesiresDb.push(desire);

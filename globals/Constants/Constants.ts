@@ -137,6 +137,11 @@ const methodHttp: Record<TypeMethodHttp, TypeMethodHttp> = {
 	delete: 'delete',
 }
 
+const codeHttp = {
+	ok: 200,
+	bad: 404,
+}
+
 
 export {
 	API,
@@ -160,5 +165,6 @@ export {
 	navigationMeetings,
 	controllers,
 	methodHttp,
-	basicNameLanguagetranslation
+	basicNameLanguagetranslation,
+	codeHttp
 };

@@ -167,7 +167,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 				if (oldMeetings?.data?.length === 0 || !oldMeetings || !oldDesires) {
 					const idMeetingsAddDb = await Meetings.add(dataMeeting);
 					if (idMeetingsAddDb?.data?.id) {
-						const dataDesires: DesiresInterface.Desires = {
+						const dataDesires: DesiresInterface.Add = {
 							idUser: idUser,
 							idMeeting: idMeetingsAddDb.data.id,
 							statusOrganizer: Constants.statusOrganizer.MY,

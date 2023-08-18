@@ -51,15 +51,15 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 
 		if (currentDesires && currentDesires?.id) {
 			const newStatusReadiness = currentDesires.statusReadiness === Constants.statusReadiness.READINESS ? {statusReadiness: Constants.statusReadiness.NOREADINESS} : {statusWish: Constants.statusWish.WISH, statusReadiness: Constants.statusReadiness.READINESS};
-			await Desires.update(currentDesires.id, newStatusReadiness);
+			const updateRequest = await Desires.update(currentDesires.id, newStatusReadiness);
 			const getUpdateDesire = await Desires.getById(currentDesires.id);
-			if (getUpdateDesire?.data.length > 0) {
+			if (updateRequest.code === Constants.codeHttp.ok && getUpdateDesire?.data.length > 0) {
 				const updateDesire = getUpdateDesire.data[0];
 				const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data[0].id);
 				dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
 			}
 		} else {
-			const dataDesires: DesiresInterface.Desires = {
+			const dataDesires: DesiresInterface.Add = {
 				idUser: idUser,
 				idMeeting: meeting.id,
 				statusOrganizer: Constants.statusOrganizer.ANOTHER,
@@ -95,15 +95,15 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 		
 		if (currentDesires && currentDesires?.id) {
 			const newStatusWish = currentDesires.statusWish === Constants.statusWish.WISH ? {statusReadiness: Constants.statusReadiness.NOREADINESS, statusWish: Constants.statusWish.NOWISH} : {statusWish: Constants.statusWish.WISH};
-			await Desires.update(currentDesires.id, newStatusWish);
+			const updateRequest = await Desires.update(currentDesires.id, newStatusWish);
 			const getUpdateDesire = await Desires.getById(currentDesires.id);
-			if (getUpdateDesire?.data.length > 0) {
+			if (updateRequest.code === Constants.codeHttp.ok && getUpdateDesire?.data.length > 0) {
 				const updateDesire = getUpdateDesire.data[0];
 				const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data[0].id);
 				dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
 			}
 		} else {
-			const dataDesires: DesiresInterface.Desires = {
+			const dataDesires: DesiresInterface.Add = {
 				idUser: idUser,
 				idMeeting: meeting.id,
 				statusOrganizer: Constants.statusOrganizer.ANOTHER,
@@ -153,7 +153,7 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 			let lengthWish = 0;
 			let lengthReadiness = 0;
 			
-			(await Desires.getByIdMeeting(idMeeting))?.data.forEach((desire: DesiresInterface.Desires) => {
+			(await Desires.getByIdMeeting(idMeeting))?.data.forEach((desire: DesiresInterface.Db) => {
 				if (desire.statusWish === Constants.statusWish.WISH) lengthWish++;
 				if (desire.statusReadiness === Constants.statusReadiness.READINESS) lengthReadiness++;
 			})
