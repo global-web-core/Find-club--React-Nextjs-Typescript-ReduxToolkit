@@ -87,3 +87,19 @@ export const languageTranslationColumns = {
   nameText: 'nameText',
   translation: 'translation',
 };
+
+export const meetingsColumns = {
+  id: 'id',
+  idCountry: 'idCountry',
+  idCity: 'idCity',
+  idInterest: 'idInterest',
+  idCategory: 'idCategory',
+  idLanguage: 'idLanguage',
+  dateMeeting: 'dateMeeting',
+  placeMeeting: 'placeMeeting',
+  typeMeeting: 'typeMeeting',
+  accessMeeting: 'accessMeeting',
+  dateCreation: 'dateCreation',
+  dateModification: 'dateModification',
+  status: 'status',
+};

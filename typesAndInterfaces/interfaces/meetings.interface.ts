@@ -1,4 +1,4 @@
-export interface Meetings {
+export interface Db {
 	id: number;
 	idCountry: number;
 	idCity: number;
@@ -6,11 +6,51 @@ export interface Meetings {
 	idCategory: number;
 	idLanguage: number;
 	dateMeeting: Date;
-	placeMeeting: string;
+	placeMeeting: string | null;
 	typeMeeting: number;
+	accessMeeting: number;
 	dateCreation: Date;
-	DateModification?: Date;
+	dateModification?: Date | null;
 	status: number;
+}
+
+export interface Add {
+	idCountry: number;
+	idCity: number;
+	idInterest: number;
+	idCategory: number;
+	idLanguage: number;
+	dateMeeting: Date;
+	placeMeeting: string | null;
+	typeMeeting: number;
+	accessMeeting: number;
+	dateCreation: Date;
+	dateModification?: Date | null;
+	status: number;
+}
+
+export interface Update {
+  idCountry?: number;
+  idCity?: number;
+  idInterest?: number;
+  idCategory?: number;
+  idLanguage?: number;
+  dateMeeting?: Date;
+  placeMeeting?: string | null;
+  typeMeeting?: number;
+  accessMeeting?: number;
+  dateCreation?: Date;
+  dateModification?: Date | null;
+  status?: number;
+}
+
+export interface DataForm {
+	idCountry: number;
+	idCity: number;
+	idInterest: number;
+	idCategory: number;
+	idLanguage: number;
+	dateMeeting: Date;
 }
 
 export interface MeetingsWithDependentData {
@@ -21,8 +61,9 @@ export interface MeetingsWithDependentData {
 	category: string;
 	language: string;
 	dateMeeting: Date;
-	placeMeeting: string;
+	placeMeeting: string | null;
 	typeMeeting: number;
-	DateModification?: Date;
+	accessMeeting: number;
+	dateModification?: Date | null;
 	status: number;
 }

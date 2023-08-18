@@ -97,7 +97,7 @@ export default function YourMeetingsPage(): JSX.Element {
 		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.passed) desiresDb = await Desires.getByIdUser(idUserSession);
 		
 		const selectedMeetings: number[] = [];
-		let listMeetings: MeetingsInterface.Meetings[] = [];
+		let listMeetings: MeetingsInterface.Db[] = [];
 		
 		for (let index = 0; index < desiresDb.data.length; index++) {
 			if (!selectedMeetings.includes(desiresDb.data[index]?.idMeeting)) {
