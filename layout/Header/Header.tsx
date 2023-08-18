@@ -18,7 +18,7 @@ export const Header = ({pageProps}: HeaderProps):JSX.Element => {
 	const dispatch = useAppDispatch();
 
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
-	const [listLanguages, setListLanguages] = useState<LanguagesInterface.Languages[]>([]);
+	const [listLanguages, setListLanguages] = useState<LanguagesInterface.Db[]>([]);
 
 	useEffect(() => {
 		async function startFetching() {

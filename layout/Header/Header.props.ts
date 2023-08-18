@@ -3,7 +3,7 @@ import { LanguageTranslationInterface, LanguagesInterface } from '../../interfac
 
 export interface HeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
 	pageProps: {
-		listLanguages: LanguagesInterface.Languages[]
+		listLanguages: LanguagesInterface.Db[]
 		text: LanguageTranslationInterface.TextTranslation;
 	};
 }

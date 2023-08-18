@@ -17,7 +17,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 	const dispatch = useAppDispatch();
 	const [loading, setLoading] = useState(true);
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
-	const [listLanguages, setListLanguages] = useState<LanguagesInterface.Languages[]>([]);
+	const [listLanguages, setListLanguages] = useState<LanguagesInterface.Db[]>([]);
 	const [listCountries, setListCountries] = useState<CountriesInterface.Db[]>([]);
 	const [listCities, setListCities] = useState<CitiesInterface.Db[]>([]);
 	const [listInterests, setListInterests] = useState<InterestsInterface.Db[]>([]);

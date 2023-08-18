@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 
 export const SelectLanguage = ({ listLanguages, updateLanguage, text, country }: SelectLanguageProps): JSX.Element => {
 	const router = useRouter();
-	const [list, setList] = useState<LanguagesInterface.Languages[]>([]);
+	const [list, setList] = useState<LanguagesInterface.Db[]>([]);
 
 	const statedLanguage = ML.getLanguage();
 	

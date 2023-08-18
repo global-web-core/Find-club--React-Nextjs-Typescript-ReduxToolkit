@@ -16,7 +16,7 @@ export const SelectCountry = ({listCountries, listLanguages, text}: SelectCountr
 
 	const router = useRouter();
 	const [countries] = useState<CountriesInterface.Db[]>(listCountries || []);
-	const [languages] = useState<LanguagesInterface.Languages[]>(listLanguages || []);
+	const [languages] = useState<LanguagesInterface.Db[]>(listLanguages || []);
 	const [pathCountry, setPathCountry] = useState<string | null>(null);
 
 	const handleClick = () => {

@@ -35,7 +35,7 @@ const getTranslationText = async (language = Constants.settingDefault.LANGUAGE) 
 	return null;
 }
 
-const getPathByCountry = (countries: CountriesInterface.Db[], languages: LanguagesInterface.Languages[], value: string) => {
+const getPathByCountry = (countries: CountriesInterface.Db[], languages: LanguagesInterface.Db[], value: string) => {
 	const country = countries.find(country => country.route === value);
 	const language = country && languages.find(language => language.idCountry === country.id);
 	if (country?.id === language?.idCountry && country) {
@@ -45,7 +45,7 @@ const getPathByCountry = (countries: CountriesInterface.Db[], languages: Languag
 	}
 }
 
-const addInPathLanguage = (statedLanguage: string, language: LanguagesInterface.Languages | undefined, urlCountry: string) => {
+const addInPathLanguage = (statedLanguage: string, language: LanguagesInterface.Db | undefined, urlCountry: string) => {
 	if (!statedLanguage || statedLanguage === language?.route) {
 		return '';
 	} else {
@@ -54,21 +54,21 @@ const addInPathLanguage = (statedLanguage: string, language: LanguagesInterface.
 	}
 }
 
-const setLanguageByPath = (pathLanguage: string, listLanguages: LanguagesInterface.Languages[], country: CountriesInterface.Db) => {
+const setLanguageByPath = (pathLanguage: string, listLanguages: LanguagesInterface.Db[], country: CountriesInterface.Db) => {
 	const languageByPath = getLanguageByPath(pathLanguage, listLanguages, country);
 	const saveSetLanguage = getLanguage();
 	if (!saveSetLanguage) ML.setLanguage(languageByPath);
 	if (saveSetLanguage !== languageByPath && languageByPath) ML.setLanguage(languageByPath);
 }
 
-const getLanguageByPath = (pathLanguage: string, listLanguages: LanguagesInterface.Languages[], country: CountriesInterface.Db) => {
-	const currentLanguage: LanguagesInterface.Languages | undefined = listLanguages.find(language => language.idCountry === country.id);
+const getLanguageByPath = (pathLanguage: string, listLanguages: LanguagesInterface.Db[], country: CountriesInterface.Db) => {
+	const currentLanguage: LanguagesInterface.Db | undefined = listLanguages.find(language => language.idCountry === country.id);
 	pathLanguage = ((pathLanguage.length === 2 && currentLanguage?.route) || (pathLanguage.length === 5 && pathLanguage.slice(3, 5))) as string;
 
 	return pathLanguage;
 }
 
-const setLanguageByBrowser = (listLanguages: LanguagesInterface.Languages[]) => {
+const setLanguageByBrowser = (listLanguages: LanguagesInterface.Db[]) => {
 	if (typeof window !== "undefined" && listLanguages) {
 		const userLanguage = window.navigator?.language?.slice(0,2) || null;
 		const currentLanguage = listLanguages.find(language => language.route === userLanguage);

@@ -2,7 +2,7 @@ import { DetailedHTMLProps, HTMLAttributes } from 'react';
 import { CitiesInterface, CountriesInterface, InterestsInterface, LanguagesInterface, CategoryInterface } from '../../interfaces';
 
 export interface SelectWithImageProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-	list: CitiesInterface.Db[] |  CountriesInterface.Db[] | InterestsInterface.Db[] | LanguagesInterface.Languages[] | CategoryInterface.Db[];
+	list: CitiesInterface.Db[] |  CountriesInterface.Db[] | InterestsInterface.Db[] | LanguagesInterface.Db[] | CategoryInterface.Db[];
 	nameKeyOption: string;
 	nameValueOption: string;
 	nameInnerOption: string;
@@ -16,4 +16,4 @@ export interface SelectWithImageProps extends DetailedHTMLProps<HTMLAttributes<H
 	clickButton?: () => void;
 }
 
-export type OptionsType = LanguagesInterface.Languages;
+export type OptionsType = LanguagesInterface.Db;

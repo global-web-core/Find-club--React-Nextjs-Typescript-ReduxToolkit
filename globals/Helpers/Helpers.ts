@@ -183,7 +183,7 @@ const getUrlCountry = (pathCountry, countries, languages) => {
 	if (urlCountry) {
 		const settingLanguage = ML.getLanguage();
 		const currentCountry = countries.find(country => country.route === urlCountry);
-		const currentLanguage = languages.find((language: LanguagesInterface.Languages) => currentCountry && language.idCountry === currentCountry.id);
+		const currentLanguage = languages.find((language: LanguagesInterface.Db) => currentCountry && language.idCountry === currentCountry.id);
 		if (!settingLanguage && currentLanguage) ML.setLanguage(currentLanguage.route);
 
 		urlCountry = urlCountry + ML.addInPathLanguage(settingLanguage, currentLanguage, urlCountry);

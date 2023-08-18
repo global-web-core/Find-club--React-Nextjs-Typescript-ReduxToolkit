@@ -74,3 +74,10 @@ export const interestsbycitiesColumns = {
   amountActivity: 'amountActivity',
   status: 'status',
 };
+
+export const languagesColumns = {
+  id: 'id',
+  name: 'name',
+  route: 'route',
+  idCountry: 'idCountry',
+};

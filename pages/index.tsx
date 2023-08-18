@@ -182,7 +182,7 @@ Home.getLayout = function getLayout(page: ReactElement) {
 
 interface HomeProps {
 	listCountries: CountriesInterface.Db[];
-	listLanguages: LanguagesInterface.Languages[];
+	listLanguages: LanguagesInterface.Db[];
 	text: LanguageTranslationInterface.TextTranslation;
 	metadata: MetadataInterface.Main;
 }
