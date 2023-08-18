@@ -55,7 +55,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 	const citiesData = await Cities.getAll();
 	
 	if (!idCities.length || !citiesData.data.length) return {props: {}};
-	const listCities = citiesData.data.filter((city: CitiesInterface.City) => idCities.includes(city.id));
+	const listCities = citiesData.data.filter((city: CitiesInterface.Db) => idCities.includes(city.id));
 
 	const countriesDb = await Countries.getAll();
 	const listCountries = countriesDb.data;
@@ -200,7 +200,7 @@ CountriesPage.getLayout = function getLayout(page: ReactElement) {
 }
 
 interface CountriesPageProps {
-	listCities: CitiesInterface.City[];
+	listCities: CitiesInterface.Db[];
 	listLanguages: LanguagesInterface.Languages[];
 	text: LanguageTranslationInterface.TextTranslation;
 	country: CountriesInterface.Country;

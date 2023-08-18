@@ -28,3 +28,10 @@ export const categoriesByInterestsColumns = {
   idCategory: 'idCategory',
   status: 'status',
 };
+
+export const citiesColumns = {
+  id: 'id',
+  nameCity: 'nameCity',
+  route: 'route',
+  status: 'status',
+};

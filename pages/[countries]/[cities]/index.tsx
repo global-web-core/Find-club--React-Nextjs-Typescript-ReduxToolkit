@@ -33,7 +33,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 					}
 
 					if (country.id === cityByCountry.idCountry) {
-						const cityRoute = listCities.data.find((city: CitiesInterface.City) => city.id === cityByCountry.idCity);
+						const cityRoute = listCities.data.find((city: CitiesInterface.Db) => city.id === cityByCountry.idCity);
 						if (!country && !cityRoute) return {paths: [], fallback: false};
 						const url = countryRoute + '/' + cityRoute.route;
 						paths.push(url);

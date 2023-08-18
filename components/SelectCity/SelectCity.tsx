@@ -13,7 +13,7 @@ export const SelectCity = ({ listCities, text }: SelectCityProps): JSX.Element =
 	}
 	translateCountries();
 
-	const [list, setList] = useState<CitiesInterface.City[]>(listCities || []);
+	const [list, setList] = useState<CitiesInterface.Db[]>(listCities || []);
 	const [pathCity, setPathCity] = useState<string | null>(null);
 	const router = useRouter();
 

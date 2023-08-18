@@ -21,7 +21,7 @@ export default function YourMeetingsPage(): JSX.Element {
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	const [listLanguages, setListLanguages] = useState<LanguagesInterface.Languages[]>([]);
 	const [listCountries, setListCountries] = useState<CountriesInterface.Country[]>([]);
-	const [listCities, setListCities] = useState<CitiesInterface.City[]>([]);
+	const [listCities, setListCities] = useState<CitiesInterface.Db[]>([]);
 	const [listInterests, setListInterests] = useState<InterestsInterface.Interest[]>([]);
 	const [listCategories, setListCategories] = useState<CategoryInterface.Db[]>([]);
 	const idUser = useAppSelector(state => UserSlice.userSelect(state));
