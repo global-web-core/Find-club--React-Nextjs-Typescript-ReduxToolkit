@@ -23,7 +23,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	const paths: string[] = [];
 
 	if (listCountries.data.length && listCities.data.length && listCitiesByCountries.data.length && listInterests.data.length && listInterestsByCities.data.length && listLanguages.data.length) {
-		listInterestsByCities.data.forEach((interestByCity: InterestsByCitiesInterface.InterestsByCity) => {
+		listInterestsByCities.data.forEach((interestByCity: InterestsByCitiesInterface.Db) => {
 			let interestRoute: string | null = null;
 			let cityRoute: string | null = null;
 			listInterests.data.forEach((interest: InterestsInterface.Db) => {

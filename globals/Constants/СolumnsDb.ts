@@ -66,3 +66,11 @@ export const interestsColumns = {
   route: 'route',
   status: 'status',
 };
+
+export const interestsbycitiesColumns = {
+  id: 'id',
+  idInterest: 'idInterest',
+  idCity: 'idCity',
+  amountActivity: 'amountActivity',
+  status: 'status',
+};

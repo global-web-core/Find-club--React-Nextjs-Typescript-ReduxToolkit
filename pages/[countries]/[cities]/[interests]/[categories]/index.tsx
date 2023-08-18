@@ -29,7 +29,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 			let categoryRoute: string | null = null;
 			listCategories.data.forEach((category: CategoryInterface.Db) => {
 				if (categoryByInterest.idCategory === category.id) {
-					listInterestsByCities.data.forEach((interestByCity: InterestsByCitiesInterface.InterestsByCity) => {
+					listInterestsByCities.data.forEach((interestByCity: InterestsByCitiesInterface.Db) => {
 						let interestRoute: string | null = null;
 						let cityRoute: string | null = null;
 						listInterests.data.forEach((interest: InterestsInterface.Db) => {
