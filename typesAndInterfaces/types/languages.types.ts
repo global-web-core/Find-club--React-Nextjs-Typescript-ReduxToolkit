@@ -1,0 +1,1 @@
+export type TypeLanguages = 'ru' | 'en';

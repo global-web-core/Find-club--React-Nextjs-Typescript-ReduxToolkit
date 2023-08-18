@@ -21,7 +21,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 
 	let listCountries: string[] = [];
 	let listLanguages: string[] = [];
-	let text:LanguageTranslationInterface.TextTranslation = {};
+	let text:LanguageTranslationInterface.Txt = {};
 	if (countriesDb && languagesDb && textDb) {
 		listCountries = countriesDb.data
 		listLanguages = languagesDb.data
@@ -183,6 +183,6 @@ Home.getLayout = function getLayout(page: ReactElement) {
 interface HomeProps {
 	listCountries: CountriesInterface.Db[];
 	listLanguages: LanguagesInterface.Db[];
-	text: LanguageTranslationInterface.TextTranslation;
+	text: LanguageTranslationInterface.Txt;
 	metadata: MetadataInterface.Main;
 }

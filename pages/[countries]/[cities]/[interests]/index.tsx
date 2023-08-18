@@ -167,7 +167,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 	};
 };
 
-export function generateMetadata(text: LanguageTranslationInterface.TextTranslation, pathInterest: string, lang: string):MetadataInterface.Main {
+export function generateMetadata(text: LanguageTranslationInterface.Txt, pathInterest: string, lang: string):MetadataInterface.Main {
 	const getTextForTitle = () => {
 		const interest = pathInterest?.length ? text[pathInterest as keyof typeof text] + ' ' : '';
 		const mainText = text[ML.key.titleInterests];
@@ -267,7 +267,7 @@ InterestsPage.getLayout = function getLayout(page: ReactElement) {
 interface InterestsPageProps {
 	listCategories: CategoryInterface.Db[];
 	listLanguages: LanguagesInterface.Db[];
-	text: LanguageTranslationInterface.TextTranslation;
+	text: LanguageTranslationInterface.Txt;
 	country: CountriesInterface.Db;
 	metadata: MetadataInterface.Main;
 }

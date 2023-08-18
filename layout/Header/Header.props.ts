@@ -4,6 +4,6 @@ import { LanguageTranslationInterface, LanguagesInterface } from '../../interfac
 export interface HeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
 	pageProps: {
 		listLanguages: LanguagesInterface.Db[]
-		text: LanguageTranslationInterface.TextTranslation;
+		text: LanguageTranslationInterface.Txt;
 	};
 }

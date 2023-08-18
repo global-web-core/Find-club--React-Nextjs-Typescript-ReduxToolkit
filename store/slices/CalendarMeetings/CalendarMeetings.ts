@@ -25,7 +25,7 @@ const initialState:InitialState = {
 	listDatemeetingsPerMonth: {data: [], status: Constants.statusFetch.succeeded, error: null,}
 }
 
-const setListDatemeetingsPerMonthAsync = createAsyncThunk<LanguageTranslationInterface.TextTranslation, LanguageTranslationInterface.TextTranslation | undefined, {dispatch: AppDispatch}>(
+const setListDatemeetingsPerMonthAsync = createAsyncThunk<LanguageTranslationInterface.Txt, LanguageTranslationInterface.Txt | undefined, {dispatch: AppDispatch}>(
   'calendarMeetings/setListDatemeetingsPerMonthAsync',
   async (parametersRequest, {getState}) => {
 		const {calendarMeetings} =  getState();

@@ -11,7 +11,7 @@ const checkNeedTranslationText = () => {
 	return true;
 }
 
-const getChangeTranslationText = async (text:LanguageTranslationInterface.TextTranslation | null) => {
+const getChangeTranslationText = async (text:LanguageTranslationInterface.Txt | null) => {
 	const saveSetLanguage = getLanguage();
 	if(!checkNeedTranslationText() && text) {
 		return text;
@@ -23,11 +23,11 @@ const getChangeTranslationText = async (text:LanguageTranslationInterface.TextTr
 const getTranslationText = async (language = Constants.settingDefault.LANGUAGE) => {
 	const textDb = await LanguageTranslation.get(language);
 	
-	const text: LanguageTranslationInterface.TextTranslation = {};
+	const text: LanguageTranslationInterface.Txt = {};
 	if (textDb.data) {
 		const listText = textDb.data;
 		
-		listText.forEach((fieldText: LanguageTranslationInterface.Translation) => {
+		listText.forEach((fieldText: LanguageTranslationInterface.Db) => {
 			text[fieldText.nameText] = fieldText.translation
 		});
 		return text;

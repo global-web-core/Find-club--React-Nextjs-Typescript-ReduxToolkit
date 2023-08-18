@@ -17,7 +17,7 @@ const initialState: InitialState = {
 	error: null,
 }
 
-const getIdUserAsync = createAsyncThunk<LanguageTranslationInterface.TextTranslation, LanguageTranslationInterface.TextTranslation | undefined, {dispatch: AppDispatch}>(
+const getIdUserAsync = createAsyncThunk<LanguageTranslationInterface.Txt, LanguageTranslationInterface.Txt | undefined, {dispatch: AppDispatch}>(
   'user/updateUserAsync',
   async (session, {dispatch, rejectWithValue}) => {
 		const dataUserBySession = await Users.getBySession(session?.user?.email, session?.user?.image, session?.user?.name)

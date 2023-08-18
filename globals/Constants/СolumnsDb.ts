@@ -81,3 +81,9 @@ export const languagesColumns = {
   route: 'route',
   idCountry: 'idCountry',
 };
+
+export const languageTranslationColumns = {
+  id: 'id',
+  nameText: 'nameText',
+  translation: 'translation',
+};

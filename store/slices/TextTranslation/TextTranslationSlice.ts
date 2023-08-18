@@ -5,7 +5,7 @@ import { AppState, AppDispatch } from '../../store';
 import { LanguageTranslationInterface } from '../../../interfaces';
 
 interface InitialState {
-	entities: LanguageTranslationInterface.TextTranslation;
+	entities: LanguageTranslationInterface.Txt;
   status: Constants.statusFetch.succeeded | Constants.statusFetch.failed | Constants.statusFetch.loading;
 	error: string | null;
 }
@@ -16,7 +16,7 @@ const initialState: InitialState = {
 	error: null,
 }
 
-const updateLanguageAsync = createAsyncThunk<LanguageTranslationInterface.TextTranslation, LanguageTranslationInterface.TextTranslation | undefined, {dispatch: AppDispatch}>(
+const updateLanguageAsync = createAsyncThunk<LanguageTranslationInterface.Txt, LanguageTranslationInterface.Txt | undefined, {dispatch: AppDispatch}>(
   'textTranslation/updateLanguageAsync',
   async (text, {dispatch, rejectWithValue}) => {
 		const textDb = text ? text : await ML.getTranslationText();
@@ -27,7 +27,7 @@ const updateLanguageAsync = createAsyncThunk<LanguageTranslationInterface.TextTr
 			return rejectWithValue('no get ML.getTranslationText')
 		}
 		console.log
-		return currentTranslationText as LanguageTranslationInterface.TextTranslation
+		return currentTranslationText as LanguageTranslationInterface.Txt
   }
 )
 

@@ -1,9 +1,9 @@
-export interface Translation {
+export interface Db {
 	id: number;
 	nameText: string;
 	translation: string;
 }
 
-export interface TextTranslation {
+export interface Txt {
 	[key: string]: string
 }
