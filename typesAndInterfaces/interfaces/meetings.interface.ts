@@ -10,7 +10,7 @@ export interface Db {
 	typeMeeting: number;
 	accessMeeting: number;
 	dateCreation: Date;
-	dateModification?: Date | null;
+	dateModification: Date | null;
 	status: number;
 }
 

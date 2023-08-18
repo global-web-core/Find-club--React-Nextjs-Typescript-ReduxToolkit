@@ -1,15 +1,15 @@
 import { Http } from '../../globals';
 import { controllers } from '../../globals/Constants/Constants';
+import { usersColumns } from '../../globals/Constants/СolumnsDb';
+import { HttpInterface, UsersInterface } from '../../typesAndInterfaces/interfaces';
 
-const getAll = async () => await Http.get(controllers.users, {});
-const getByEmail = async (email) => await Http.get(controllers.users, {conditions:[{k:'email',v:email}]});
-const getById	= async (id) => await Http.get(controllers.users, {conditions:[{k:'id',v:id}]});
-const getBySession = async (email, image, name) => await Http.get(controllers.users, {conditions:[{k:'email',v:email}, {k:'image',v:image}, {k:'name',v:name}]});
-const add = async (data) => await Http.add(controllers.users, {data});
-const update = async (id, data) => await Http.update(controllers.users, {data,conditions:[{k:'id',v:id}]});
+const getByEmail = async (email: string): Promise<HttpInterface.Get<UsersInterface.Db>> => await Http.get(controllers.users, {conditions:[{k:usersColumns.email,v:email}]});
+const getById	= async (id: string): Promise<HttpInterface.Get<UsersInterface.Db>> => await Http.get(controllers.users, {conditions:[{k:usersColumns.id,v:id}]});
+const getBySession = async (email: string, image: string, name: string): Promise<HttpInterface.Get<UsersInterface.Db>> => await Http.get(controllers.users, {conditions:[{k:usersColumns.email,v:email}, {k:usersColumns.image,v:image}, {k:usersColumns.name,v:name}]});
+const add = async (data: UsersInterface.Db): Promise<HttpInterface.Add> => await Http.add(controllers.users, {data});
+const update = async (id: string, data: UsersInterface.Update): Promise<HttpInterface.Update> => await Http.update(controllers.users, {data,conditions:[{k:usersColumns.id,v:id}]});
 
 export {
-	getAll,
 	getById,
 	add,
 	update,

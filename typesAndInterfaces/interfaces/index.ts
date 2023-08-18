@@ -14,6 +14,7 @@ import * as HttpInterface from './http.interface';
 import * as AdditionalInterface from './additional.interface';
 import * as AccountsInterface from './accounts.interface';
 import * as SessionsInterface from './sessions.interface';
+import * as UsersInterface from './users.interface';
 
 export {
 	CitiesInterface,
@@ -32,4 +33,5 @@ export {
 	AdditionalInterface,
 	AccountsInterface,
 	SessionsInterface,
+	UsersInterface,
 }

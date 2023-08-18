@@ -2,7 +2,7 @@ export interface Db {
   id: string;
   expires: Date;
   sessionToken: string;
-  userId?: string | null;
+  userId: string | null;
 }
 
 export interface Add {

@@ -110,3 +110,11 @@ export const sessionsColumns = {
   sessionToken: 'sessionToken',
   userId: 'userId',
 };
+
+export const usersColumns = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  emailVerified: 'emailVerified',
+  image: 'image',
+};
