@@ -9,3 +9,8 @@ export interface Add {
 	code: 200 | 404;
 	data: [id: string] | undefined;
 }
+
+export interface Update {
+	code: 200 | 404;
+	data: null | undefined;
+}

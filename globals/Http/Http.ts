@@ -18,16 +18,16 @@ const request = async (controller: TypeController, method: TypeMethodHttp, data:
 	const response = await fetch(url, options as any).catch((error) => console.log('Error fetch with server!!!', error));
 	if (!response) {
 		console.log('Error connection with server!!!');
-		// return;
 	}
-	if (response.status === 200) {
-		// if (isDevelopmentMode) console.log(response); // Uncomment to see the request in the console
-		const json = response.json();
-		// if (isDevelopmentMode) console.log(json); // Uncomment to see the request in the console
-		return json;
+	if (response?.status === 200) {
+		try {
+			// if (isDevelopmentMode) console.log(response); // Uncomment to see the request in the console
+			const json = await response.json();
+			return await json;
+		} catch {
+			console.log('Error parse JSON!!!')
+		}
 	}
-	console.log('Error fetch!!! Status 200 was not received:', response.json());
-	// throw await response.json();
 	return {code: 404, data:undefined};
 };
 
