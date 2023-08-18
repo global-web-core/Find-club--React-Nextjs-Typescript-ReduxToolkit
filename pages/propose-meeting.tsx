@@ -20,7 +20,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 	const [listLanguages, setListLanguages] = useState<LanguagesInterface.Languages[]>([]);
 	const [listCountries, setListCountries] = useState<CountriesInterface.Db[]>([]);
 	const [listCities, setListCities] = useState<CitiesInterface.Db[]>([]);
-	const [listInterests, setListInterests] = useState<InterestsInterface.Interest[]>([]);
+	const [listInterests, setListInterests] = useState<InterestsInterface.Db[]>([]);
 	const [listCategories, setListCategories] = useState<CategoryInterface.Db[]>([]);
 	const [listCitiesByCountries, setListCitiesByCountries] = useState<CitiesByCountriesInterface.Db[]>([]);
 	const [listInterestsByCities, setListInterestsByCities] = useState<InterestsByCitiesInterface.InterestsByCity[]>([]);

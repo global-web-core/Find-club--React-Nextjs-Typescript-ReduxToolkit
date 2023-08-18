@@ -83,7 +83,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 		if (interestsByCitiesData.data[index].idCity === cityData[0].id) idInterests.push(interestsByCitiesData.data[index].idInterest);
 	}
 
-	const listInterests: InterestsInterface.Interest[] = interestsData.data.filter((interest: InterestsInterface.Interest) => idInterests.includes(interest.id));
+	const listInterests: InterestsInterface.Db[] = interestsData.data.filter((interest: InterestsInterface.Db) => idInterests.includes(interest.id));
 	
 	let listLanguages = [];
 	const languagesDb = await Languages.getAll();
@@ -225,7 +225,7 @@ CitiesPage.getLayout = function getLayout(page: ReactElement) {
 }
 
 interface CitiesPageProps {
-	listInterests: InterestsInterface.Interest[];
+	listInterests: InterestsInterface.Db[];
 	listLanguages: LanguagesInterface.Languages[];
 	text: LanguageTranslationInterface.TextTranslation;
 	country: CountriesInterface.Db;

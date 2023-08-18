@@ -59,3 +59,10 @@ export const desiresColumns = {
   statusReadiness: 'statusReadiness',
   status: 'status',
 };
+
+export const interestsColumns = {
+  id: 'id',
+  interest: 'interest',
+  route: 'route',
+  status: 'status',
+};

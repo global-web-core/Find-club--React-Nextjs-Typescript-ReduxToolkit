@@ -15,7 +15,7 @@ export const SelectInterest = ({ listInterests, text }: SelectInterestProps): JS
 	}
 	translateInterests();
 
-	const [list, setList] = useState<InterestsInterface.Interest[]>(listInterests || []);
+	const [list, setList] = useState<InterestsInterface.Db[]>(listInterests || []);
 	const [pathInterest, setPathInterest] = useState<string | null>(null);
 
 	const handleClick = () => {

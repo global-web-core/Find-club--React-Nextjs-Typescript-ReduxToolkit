@@ -26,7 +26,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 		listInterestsByCities.data.forEach((interestByCity: InterestsByCitiesInterface.InterestsByCity) => {
 			let interestRoute: string | null = null;
 			let cityRoute: string | null = null;
-			listInterests.data.forEach((interest: InterestsInterface.Interest) => {
+			listInterests.data.forEach((interest: InterestsInterface.Db) => {
 				if (interestByCity.idInterest === interest.id) {
 					interestRoute = interest.route;
 					
@@ -113,7 +113,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 		if (interestsByCitiesData.data[index].idCity === cityData[0].id) idInterests.push(interestsByCitiesData.data[index].idInterest);
 	}
 	
-	const listInterests: InterestsInterface.Interest[] = interestsData.data.filter((interest: InterestsInterface.Interest) => idInterests.includes(interest.id));
+	const listInterests: InterestsInterface.Db[] = interestsData.data.filter((interest: InterestsInterface.Db) => idInterests.includes(interest.id));
 	const listCities = cityData;
 
 	const categoriesData = await Categories.getAll();
