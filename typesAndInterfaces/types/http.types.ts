@@ -1,3 +1,3 @@
-import {AccountsInterface, CategoriesByInterestsInterface, CategoryInterface, CitiesInterface} from '../interfaces'
+import {AccountsInterface, CategoriesByInterestsInterface, CategoryInterface, CitiesByCountriesInterface, CitiesInterface} from '../interfaces'
 
-export type TypeObjectsFromDb = AccountsInterface.Db | CategoryInterface.Db | CategoriesByInterestsInterface.Db | CitiesInterface.Db;
+export type TypeObjectsFromDb = AccountsInterface.Db | CategoryInterface.Db | CategoriesByInterestsInterface.Db | CitiesInterface.Db | CitiesByCountriesInterface.Db;

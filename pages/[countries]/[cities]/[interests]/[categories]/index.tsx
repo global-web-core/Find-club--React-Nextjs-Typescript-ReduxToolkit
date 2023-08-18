@@ -40,7 +40,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 									listCities.data.forEach((city: CitiesInterface.Db) => {
 										if (interestByCity.idCity === city.id) {
 											cityRoute = city.route;
-											listCitiesByCountries.data.forEach((cityByCountry: CitiesByCountriesInterface.CityByCountries) => {
+											listCitiesByCountries.data.forEach((cityByCountry: CitiesByCountriesInterface.Db) => {
 												if (cityByCountry.idCity === city.id) {
 													listCountries.data.forEach((country: CountriesInterface.Country) => {
 														listLanguages.data.forEach((language: LanguagesInterface.Languages) => {

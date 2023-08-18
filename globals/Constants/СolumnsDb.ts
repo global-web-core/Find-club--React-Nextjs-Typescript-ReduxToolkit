@@ -35,3 +35,10 @@ export const citiesColumns = {
   route: 'route',
   status: 'status',
 };
+
+export const citiesByCountriesColumns = {
+  id: 'id',
+  idCountry: 'idCountry',
+  idCity: 'idCity',
+  status: 'status',
+};

@@ -51,7 +51,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 	const citiesCountry = await CitiesByCountries.getAllByCountry(country.id);
 	
 	if (!citiesCountry.data.length) return {props: {}};
-	const idCities = citiesCountry.data.map((city: CitiesByCountriesInterface.CityByCountries) => city.idCity);
+	const idCities = citiesCountry.data.map((city: CitiesByCountriesInterface.Db) => city.idCity);
 	const citiesData = await Cities.getAll();
 	
 	if (!idCities.length || !citiesData.data.length) return {props: {}};

@@ -22,7 +22,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	const paths: string[] = [];
 
 	if (listCountries.data.length && listCities.data.length && listCitiesByCountries.data.length && listLanguages.data.length) {
-		listCitiesByCountries.data.forEach((cityByCountry: CitiesByCountriesInterface.CityByCountries) => {
+		listCitiesByCountries.data.forEach((cityByCountry: CitiesByCountriesInterface.Db) => {
 			listCountries.data.forEach((country: CountriesInterface.Country) => {
 				listLanguages.data.forEach((language: LanguagesInterface.Languages) => {
 					let countryRoute = '';

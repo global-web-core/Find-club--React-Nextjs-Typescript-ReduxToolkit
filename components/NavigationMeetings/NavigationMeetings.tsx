@@ -44,7 +44,7 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 			const currentCountry = listCountries.find(country => country.route === navigation.country)
 			if (currentCountry) {
 				const citiesCountry = await CitiesByCountries.getAllByCountry(currentCountry.id);
-				const idCities = citiesCountry.data.map((city: CitiesByCountriesInterface.CityByCountries) => city.idCity);
+				const idCities = citiesCountry.data.map((city: CitiesByCountriesInterface.Db) => city.idCity);
 				const citiesData = await Cities.getAll();
 				const listCities = citiesData.data.filter((city: CitiesInterface.Db) => idCities.includes(city.id));
 				listCities.forEach(city => {
