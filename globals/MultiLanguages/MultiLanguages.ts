@@ -35,7 +35,7 @@ const getTranslationText = async (language = Constants.settingDefault.LANGUAGE) 
 	return null;
 }
 
-const getPathByCountry = (countries: CountriesInterface.Country[], languages: LanguagesInterface.Languages[], value: string) => {
+const getPathByCountry = (countries: CountriesInterface.Db[], languages: LanguagesInterface.Languages[], value: string) => {
 	const country = countries.find(country => country.route === value);
 	const language = country && languages.find(language => language.idCountry === country.id);
 	if (country?.id === language?.idCountry && country) {
@@ -54,14 +54,14 @@ const addInPathLanguage = (statedLanguage: string, language: LanguagesInterface.
 	}
 }
 
-const setLanguageByPath = (pathLanguage: string, listLanguages: LanguagesInterface.Languages[], country: CountriesInterface.Country) => {
+const setLanguageByPath = (pathLanguage: string, listLanguages: LanguagesInterface.Languages[], country: CountriesInterface.Db) => {
 	const languageByPath = getLanguageByPath(pathLanguage, listLanguages, country);
 	const saveSetLanguage = getLanguage();
 	if (!saveSetLanguage) ML.setLanguage(languageByPath);
 	if (saveSetLanguage !== languageByPath && languageByPath) ML.setLanguage(languageByPath);
 }
 
-const getLanguageByPath = (pathLanguage: string, listLanguages: LanguagesInterface.Languages[], country: CountriesInterface.Country) => {
+const getLanguageByPath = (pathLanguage: string, listLanguages: LanguagesInterface.Languages[], country: CountriesInterface.Db) => {
 	const currentLanguage: LanguagesInterface.Languages | undefined = listLanguages.find(language => language.idCountry === country.id);
 	pathLanguage = ((pathLanguage.length === 2 && currentLanguage?.route) || (pathLanguage.length === 5 && pathLanguage.slice(3, 5))) as string;
 

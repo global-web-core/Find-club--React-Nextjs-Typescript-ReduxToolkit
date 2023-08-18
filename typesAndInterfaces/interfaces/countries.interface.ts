@@ -1,9 +1,16 @@
 import {TypeOneOrZero} from '../types'
 
-export interface Country {
+export interface Db {
 	id: number;
 	nameCountry: string;
 	route: string;
 	status: TypeOneOrZero;
-	translation?: string;
 }
+
+// export interface Country {
+// 	id: number;
+// 	nameCountry: string;
+// 	route: string;
+// 	status: TypeOneOrZero;
+// 	translation?: string;
+// }

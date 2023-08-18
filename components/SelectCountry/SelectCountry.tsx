@@ -15,7 +15,7 @@ export const SelectCountry = ({listCountries, listLanguages, text}: SelectCountr
 	translateCountries();
 
 	const router = useRouter();
-	const [countries] = useState<CountriesInterface.Country[]>(listCountries || []);
+	const [countries] = useState<CountriesInterface.Db[]>(listCountries || []);
 	const [languages] = useState<LanguagesInterface.Languages[]>(listLanguages || []);
 	const [pathCountry, setPathCountry] = useState<string | null>(null);
 

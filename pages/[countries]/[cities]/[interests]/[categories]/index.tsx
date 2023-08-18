@@ -42,7 +42,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 											cityRoute = city.route;
 											listCitiesByCountries.data.forEach((cityByCountry: CitiesByCountriesInterface.Db) => {
 												if (cityByCountry.idCity === city.id) {
-													listCountries.data.forEach((country: CountriesInterface.Country) => {
+													listCountries.data.forEach((country: CountriesInterface.Db) => {
 														listLanguages.data.forEach((language: LanguagesInterface.Languages) => {
 															let countryRoute = '';
 															if (country.id === language.idCountry) {
@@ -286,6 +286,6 @@ CategoriesPage.getLayout = function getLayout(page: ReactElement) {
 interface CategoriesPageProps {
 	listLanguages: LanguagesInterface.Languages[];
 	text: LanguageTranslationInterface.TextTranslation;
-	country: CountriesInterface.Country;
+	country: CountriesInterface.Db;
 	metadata: MetadataInterface.Main;
 }

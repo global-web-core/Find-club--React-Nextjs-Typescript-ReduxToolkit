@@ -20,7 +20,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	const languagesData = await Languages.getAll();
 
 	const paths: string[] = [];
-	countriesData.data.forEach((country: CountriesInterface.Country) => {
+	countriesData.data.forEach((country: CountriesInterface.Db) => {
 		languagesData.data.forEach((language: LanguagesInterface.Languages) => {
 			let url = '';
 			if (country.id === language.idCountry) {
@@ -203,6 +203,6 @@ interface CountriesPageProps {
 	listCities: CitiesInterface.Db[];
 	listLanguages: LanguagesInterface.Languages[];
 	text: LanguageTranslationInterface.TextTranslation;
-	country: CountriesInterface.Country;
+	country: CountriesInterface.Db;
 	metadata: MetadataInterface.Main;
 }

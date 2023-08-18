@@ -23,7 +23,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 	if (listCountries.data.length && listCities.data.length && listCitiesByCountries.data.length && listLanguages.data.length) {
 		listCitiesByCountries.data.forEach((cityByCountry: CitiesByCountriesInterface.Db) => {
-			listCountries.data.forEach((country: CountriesInterface.Country) => {
+			listCountries.data.forEach((country: CountriesInterface.Db) => {
 				listLanguages.data.forEach((language: LanguagesInterface.Languages) => {
 					let countryRoute = '';
 					if (country.id === language.idCountry) {
@@ -228,6 +228,6 @@ interface CitiesPageProps {
 	listInterests: InterestsInterface.Interest[];
 	listLanguages: LanguagesInterface.Languages[];
 	text: LanguageTranslationInterface.TextTranslation;
-	country: CountriesInterface.Country;
+	country: CountriesInterface.Db;
 	metadata: MetadataInterface.Main;
 }

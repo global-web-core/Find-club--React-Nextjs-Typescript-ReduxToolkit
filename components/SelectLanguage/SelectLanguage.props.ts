@@ -4,6 +4,6 @@ import { CountriesInterface, LanguagesInterface } from '../../interfaces';
 export interface SelectLanguageProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
 	listLanguages: LanguagesInterface.Languages[];
 	text: {[key: string]: string};
-	country: CountriesInterface.Country | null;
+	country: CountriesInterface.Db | null;
 	updateLanguage: () => void;
 }
