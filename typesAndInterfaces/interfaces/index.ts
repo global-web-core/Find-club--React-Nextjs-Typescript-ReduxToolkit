@@ -13,6 +13,7 @@ import * as MetadataInterface from './metadata.interface';
 import * as HttpInterface from './http.interface';
 import * as AdditionalInterface from './additional.interface';
 import * as AccountsInterface from './accounts.interface';
+import * as SessionsInterface from './sessions.interface';
 
 export {
 	CitiesInterface,
@@ -30,4 +31,5 @@ export {
 	HttpInterface,
 	AdditionalInterface,
 	AccountsInterface,
+	SessionsInterface,
 }

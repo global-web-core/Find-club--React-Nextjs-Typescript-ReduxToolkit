@@ -14,3 +14,8 @@ export interface Update {
 	code: 200 | 404;
 	data: null | undefined;
 }
+
+export interface Remove {
+	code: 200;
+	data: null;
+}

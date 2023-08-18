@@ -103,3 +103,10 @@ export const meetingsColumns = {
   dateModification: 'dateModification',
   status: 'status',
 };
+
+export const sessionsColumns = {
+  id: 'id',
+  expires: 'expires',
+  sessionToken: 'sessionToken',
+  userId: 'userId',
+};

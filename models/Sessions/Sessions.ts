@@ -1,15 +1,14 @@
 import { Http } from '../../globals';
 import { controllers } from '../../globals/Constants/Constants';
+import { sessionsColumns } from '../../globals/Constants/СolumnsDb';
+import { HttpInterface, SessionsInterface } from '../../typesAndInterfaces/interfaces';
 
-
-const getAll = async () => await Http.get(controllers.sessions, {});
-const getByUserId	= async (userId) => await Http.get(controllers.sessions, {conditions:[{k:'userId',v:userId}]});
-const getBySessionToken	= async (sessionToken) => await Http.get(controllers.sessions, {conditions:[{k:'sessionToken',v:sessionToken}]});
-const add = async (data) => await Http.add(controllers.sessions, {data});
-const deleteSessionToken = async (sessionToken) => await Http.remove(controllers.sessions, {conditions:[{k:'sessionToken',v:sessionToken}]});
+const getByUserId	= async (userId: string): Promise<HttpInterface.Get<SessionsInterface.Db>> => await Http.get(controllers.sessions, {conditions:[{k:sessionsColumns.userId,v:userId}]});
+const getBySessionToken	= async (sessionToken: string): Promise<HttpInterface.Get<SessionsInterface.Db>> => await Http.get(controllers.sessions, {conditions:[{k:sessionsColumns.sessionToken,v:sessionToken}]});
+const add = async (data: SessionsInterface.Add): Promise<HttpInterface.Add> => await Http.add(controllers.sessions, {data});
+const deleteSessionToken = async (sessionToken: string): Promise<HttpInterface.Remove> => await Http.remove(controllers.sessions, {conditions:[{k:sessionsColumns.sessionToken,v:sessionToken}]});
 
 export {
-	getAll,
 	getByUserId,
 	getBySessionToken,
 	add,
