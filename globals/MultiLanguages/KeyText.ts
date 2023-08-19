@@ -114,6 +114,10 @@ const keyText = {
 	errorYourConfirmationComeAccepted: 'error-your-confirmation-come-accepted',
 	allAvailableMeetings: 'all-available-meetings',
 	add: 'add',
+	pageNotFound: 'page-not-found',
+	descriptionPageNotFound: 'description-page-not-found',
+	goToHome: 'go-to-home',
+	ooopsPageNoExist: 'ooops-page-no-exist',
 }
 
 export default keyText;
