@@ -10,6 +10,8 @@ import { GetStaticProps, GetStaticPropsContext } from 'next';
 import { ParsedUrlQuery } from 'querystring';
 import { Countries, Languages } from '../models';
 import { LanguageTranslationInterface } from '../typesAndInterfaces/interfaces';
+import { TextTranslationSlice } from '../store/slices';
+import { useAppSelector } from '../store/hook';
 
 
 export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsContext<ParsedUrlQuery>) => {
@@ -43,6 +45,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 };
 
 export default function Error404({textTranslation}): JSX.Element {
+	textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	return (
 		<>
 			<div className={styles.center}>
