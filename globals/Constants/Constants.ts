@@ -1,5 +1,5 @@
-import { AdditionalInterface } from "../../interfaces";
-import { TypeController, TypeMethodHttp } from "../../types";
+import { AdditionalInterface } from "../../typesAndInterfaces/interfaces";
+import {TypeLanguages,TypeController, TypeMethodHttp} from "../../typesAndInterfaces/types";
 
 const isDeveloperMode = process.env.NODE_ENV !== 'production';
 const url = isDeveloperMode ? 'http://localhost' : '//api.myApiInInternet.ru';
@@ -39,7 +39,7 @@ const comonStatus: AdditionalInterface.OneOrZero = {
 	ACTIVE: 1
 };
 
-const settingDefault = {
+const settingDefault: {[key: string]: TypeLanguages} = {
 	LANGUAGE: 'ru'
 };
 

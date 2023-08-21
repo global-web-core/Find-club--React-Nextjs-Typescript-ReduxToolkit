@@ -16,6 +16,7 @@ import * as AccountsInterface from './accounts.interface';
 import * as SessionsInterface from './sessions.interface';
 import * as UsersInterface from './users.interface';
 import * as VerificationtokensInterface from './verificationtokens.interface';
+import * as HomeInterface from './home.interface';
 
 export {
 	CitiesInterface,
@@ -36,4 +37,5 @@ export {
 	SessionsInterface,
 	UsersInterface,
 	VerificationtokensInterface,
+	HomeInterface,
 }

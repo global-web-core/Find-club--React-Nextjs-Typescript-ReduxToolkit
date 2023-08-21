@@ -1,7 +1,8 @@
 import {LanguageTranslation} from '../../models';
-import {CountriesInterface, LanguageTranslationInterface, LanguagesInterface } from '../../interfaces';
+import {CountriesInterface, LanguageTranslationInterface, LanguagesInterface } from '../../typesAndInterfaces/interfaces';
 import { LS, ML, Constants } from '../../globals';
 import keyText from './KeyText';
+import { TypeLanguages } from '../../typesAndInterfaces/types';
 
 const checkNeedTranslationText = () => {
 	const saveSetLanguage = getLanguage();
@@ -20,7 +21,7 @@ const getChangeTranslationText = async (text:LanguageTranslationInterface.Txt | 
 	if (changeTextTranslation) return changeTextTranslation;
 }
 
-const getTranslationText = async (language = Constants.settingDefault.LANGUAGE) => {
+const getTranslationText = async (language: TypeLanguages = Constants.settingDefault.LANGUAGE): Promise<LanguageTranslationInterface.Txt | null> => {
 	const textDb = await LanguageTranslation.get(language);
 	
 	const text: LanguageTranslationInterface.Txt = {};

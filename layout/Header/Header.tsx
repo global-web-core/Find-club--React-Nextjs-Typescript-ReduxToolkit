@@ -7,7 +7,7 @@ import Image from 'next/image';
 import {iconLogo} from '../../public/images';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { TextTranslationSlice } from '../../store/slices';
-import { ML } from '../../globals';
+import { Constants, ML } from '../../globals';
 import { useRouter } from 'next/router';
 import { Languages } from '../../models';
 import { LanguagesInterface } from '../../interfaces';
@@ -36,9 +36,9 @@ export const Header = ({pageProps}: HeaderProps):JSX.Element => {
 	}, [])
 
 	const updateLanguage = async () => {
-		const currentTranslationText = await ML.getChangeTranslationText(pageProps.text) || {};
+		const currentTranslationText = await ML.getChangeTranslationText(pageProps.textTranslation) || {};
 		dispatch(TextTranslationSlice.updateLanguageAsync(currentTranslationText))
-		if (typeof window !== "undefined") document.documentElement.lang = ML.getLanguage()
+		if (typeof window !== "undefined") document.documentElement.lang = ML.getLanguage() || Constants.settingDefault.LANGUAGE;
 	}
 
 	return (

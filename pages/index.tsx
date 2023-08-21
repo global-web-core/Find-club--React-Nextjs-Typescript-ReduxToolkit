@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import { SelectCountry, Main, Button, Accordion, CircleAnimation, TypingText, MapFolding, Alert } from '../components';
+import { SelectCountry, Main, Button, Accordion, CircleAnimation, TypingText, MapFolding } from '../components';
 import { Countries, Languages } from '../models';
 import { useRouter } from 'next/router';
 import { GetStaticProps, GetStaticPropsContext } from 'next';
 import { ParsedUrlQuery } from 'querystring';
-import { CountriesInterface, LanguagesInterface, LanguageTranslationInterface, MetadataInterface } from '../interfaces';
+import { CountriesInterface, HomeInterface, LanguagesInterface, LanguageTranslationInterface, MetadataInterface } from '../typesAndInterfaces/interfaces';
 import { ML, Constants } from '../globals';
 import { ReactElement } from 'react';
 import { useAppSelector } from '../store/hook';
@@ -19,18 +19,18 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 	const languagesDb = await Languages.getAll();
 	const textDb = await ML.getTranslationText();
 
-	let listCountries: string[] = [];
-	let listLanguages: string[] = [];
-	let text:LanguageTranslationInterface.Txt = {};
-	if (countriesDb && languagesDb && textDb) {
+	let listCountries: CountriesInterface.Db[] = [];
+	let listLanguages: LanguagesInterface.Db[] = [];
+	let textTranslation: LanguageTranslationInterface.Txt = {};
+	if (countriesDb.data && languagesDb.data && textDb) {
 		listCountries = countriesDb.data
 		listLanguages = languagesDb.data
-		text = textDb
+		textTranslation = textDb
 	}
 
-	const metadata = {
-		title: text[ML.key.whoWillGoWithMe],
-		description: text[ML.key.descriptionMainPage],
+	const metadata: MetadataInterface.Main = {
+		title: textTranslation[ML.key.whoWillGoWithMe],
+		description: textTranslation[ML.key.descriptionMainPage],
 		lang: Constants.settingDefault.LANGUAGE
 	}
 		
@@ -38,13 +38,13 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 		props: {
 			listCountries,
 			listLanguages,
-			text,
+			textTranslation,
 			metadata
 		}
 	};
 };
 
-export default function Home({ listCountries, listLanguages, text, metadata }: HomeProps): JSX.Element {
+export default function Home({ listCountries, listLanguages, metadata }: HomeInterface.Props): JSX.Element {
 	const router = useRouter();
 	
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
@@ -72,25 +72,11 @@ export default function Home({ listCountries, listLanguages, text, metadata }: H
 
 				<div className={styles.questionsAnswers}>
 					<Accordion
-						header={
-							<>
-								{textTranslation[ML.key.whyDidTheIdeaOurApp]}
-							</>
-						}
-
-						hideContent={
-							<>
-								{textTranslation[ML.key.millionsPeopleWantMakeFriends]}
-							</>
-						}
+						header={<>{textTranslation[ML.key.whyDidTheIdeaOurApp]}</>}
+						hideContent={<>{textTranslation[ML.key.millionsPeopleWantMakeFriends]}</>}
 					/>
 					<Accordion
-						header={
-							<>
-								{textTranslation[ML.key.whatPowerOurIdea]}
-							</>
-						}
-
+						header={<>{textTranslation[ML.key.whatPowerOurIdea]}</>}
 						hideContent={
 							<>
 								<div>{textTranslation[ML.key.fewClicksYouCanFindPeople]}</div>
@@ -105,51 +91,19 @@ export default function Home({ listCountries, listLanguages, text, metadata }: H
 						}
 					/>
 					<Accordion
-						header={
-							<>
-								{textTranslation[ML.key.whoCanSuggestMeeting]}
-							</>
-						}
-
-						hideContent={
-							<>
-								{textTranslation[ML.key.youCanChooseMeetingLike]}
-							</>
-						}
+						header={<>{textTranslation[ML.key.whoCanSuggestMeeting]}</>}
+						hideContent={<>{textTranslation[ML.key.youCanChooseMeetingLike]}</>}
 					/>
 					<Accordion
-						header={
-							<>
-								{textTranslation[ML.key.howFindPeopleYourCity]}
-							</>
-						}
-
-						hideContent={
-							<>
-								{textTranslation[ML.key.whenSearchWeTakeIntoLanguageSpeaks]}
-							</>
-						}
+						header={<>{textTranslation[ML.key.howFindPeopleYourCity]}</>}
+						hideContent={<>{textTranslation[ML.key.whenSearchWeTakeIntoLanguageSpeaks]}</>}
 					/>
 					<Accordion
-						header={
-							<>
-								{textTranslation[ML.key.whatGratefulToYou]}
-							</>
-						}
-
-						hideContent={
-							<>
-								{textTranslation[ML.key.byUsingOurProductYouPeopleToUnite]}
-							</>
-						}
+						header={<>{textTranslation[ML.key.whatGratefulToYou]}</>}
+						hideContent={<>{textTranslation[ML.key.byUsingOurProductYouPeopleToUnite]}</>}
 					/>
 					<Accordion
-						header={
-							<>
-								{textTranslation[ML.key.weValueTimeprivacy]}
-							</>
-						}
-
+						header={<>{textTranslation[ML.key.weValueTimeprivacy]}</>}
 						hideContent={
 							<>
 								<div>
@@ -178,11 +132,4 @@ Home.getLayout = function getLayout(page: ReactElement) {
       {page}
     </Layout>
   )
-}
-
-interface HomeProps {
-	listCountries: CountriesInterface.Db[];
-	listLanguages: LanguagesInterface.Db[];
-	text: LanguageTranslationInterface.Txt;
-	metadata: MetadataInterface.Main;
 }
