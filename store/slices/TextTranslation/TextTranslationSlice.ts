@@ -1,12 +1,12 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Constants, ML } from '../../../globals';
 import { AlertsSlice } from '../../slices';
 import { AppState, AppDispatch } from '../../store';
-import { LanguageTranslationInterface } from '../../../interfaces';
+import { LanguageTranslationInterface } from '../../../typesAndInterfaces/interfaces';
 
 interface InitialState {
 	entities: LanguageTranslationInterface.Txt;
-  status: Constants.statusFetch.succeeded | Constants.statusFetch.failed | Constants.statusFetch.loading;
+  status: keyof typeof Constants.statusFetch;
 	error: string | null;
 }
 

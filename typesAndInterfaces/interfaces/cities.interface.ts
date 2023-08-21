@@ -7,10 +7,6 @@ export interface Db {
 	status: TypeOneOrZero;
 }
 
-// export interface City {
-// 	id: number;
-// 	nameCity: string;
-// 	route: string;
-// 	status: TypeOneOrZero;
-// 	translation?: string;
-// }
+export interface WithTranslation extends Db {
+  translation?: string;
+}

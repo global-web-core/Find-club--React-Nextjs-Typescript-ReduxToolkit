@@ -1,9 +1,9 @@
 import styles from '../styles/ProposeMeetingPage.module.css'
 import Head from 'next/head'
-import { Main, Select, Loading, Alert, Button, DivDefault } from '../components';
+import { Main, Select, Loading, Button, DivDefault } from '../components';
 import { Cities, Countries, CitiesByCountries, Interests, InterestsByCities, Languages, Categories, CategoriesByInterests, Meetings, Users, Desires } from '../models';
 import { useRouter } from 'next/router';
-import { CountriesInterface, InterestsInterface, CitiesInterface, CitiesByCountriesInterface, LanguagesInterface, CategoryInterface, InterestsByCitiesInterface, CategoriesByInterestsInterface, DesiresInterface } from '../interfaces';
+import { CountriesInterface, InterestsInterface, CitiesInterface, CitiesByCountriesInterface, LanguagesInterface, CategoryInterface, InterestsByCitiesInterface, CategoriesByInterestsInterface, DesiresInterface, ProposeMeetingInterface, MeetingsInterface } from '../typesAndInterfaces/interfaces';
 import { ML, Helpers, Constants } from '../globals';
 import { ReactElement, useEffect, useState } from 'react';
 import { useSession, signIn } from 'next-auth/react';
@@ -18,14 +18,14 @@ export default function ProposeMeetingPage(): JSX.Element {
 	const [loading, setLoading] = useState(true);
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	const [listLanguages, setListLanguages] = useState<LanguagesInterface.Db[]>([]);
-	const [listCountries, setListCountries] = useState<CountriesInterface.Db[]>([]);
-	const [listCities, setListCities] = useState<CitiesInterface.Db[]>([]);
-	const [listInterests, setListInterests] = useState<InterestsInterface.Db[]>([]);
-	const [listCategories, setListCategories] = useState<CategoryInterface.Db[]>([]);
+	const [listCountries, setListCountries] = useState<CountriesInterface.WithTranslation[]>([]);
+	const [listCities, setListCities] = useState<CitiesInterface.WithTranslation[]>([]);
+	const [listInterests, setListInterests] = useState<InterestsInterface.WithTranslation[]>([]);
+	const [listCategories, setListCategories] = useState<CategoryInterface.WithTranslation[]>([]);
 	const [listCitiesByCountries, setListCitiesByCountries] = useState<CitiesByCountriesInterface.Db[]>([]);
 	const [listInterestsByCities, setListInterestsByCities] = useState<InterestsByCitiesInterface.Db[]>([]);
 	const [listCategoriesByInterests, setListCategoriesByInterests] = useState<CategoriesByInterestsInterface.Db[]>([]);
-	const [dataForm, setDataForm] = useState<TypeDataForm>({selectCountry: '', selectCity: '', selectInterest: '', selectCategory: '', selectLanguage: '', selectDateMeeting: '', selectPlaceMeeting: ''});
+	const [dataForm, setDataForm] = useState<ProposeMeetingInterface.DataForm>({selectCountry: '', selectCity: '', selectInterest: '', selectCategory: '', selectLanguage: '', selectDateMeeting: '', selectPlaceMeeting: ''});
 	const [dataSelects, setDataSelects] = useState({listCities: [], listInterests: [], listCategories: []})
 	const [trySubmit, setTrySubmit] = useState(false);
 
@@ -63,36 +63,42 @@ export default function ProposeMeetingPage(): JSX.Element {
 		async function startFetching() {
 			const languagesDb = await Languages.getAll();
 			const listLanguagesDb = languagesDb.data;
-			setListLanguages(listLanguagesDb);
-			ML.setLanguageByBrowser(listLanguagesDb);
-			updateLanguage();
 			
 			const countriesDb = await Countries.getAll();
 			const listCountriesDb = countriesDb.data;
-			setListCountries(listCountriesDb);
 			
 			const citiesDb = await Cities.getAll();
 			const listCitiesDb = citiesDb.data;
-			setListCities(listCitiesDb);
 			
 			const interestsDb = await Interests.getAll();
 			const listInterestsDb = interestsDb.data;
-			setListInterests(listInterestsDb);
 			
 			const categoriesDb = await Categories.getAll();
 			const listCategoriesDb = categoriesDb.data;
-			setListCategories(listCategoriesDb);
-
+			
 			const citiesByCountriesDb = await CitiesByCountries.getAll();
 			const listCitiesByCountriesDb = citiesByCountriesDb.data;
-			setListCitiesByCountries(listCitiesByCountriesDb);
-
+			
 			const interestsByCitiesDb = await InterestsByCities.getAll();
 			const listInterestsByCitiesDb = interestsByCitiesDb.data;
-			setListInterestsByCities(listInterestsByCitiesDb);
-
+			
 			const categoriesByInterestsDb = await CategoriesByInterests.getAll();
 			const listCategoriesByInterestsDb = categoriesByInterestsDb.data;
+
+			if (!listLanguagesDb || !listCountriesDb || !listCitiesDb || !listInterestsDb || !listCategoriesDb || !listCitiesByCountriesDb || !listInterestsByCitiesDb || !listCategoriesByInterestsDb) {
+				setLoading(false);
+				return;
+			}
+			
+			setListLanguages(listLanguagesDb);
+			ML.setLanguageByBrowser(listLanguagesDb);
+			updateLanguage();
+			setListCountries(listCountriesDb);
+			setListCities(listCitiesDb);
+			setListInterests(listInterestsDb);
+			setListCategories(listCategoriesDb);
+			setListCitiesByCountries(listCitiesByCountriesDb);
+			setListInterestsByCities(listInterestsByCitiesDb);
 			setListCategoriesByInterests(listCategoriesByInterestsDb);
 
 			setLoading(false);
@@ -134,64 +140,70 @@ export default function ProposeMeetingPage(): JSX.Element {
 	
   const handleSubmit = async (e: React.MouseEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const dataUserBySession = await Users.getBySession(session?.user?.email, session?.user?.image, session?.user?.name)
-		const idUser = dataUserBySession?.data.length > 0 && dataUserBySession?.data[0].id || null;
-
-		setTrySubmit(true);
-		if (dataForm.selectCountry.length > 0 && dataForm.selectCity.length > 0 && dataForm.selectInterest.length > 0 && dataForm.selectCategory.length && dataForm.selectLanguage.length && dataForm.selectDateMeeting.length) {
-			
-			const dataMeeting = {} as TypeDataMeeting;
-			const country = listCountries.find(country => country.route === dataForm.selectCountry);
-			const city = listCities.find(city => city.route === dataForm.selectCity);
-			const interest = listInterests.find(interest => interest.route === dataForm.selectInterest);
-			const category = listCategories.find(category => category.route === dataForm.selectCategory);
-			const language = listLanguages.find(language => language.route === dataForm.selectLanguage);
+		if (session?.user?.email !== undefined && session?.user?.image !== undefined && session?.user?.name !== undefined) {
+			const dataUserBySession = await Users.getBySession(session?.user?.email, session?.user?.image, session?.user?.name)
+			if (dataUserBySession?.data) {
+				const idUser = dataUserBySession?.data.length > 0 && dataUserBySession?.data[0].id || null;
 	
-			if (country && city && interest && category && language && idUser) {
-				dataMeeting.idCountry = country.id;
-				dataMeeting.idCity = city.id;
-				dataMeeting.idInterest = interest.id;
-				dataMeeting.idCategory = category.id;
-				dataMeeting.idLanguage = language.id;
-				dataMeeting.dateMeeting = dataForm.selectDateMeeting;
-				dataMeeting.placeMeeting = dataForm.selectPlaceMeeting;
-				dataMeeting.typeMeeting = Constants.typeMeeting.OWN;
-				dataMeeting.accessMeeting = Constants.accessMeeting.all;
-				dataMeeting.dateCreation = Helpers.currentDatetimeForDb();
-				dataMeeting.status = Constants.activyStatus.ACTIVE;
-
-				const oldMeetings = await Meetings.getByDataForm(dataMeeting);
-				let oldDesires;
-				if (oldMeetings?.data?.length > 0) oldDesires = await Desires.getByIdUserAndIdMeeting(idUser,  oldMeetings?.data[0].id);
-
-				if (oldMeetings?.data?.length === 0 || !oldMeetings || !oldDesires) {
-					const idMeetingsAddDb = await Meetings.add(dataMeeting);
-					if (idMeetingsAddDb?.data?.id) {
-						const dataDesires: DesiresInterface.Add = {
-							idUser: idUser,
-							idMeeting: idMeetingsAddDb.data.id,
-							statusOrganizer: Constants.statusOrganizer.MY,
-							statusWish: Constants.statusWish.WISH,
-							statusReadiness: Constants.statusReadiness.READINESS,
+				setTrySubmit(true);
+				if (dataForm.selectCountry.length > 0 && dataForm.selectCity.length > 0 && dataForm.selectInterest.length > 0 && dataForm.selectCategory.length && dataForm.selectLanguage.length && dataForm.selectDateMeeting.length) {
+					
+					const country = listCountries.find(country => country.route === dataForm.selectCountry);
+					const city = listCities.find(city => city.route === dataForm.selectCity);
+					const interest = listInterests.find(interest => interest.route === dataForm.selectInterest);
+					const category = listCategories.find(category => category.route === dataForm.selectCategory);
+					const language = listLanguages.find(language => language.route === dataForm.selectLanguage);
+					
+					if (country && city && interest && category && language && idUser) {
+						const dataMeeting: MeetingsInterface.Add = {
+							idCountry: country.id,
+							idCity: city.id,
+							idInterest: interest.id,
+							idCategory: category.id,
+							idLanguage: language.id,
+							dateMeeting: dataForm.selectDateMeeting,
+							placeMeeting: dataForm.selectPlaceMeeting,
+							typeMeeting: Constants.typeMeeting.OWN,
+							accessMeeting: Constants.accessMeeting.all,
+							dateCreation: Helpers.currentDatetimeForDb(),
 							status: Constants.activyStatus.ACTIVE
 						};
-
-						await Desires.add(dataDesires);
-							
-						dispatch(AlertsSlice.add(textTranslation[ML.key.addedMeeting], textTranslation[ML.key.successfully], 'success'));
+		
+						const oldMeetings = await Meetings.getByDataForm(dataMeeting);
+						let oldDesires;
+						if (oldMeetings?.data) oldDesires = oldMeetings?.data?.length > 0 && await Desires.getByIdUserAndIdMeeting(idUser, oldMeetings?.data[0].id);
+		
+						if (oldMeetings?.data?.length === 0 || !oldMeetings || !oldDesires) {
+							const idMeetingsAddDb = await Meetings.add(dataMeeting);
+							if (idMeetingsAddDb?.data?.id) {
+								const dataDesires: DesiresInterface.Add = {
+									idUser: idUser,
+									idMeeting: parseInt(idMeetingsAddDb.data.id),
+									statusOrganizer: Constants.statusOrganizer.MY,
+									statusWish: Constants.statusWish.WISH,
+									statusReadiness: Constants.statusReadiness.READINESS,
+									status: Constants.activyStatus.ACTIVE
+								};
+		
+								await Desires.add(dataDesires);
+									
+								dispatch(AlertsSlice.add(textTranslation[ML.key.addedMeeting], textTranslation[ML.key.successfully], 'success'));
+								return;
+							}
+							dispatch(AlertsSlice.add(textTranslation[ML.key.onAddingMeeting], textTranslation[ML.key.error], 'danger'));
+							return;
+						}
+						dispatch(AlertsSlice.add(textTranslation[ML.key.meetingExists], textTranslation[ML.key.error], 'warning'));
 						return;
 					}
-					dispatch(AlertsSlice.add(textTranslation[ML.key.onAddingMeeting], textTranslation[ML.key.error], 'danger'));
-					return;
 				}
-				dispatch(AlertsSlice.add(textTranslation[ML.key.meetingExists], textTranslation[ML.key.error], 'warning'));
-				return;
 			}
 		}
+
 		dispatch(AlertsSlice.add(textTranslation[ML.key.onAddingMeeting], textTranslation[ML.key.error], 'danger'));
   }
 
-	const filterLists = (newDataForm: TypeDataForm) => {
+	const filterLists = (newDataForm: ProposeMeetingInterface.DataForm) => {
 		let newDataSelects = JSON.parse(JSON.stringify(dataSelects)); // a deep copy of the object, to make sure that I do not change the object when assigning a new value
 		
 		const currentCountry = listCountries.find(country => country.route === newDataForm.selectCountry)
@@ -343,28 +355,4 @@ ProposeMeetingPage.getLayout = function getLayout(page: ReactElement) {
       {page}
     </Layout>
   )
-}
-
-export type TypeDataMeeting = {
-	idUser: string;
-	idCountry: number;
-	idCity: number;
-	idInterest: number;
-	idCategory: number;
-	idLanguage: number;
-	dateMeeting: string;
-	placeMeeting: string;
-	typeMeeting: number;
-	dateCreation: string;
-	status: number;
-}
-
-export type TypeDataForm = {
-	selectCountry: string;
-	selectCity: string;
-	selectInterest: string;
-	selectCategory: string;
-	selectLanguage: string;
-	selectDateMeeting: string;
-	selectPlaceMeeting: string;
 }

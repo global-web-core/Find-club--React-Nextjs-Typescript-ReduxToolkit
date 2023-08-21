@@ -17,6 +17,7 @@ import * as SessionsInterface from './sessions.interface';
 import * as UsersInterface from './users.interface';
 import * as VerificationtokensInterface from './verificationtokens.interface';
 import * as HomeInterface from './home.interface';
+import * as ProposeMeetingInterface from './proposeMeeting.interface';
 
 export {
 	CitiesInterface,
@@ -38,4 +39,5 @@ export {
 	UsersInterface,
 	VerificationtokensInterface,
 	HomeInterface,
+	ProposeMeetingInterface,
 }

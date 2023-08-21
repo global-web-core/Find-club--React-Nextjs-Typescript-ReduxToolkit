@@ -7,7 +7,7 @@ export interface Get<ObjectFromDB extends TypeObjectsFromDb> {
 
 export interface Add {
 	code: 200 | 404;
-	data: [id: string] | undefined;
+	data: {id: string} | undefined;
 }
 
 export interface Update {

@@ -1,15 +1,17 @@
+import {TypeEmail, TypeImage, TypeName} from '../types';
+
 export interface Db {
   id: string;
-  name: string | null;
-  email: string | null;
+  name: TypeName;
+  email: TypeEmail;
   emailVerified: Date | null;
-  image: string | null;
+  image: TypeImage;
 }
 
 export interface Update {
   id?: string;
-  name?: string | null;
-  email?: string | null;
+  name?: TypeName;
+  email?: TypeEmail;
   emailVerified?: Date | null;
-  image?: string | null;
+  image?: TypeImage;
 }

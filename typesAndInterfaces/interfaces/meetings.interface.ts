@@ -20,11 +20,11 @@ export interface Add {
 	idInterest: number;
 	idCategory: number;
 	idLanguage: number;
-	dateMeeting: Date;
+	dateMeeting: string;
 	placeMeeting: string | null;
 	typeMeeting: number;
 	accessMeeting: number;
-	dateCreation: Date;
+	dateCreation: string;
 	dateModification?: Date | null;
 	status: number;
 }
@@ -50,7 +50,7 @@ export interface DataForm {
 	idInterest: number;
 	idCategory: number;
 	idLanguage: number;
-	dateMeeting: Date;
+	dateMeeting: string;
 }
 
 export interface MeetingsWithDependentData {
