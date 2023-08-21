@@ -43,6 +43,11 @@ const settingDefault: {[key: string]: TypeLanguages} = {
 	LANGUAGE: 'ru'
 };
 
+const avaliableLanguages = {
+	ru: 'ru',
+	en: 'en'
+}
+
 const activyStatus: AdditionalInterface.OneOrZero = {
 	ACTIVE: 1,
 	NOT_ACTIVE: 0
@@ -166,5 +171,6 @@ export {
 	controllers,
 	methodHttp,
 	basicNameLanguagetranslation,
-	codeHttp
+	codeHttp,
+	avaliableLanguages
 };

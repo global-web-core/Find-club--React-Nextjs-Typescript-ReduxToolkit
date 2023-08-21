@@ -1,1 +1,3 @@
-export type TypeLanguages = 'ru' | 'en';
+import { Constants } from '../../globals';
+
+export type TypeLanguages = keyof typeof Constants.avaliableLanguages;
