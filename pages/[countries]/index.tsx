@@ -44,56 +44,60 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 		};
 	}
 	
-	const countryDb = await Countries.getByRoute((params.countries as string).slice(0, 2) as string);
-	const country = countryDb?.data?.[0];
-	const citiesCountry = country && await CitiesByCountries.getAllByCountry(country.id);
-	
-	const idCities = citiesCountry?.data?.map((city: CitiesByCountriesInterface.Db) => city.idCity);
-	const citiesData = await Cities.getAll();
-	
-	const listCities = citiesData?.data?.filter((city: CitiesInterface.Db) => idCities?.includes(city.id));
+	if (typeof params.countries === 'string') {
+		const countryDb = await Countries.getByRoute((params.countries).slice(0, 2));
+		const country = countryDb?.data?.[0];
+		const citiesCountry = country && await CitiesByCountries.getAllByCountry(country.id);
+		
+		const idCities = citiesCountry?.data?.map((city: CitiesByCountriesInterface.Db) => city.idCity);
+		const citiesData = await Cities.getAll();
+		
+		const listCities = citiesData?.data?.filter((city: CitiesInterface.Db) => idCities?.includes(city.id));
 
-	const countriesDb = await Countries.getAll();
-	const listCountries = countriesDb.data;
+		const countriesDb = await Countries.getAll();
+		const listCountries = countriesDb.data;
 
-	const interestsDb = await Interests.getAll();
-	const listInterests = interestsDb.data;
+		const interestsDb = await Interests.getAll();
+		const listInterests = interestsDb.data;
 
-	const categoriesDb = await Categories.getAll();
-	const listCategories = categoriesDb.data;
+		const categoriesDb = await Categories.getAll();
+		const listCategories = categoriesDb.data;
 
-	const languagesDb = await Languages.getAll();
-	const listLanguages = languagesDb.data
+		const languagesDb = await Languages.getAll();
+		const listLanguages = languagesDb.data
 
-	let textTranslation;
-	let lang;
-	let language: LanguagesInterface.Db | undefined;
-	const pathLanguage = params.countries;
-	if (typeof pathLanguage === 'string' && listLanguages && country) {
-		const languageByPath: TypeLanguages = ML.getLanguageByPath(pathLanguage, listLanguages, country);
-		language = listLanguages.find(lang => lang.route === languageByPath)
-		lang = languageByPath;
-		textTranslation = await ML.getTranslationText(languageByPath);
+		let textTranslation;
+		let lang;
+		let language: LanguagesInterface.Db | undefined;
+		const pathLanguage = params.countries;
+		if (typeof pathLanguage === 'string' && listLanguages && country) {
+			const languageByPath: TypeLanguages = ML.getLanguageByPath(pathLanguage, listLanguages, country);
+			language = listLanguages.find(lang => lang.route === languageByPath)
+			lang = languageByPath;
+			textTranslation = await ML.getTranslationText(languageByPath);
+		}
+		
+		let metadata;
+		if (typeof pathLanguage === 'string' && lang && textTranslation) metadata = generateMetadata(textTranslation, pathLanguage, lang);
+		
+		if (!listCities || !listLanguages || !listCountries || !listInterests || !listCategories || !textTranslation || !country || !language || !metadata) return {props: {}};
+
+		return {
+			props: {
+				listCities,
+				listLanguages,
+				listCountries,
+				listInterests,
+				listCategories,
+				textTranslation,
+				country,
+				language,
+				metadata
+			}
+		};
 	}
 	
-	let metadata;
-	if (typeof pathLanguage === 'string' && lang && textTranslation) metadata = generateMetadata(textTranslation, pathLanguage, lang);
-	
-	if (!listCities || !listLanguages || !listCountries || !listInterests || !listCategories || !textTranslation || !country || !language || !metadata) return {props: {}};
-
-	return {
-		props: {
-			listCities,
-			listLanguages,
-			listCountries,
-			listInterests,
-			listCategories,
-			textTranslation,
-			country,
-			language,
-			metadata
-		}
-	};
+	return {props: {}}
 };
 
 export function generateMetadata(text: LanguageTranslationInterface.Txt, pathCountries: string, lang: string):MetadataInterface.Main {
