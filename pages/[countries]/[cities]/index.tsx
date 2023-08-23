@@ -55,80 +55,83 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 			notFound: true
 		};
 	}
+	if (typeof params.countries === 'string' && typeof params.cities === 'string') {
+		const countriesDb = await Countries.getAll();
+		const listCountries = countriesDb.data;
 
-	const countriesDb = await Countries.getAll();
-	const listCountries = countriesDb.data;
-
-	const countryDb = await Countries.getByRoute((params.countries as string).slice(0, 2) as string);
-	const country = countryDb?.data?.[0];
-	const citiesByCountry = country && (await CitiesByCountries.getAllByCountry(country.id)).data
-	const citiesByRoute = (await Cities.getAllByRouteCity(params.cities as string)).data
-	let cityData: CitiesInterface.Db[] = [];
-	if (citiesByCountry && citiesByRoute) {
-		for (const cityByCountry of citiesByCountry) {
-			for (const cityByRoute of citiesByRoute) {
-				if (cityByRoute.id === cityByCountry.idCity) {
-					cityData.push(cityByRoute);
-					break;
+		const countryDb = await Countries.getByRoute((params.countries).slice(0, 2));
+		const country = countryDb?.data?.[0];
+		const citiesByCountry = country && (await CitiesByCountries.getAllByCountry(country.id)).data
+		const citiesByRoute = (await Cities.getAllByRouteCity(params.cities)).data
+		let cityData: CitiesInterface.Db[] = [];
+		if (citiesByCountry && citiesByRoute) {
+			for (const cityByCountry of citiesByCountry) {
+				for (const cityByRoute of citiesByRoute) {
+					if (cityByRoute.id === cityByCountry.idCity) {
+						cityData.push(cityByRoute);
+						break;
+					}
 				}
 			}
 		}
-	}
-	const city = cityData[0];
+		const city = cityData[0];
 
-	const interestsData = await Interests.getAll();
-	const interestsByCitiesData = await InterestsByCities.getAll();
-	if (!country || !cityData.length || !interestsData?.data?.length || !interestsByCitiesData?.data?.length || !countryDb?.data?.length) return {props: {}};
+		const interestsData = await Interests.getAll();
+		const interestsByCitiesData = await InterestsByCities.getAll();
+		if (!country || !cityData.length || !interestsData?.data?.length || !interestsByCitiesData?.data?.length || !countryDb?.data?.length) return {props: {}};
 
-	const idInterests: number[] = [];
-	for (let index = 0; index < interestsByCitiesData.data.length; index++) {
-		if (interestsByCitiesData.data[index].idCity === cityData[0].id) idInterests.push(interestsByCitiesData.data[index].idInterest);
-	}
-
-	const listInterests: InterestsInterface.Db[] = interestsData.data.filter((interest: InterestsInterface.Db) => idInterests.includes(interest.id));
-	
-	let listLanguages: LanguagesInterface.Db[] = [];
-	const languagesDb = await Languages.getAll();
-	if (languagesDb.data) listLanguages = languagesDb.data
-
-	const categoriesDb = await Categories.getAll();
-	const listCategories = categoriesDb.data;
-
-	const listCities = cityData;
-
-	let textTranslation = {};
-	let lang;
-	let language;
-	const pathLanguage = params.countries;
-	if (typeof pathLanguage === 'string') {
-		const languageByPath = ML.getLanguageByPath(pathLanguage, listLanguages, country);
-		language = listLanguages.find(lang => lang.route === languageByPath)
-		lang = languageByPath;
-		const textDb = await ML.getTranslationText(languageByPath);
-		if (textDb) textTranslation = textDb
-		if (!textDb || !languageByPath) return {props: {}};
-	}
-
-	let metadata;
-	const pathCity = params.cities;
-	if (typeof pathCity === 'string' && lang) metadata = generateMetadata(textTranslation, pathCity, lang);
-
-	if (!listCities || !listLanguages || !listCountries || !listInterests || !listCategories || !textTranslation || !country || !city || !language || !metadata) return {props: {}};
-
-	return {
-		props: {
-			listCountries,
-			listInterests,
-			listLanguages,
-			listCategories,
-			listCities,
-			textTranslation,
-			country,
-			city,
-			language,
-			metadata
+		const idInterests: number[] = [];
+		for (let index = 0; index < interestsByCitiesData.data.length; index++) {
+			if (interestsByCitiesData.data[index].idCity === cityData[0].id) idInterests.push(interestsByCitiesData.data[index].idInterest);
 		}
-	};
+
+		const listInterests: InterestsInterface.Db[] = interestsData.data.filter((interest: InterestsInterface.Db) => idInterests.includes(interest.id));
+		
+		let listLanguages: LanguagesInterface.Db[] = [];
+		const languagesDb = await Languages.getAll();
+		if (languagesDb.data) listLanguages = languagesDb.data
+
+		const categoriesDb = await Categories.getAll();
+		const listCategories = categoriesDb.data;
+
+		const listCities = cityData;
+
+		let textTranslation = {};
+		let lang;
+		let language;
+		const pathLanguage = params.countries;
+		if (typeof pathLanguage === 'string') {
+			const languageByPath = ML.getLanguageByPath(pathLanguage, listLanguages, country);
+			language = listLanguages.find(lang => lang.route === languageByPath)
+			lang = languageByPath;
+			const textDb = await ML.getTranslationText(languageByPath);
+			if (textDb) textTranslation = textDb
+			if (!textDb || !languageByPath) return {props: {}};
+		}
+
+		let metadata;
+		const pathCity = params.cities;
+		if (typeof pathCity === 'string' && lang) metadata = generateMetadata(textTranslation, pathCity, lang);
+
+		if (!listCities || !listLanguages || !listCountries || !listInterests || !listCategories || !textTranslation || !country || !city || !language || !metadata) return {props: {}};
+
+		return {
+			props: {
+				listCountries,
+				listInterests,
+				listLanguages,
+				listCategories,
+				listCities,
+				textTranslation,
+				country,
+				city,
+				language,
+				metadata
+			}
+		};
+	}
+	
+	return {props: {}}
 };
 
 export function generateMetadata(text: LanguageTranslationInterface.Txt, pathCity: string, lang: string):MetadataInterface.Main {
