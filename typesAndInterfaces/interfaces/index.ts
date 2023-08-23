@@ -22,6 +22,7 @@ import * as HomeInterface from './home.interface';
 import * as ProposeMeetingInterface from './proposeMeeting.interface';
 import * as YourMeetingsInterface from './yourMeetings.interface';
 import * as NotFoundInterface from './notFound.interface';
+import * as InterestsPageInterface from './interestsPage.interface';
 
 export {
 	CitiesInterface,
@@ -48,4 +49,5 @@ export {
 	ProposeMeetingInterface,
 	YourMeetingsInterface,
 	NotFoundInterface,
+	InterestsPageInterface,
 }
