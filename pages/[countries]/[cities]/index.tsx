@@ -1,15 +1,15 @@
-import { Alert, Button, PublicMeetings, SelectInterest, SelectLanguage } from '../../../components';
+import { Button, PublicMeetings } from '../../../components';
 import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { Cities, Countries, CitiesByCountries, Interests, InterestsByCities, Languages, Meetings, Categories } from '../../../models';
 import { useRouter } from 'next/router';
-import { CountriesInterface, InterestsInterface, CitiesInterface, CitiesByCountriesInterface, LanguagesInterface, LanguageTranslationInterface, MetadataInterface } from '../../../interfaces';
+import { CountriesInterface, InterestsInterface, CitiesInterface, CitiesByCountriesInterface, LanguagesInterface, LanguageTranslationInterface, MetadataInterface, CitiesPageInterface } from '../../../typesAndInterfaces/interfaces';
 import { ParsedUrlQuery } from 'querystring';
 import { Constants, Helpers, ML } from '../../../globals';
 import { ReactElement, useEffect } from 'react';
 import { Main } from '../../../components';
 import Head from 'next/head';
 import { useAppDispatch, useAppSelector } from '../../../store/hook';
-import { DesiresSlice, MeetingsSlice, PaginationSlice, TextTranslationSlice, UserSlice } from '../../../store/slices';
+import { DesiresSlice, MeetingsSlice, PaginationSlice, UserSlice } from '../../../store/slices';
 import { Layout } from '../../../layout/Layout';
 import { useSession } from 'next-auth/react';
 
@@ -21,10 +21,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 	const paths: string[] = [];
 
-	if (listCountries.data.length && listCities.data.length && listCitiesByCountries.data.length && listLanguages.data.length) {
+	if (listCountries?.data?.length && listCities?.data?.length && listCitiesByCountries?.data?.length && listLanguages?.data?.length) {
 		listCitiesByCountries.data.forEach((cityByCountry: CitiesByCountriesInterface.Db) => {
-			listCountries.data.forEach((country: CountriesInterface.Db) => {
-				listLanguages.data.forEach((language: LanguagesInterface.Db) => {
+			listCountries?.data?.forEach((country: CountriesInterface.Db) => {
+				listLanguages?.data?.forEach((language: LanguagesInterface.Db) => {
 					let countryRoute = '';
 					if (country.id === language.idCountry) {
 						countryRoute = '/' + country.route;
@@ -33,9 +33,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 					}
 
 					if (country.id === cityByCountry.idCountry) {
-						const cityRoute = listCities.data.find((city: CitiesInterface.Db) => city.id === cityByCountry.idCity);
+						const cityRoute = listCities?.data?.find((city: CitiesInterface.Db) => city.id === cityByCountry.idCity);
 						if (!country && !cityRoute) return {paths: [], fallback: false};
-						const url = countryRoute + '/' + cityRoute.route;
+						const url = countryRoute + '/' + cityRoute?.route;
 						paths.push(url);
 					}
 				});
@@ -60,15 +60,17 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 	const listCountries = countriesDb.data;
 
 	const countryDb = await Countries.getByRoute((params.countries as string).slice(0, 2) as string);
-	const country = countryDb.data[0];
-	const citiesByCountry = (await CitiesByCountries.getAllByCountry(country.id)).data
+	const country = countryDb?.data?.[0];
+	const citiesByCountry = country && (await CitiesByCountries.getAllByCountry(country.id)).data
 	const citiesByRoute = (await Cities.getAllByRouteCity(params.cities as string)).data
-	let cityData = [];
-	for (const cityByCountry of citiesByCountry) {
-		for (const cityByRoute of citiesByRoute) {
-			if (cityByRoute.id === cityByCountry.idCity) {
-				cityData.push(cityByRoute);
-				break;
+	let cityData: CitiesInterface.Db[] = [];
+	if (citiesByCountry && citiesByRoute) {
+		for (const cityByCountry of citiesByCountry) {
+			for (const cityByRoute of citiesByRoute) {
+				if (cityByRoute.id === cityByCountry.idCity) {
+					cityData.push(cityByRoute);
+					break;
+				}
 			}
 		}
 	}
@@ -76,7 +78,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 
 	const interestsData = await Interests.getAll();
 	const interestsByCitiesData = await InterestsByCities.getAll();
-	if (!country || !cityData.length || !interestsData.data.length || !interestsByCitiesData.data.length || !countryDb.data.length) return {props: {}};
+	if (!country || !cityData.length || !interestsData?.data?.length || !interestsByCitiesData?.data?.length || !countryDb?.data?.length) return {props: {}};
 
 	const idInterests: number[] = [];
 	for (let index = 0; index < interestsByCitiesData.data.length; index++) {
@@ -85,9 +87,9 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 
 	const listInterests: InterestsInterface.Db[] = interestsData.data.filter((interest: InterestsInterface.Db) => idInterests.includes(interest.id));
 	
-	let listLanguages = [];
+	let listLanguages: LanguagesInterface.Db[] = [];
 	const languagesDb = await Languages.getAll();
-	if (languagesDb) listLanguages = languagesDb.data
+	if (languagesDb.data) listLanguages = languagesDb.data
 
 	const categoriesDb = await Categories.getAll();
 	const listCategories = categoriesDb.data;
@@ -149,7 +151,7 @@ export function generateMetadata(text: LanguageTranslationInterface.Txt, pathCit
 	}
 }
 
-export default function CitiesPage({ listCountries, listCities, listInterests, listCategories, listLanguages, textTranslation, country, city, language, metadata }: CitiesPageProps): JSX.Element {
+export default function CitiesPage({ listCountries, listCities, listInterests, listCategories, listLanguages, textTranslation, country, city, language, metadata }: CitiesPageInterface.Props): JSX.Element {
 	const router = useRouter();
 	const dispatch = useAppDispatch();
 	const { data: session, status } = useSession();
@@ -161,14 +163,16 @@ export default function CitiesPage({ listCountries, listCities, listInterests, l
 		dispatch(PaginationSlice.clearAll());
 	}
 
-	const getMeetingsFromDb = async (startDate, endDate) => {
+	const getMeetingsFromDb = async (startDate: string, endDate: string) => {
 		let listMeetings;
 
 		const meetingsDb = await Meetings.getPageByDateMeetingsAndCity(country.id, city.id, language.id, startDate, endDate, currentPagination?.currentPage);
-		if (meetingsDb.data.length === 0) return [];
 
 		const countMeetingsDb = await Meetings.getCountByDateMeetingAndCity(country.id, city.id, language.id, startDate, endDate);
-		const countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
+		let countMeetings: number | undefined;
+		if (countMeetingsDb?.data?.[0]?.countRowsSqlRequest) countMeetings = Helpers.calculateCountPageByCountRows(parseInt(countMeetingsDb?.data[0]?.countRowsSqlRequest));
+
+		if (meetingsDb?.data?.length === 0 || meetingsDb?.data === undefined || !countMeetings) return [];
 
 		if (meetingsDb.data.length > 0 && countMeetings > 0) {
 			listMeetings = meetingsDb.data;
@@ -222,12 +226,4 @@ CitiesPage.getLayout = function getLayout(page: ReactElement) {
       {page}
     </Layout>
   )
-}
-
-interface CitiesPageProps {
-	listInterests: InterestsInterface.Db[];
-	listLanguages: LanguagesInterface.Db[];
-	text: LanguageTranslationInterface.Txt;
-	country: CountriesInterface.Db;
-	metadata: MetadataInterface.Main;
 }
