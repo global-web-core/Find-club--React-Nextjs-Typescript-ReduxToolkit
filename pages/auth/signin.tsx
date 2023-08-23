@@ -10,7 +10,7 @@ import { TextTranslationSlice } from "../../store/slices";
 import { ML } from "../../globals";
 import { Languages } from "../../models";
 import { ReactElement, useEffect, useState } from "react";
-import { LanguagesInterface } from "../../interfaces";
+import { LanguagesInterface } from "../../typesAndInterfaces/interfaces";
 import styles from '../../styles/Signin.module.css';
 import {WithoutLayout} from '../../layout/Layout';
 
@@ -31,9 +31,11 @@ export default function SignIn({ providers }: InferGetServerSidePropsType<typeof
 		async function startFetching() {
 			const languagesDb = await Languages.getAll();
 			const listLanguagesDb = languagesDb.data;
+			if (listLanguagesDb) {
 			setListLanguages(listLanguagesDb);
 			ML.setLanguageByBrowser(listLanguagesDb);
 			updateLanguage();
+		}
 		}
 		startFetching();
 	}, [])
@@ -48,7 +50,7 @@ export default function SignIn({ providers }: InferGetServerSidePropsType<typeof
 				<div className={styles.selectLanguage}>
 					<SelectLanguage listLanguages={listLanguages} text={textTranslation} updateLanguage={() => updateLanguage()}  country={null}></SelectLanguage>
 				</div>
-				<SignInUser listProviders={providers} handleSignIn={(providerId) => handleSignIn(providerId)} />{/* TODO: make a type for listProviders */}
+				<SignInUser listProviders={providers} handleSignIn={(providerId) => handleSignIn(providerId)} />
 			</Main>
     </>
   )
@@ -75,6 +77,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const providers = await getProviders();
   
   return {
-    props: { providers: providers ?? [] },
+    props: { providers },
   }
 }
