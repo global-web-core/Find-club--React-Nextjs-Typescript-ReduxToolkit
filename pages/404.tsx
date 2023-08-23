@@ -2,14 +2,13 @@ import React, { ReactElement } from 'react';
 import { Layout } from '../layout/Layout';
 import styles from '../styles/404.module.css'
 import cn from 'classnames';
-import Link from 'next/link';
 import { Button } from '../components';
 import router from 'next/router';
 import { Constants, ML } from '../globals';
 import { GetStaticProps, GetStaticPropsContext } from 'next';
 import { ParsedUrlQuery } from 'querystring';
 import { Countries, Languages } from '../models';
-import { LanguageTranslationInterface } from '../typesAndInterfaces/interfaces';
+import { CountriesInterface, LanguageTranslationInterface, LanguagesInterface, NotFoundInterface } from '../typesAndInterfaces/interfaces';
 import { TextTranslationSlice } from '../store/slices';
 import { useAppSelector } from '../store/hook';
 
@@ -19,10 +18,10 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 	const languagesDb = await Languages.getAll();
 	const textDb = await ML.getTranslationText();
 
-	let listCountries: string[] = [];
-	let listLanguages: string[] = [];
-	let textTranslation:LanguageTranslationInterface.Txt = {};
-	if (countriesDb && languagesDb && textDb) {
+	let listCountries: CountriesInterface.Db[] = [];
+	let listLanguages: LanguagesInterface.Db[] = [];
+	let textTranslation: LanguageTranslationInterface.Txt = {};
+	if (countriesDb && languagesDb && textDb && countriesDb.data && languagesDb.data) {
 		listCountries = countriesDb.data
 		listLanguages = languagesDb.data
 		textTranslation = textDb
@@ -44,7 +43,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 	};
 };
 
-export default function Error404({textTranslation}): JSX.Element {
+export default function Error404({textTranslation}: NotFoundInterface.Props): JSX.Element {
 	textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	return (
 		<>

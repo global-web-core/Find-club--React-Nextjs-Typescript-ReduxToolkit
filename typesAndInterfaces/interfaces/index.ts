@@ -19,6 +19,7 @@ import * as VerificationtokensInterface from './verificationtokens.interface';
 import * as HomeInterface from './home.interface';
 import * as ProposeMeetingInterface from './proposeMeeting.interface';
 import * as YourMeetingsInterface from './yourMeetings.interface';
+import * as NotFoundInterface from './notFound.interface';
 
 export {
 	CitiesInterface,
@@ -42,4 +43,5 @@ export {
 	HomeInterface,
 	ProposeMeetingInterface,
 	YourMeetingsInterface,
+	NotFoundInterface,
 }
