@@ -3,8 +3,9 @@ import { AppState } from '../../store';
 import { Constants } from '../../../globals';
 
 interface InitialState {
-
-};
+	basic: keyof typeof Constants.nameBasicFilter,
+	yourMeetings: keyof typeof Constants.nameYourMeetingsFilter,
+}
 
 const initialState:InitialState = {
   basic: Constants.nameBasicFilter.month,

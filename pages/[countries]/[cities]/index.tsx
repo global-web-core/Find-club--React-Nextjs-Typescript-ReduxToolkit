@@ -186,7 +186,7 @@ export default function CitiesPage({ listCountries, listCities, listInterests, l
 
 
 	useEffect(() => {
-		dispatch(UserSlice.getIdUserAsync(session));
+		if (session?.user?.email && session?.user?.image && session?.user?.name) dispatch(UserSlice.getIdUserAsync({email: session?.user?.email, image: session?.user?.image, name: session?.user?.name, textTranslation}));
 	}, [session, status]);
 
 	return (

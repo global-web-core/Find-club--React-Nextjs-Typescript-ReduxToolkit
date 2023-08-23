@@ -138,7 +138,7 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 
 	const getMeetingsFromDb = async (startDate, endDate) => {
 		let listMeetings;
-
+		
 		const meetingsDb = await Meetings.getPageByDateMeetingsAndCountry(country.id, language.id, startDate, endDate, currentPagination?.currentPage);
 		if (meetingsDb.data.length === 0) return [];
 
@@ -161,7 +161,7 @@ export default function CountriesPage({ listCities, listLanguages, listCountries
 
 
 	useEffect(() => {
-		dispatch(UserSlice.getIdUserAsync(session));
+		if (session?.user?.email && session?.user?.image && session?.user?.name) dispatch(UserSlice.getIdUserAsync({email: session?.user?.email, image: session?.user?.image, name: session?.user?.name, textTranslation}));
 	}, [session, status]);
 
 	return (

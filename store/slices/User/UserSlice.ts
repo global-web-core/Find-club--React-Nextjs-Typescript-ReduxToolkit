@@ -1,14 +1,22 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { AlertsSlice } from '../../slices';
 import { AppState, AppDispatch } from '../../store';
-import { LanguageTranslationInterface } from '../../../interfaces';
+import { LanguageTranslationInterface, UsersInterface } from '../../../typesAndInterfaces/interfaces';
+import { TypeEmail, TypeImage, TypeName } from '../../../typesAndInterfaces/types';
 import { Users } from '../../../models';
-import { Constants } from '../../../globals';
+import { Constants, ML } from '../../../globals';
 
 interface InitialState {
-	data: {id: string | null;};
-  status: Constants.statusFetch.succeeded | Constants.statusFetch.failed | Constants.statusFetch.loading;
+	data: {id: UsersInterface.Db["id"] | null};
+  status: keyof typeof Constants.statusFetch;
 	error: string | null;
+}
+
+interface DataForGetIdUserAsync {
+	email: TypeEmail,
+	image: TypeImage,
+	name: TypeName,
+	textTranslation: LanguageTranslationInterface.Txt,
 }
 
 const initialState: InitialState = {
@@ -17,16 +25,15 @@ const initialState: InitialState = {
 	error: null,
 }
 
-const getIdUserAsync = createAsyncThunk<LanguageTranslationInterface.Txt, LanguageTranslationInterface.Txt | undefined, {dispatch: AppDispatch}>(
+const getIdUserAsync = createAsyncThunk<UsersInterface.Db["id"], DataForGetIdUserAsync, {dispatch: AppDispatch}>(
   'user/updateUserAsync',
-  async (session, {dispatch, rejectWithValue}) => {
-		const dataUserBySession = await Users.getBySession(session?.user?.email, session?.user?.image, session?.user?.name)
+  async (data, {dispatch, rejectWithValue}) => {
+		const dataUserBySession = await Users.getBySession(data.email, data.image, data.name)
 		
-		const idUserSession = dataUserBySession?.data.length > 0 && dataUserBySession?.data[0].id || null;
-
-		if (!idUserSession && session) {
+		const idUserSession = dataUserBySession?.data?.length && dataUserBySession?.data[0]?.id || null;
+		if (!idUserSession) {
 			const textError = 'Ошибка получения данных пользователя';
-			dispatch(AlertsSlice.add(textError, '', 'danger'));
+			dispatch(AlertsSlice.add(textError, data.textTranslation[ML.key.error], 'danger'));
 			return rejectWithValue(textError)
 		}
 		return idUserSession
@@ -47,11 +54,11 @@ const UserSlice = createSlice({
       })
       .addCase(getIdUserAsync.rejected, (state, action) => {
 				state.status = Constants.statusFetch.failed
-        state.error = action.payload
+        state.error = typeof action.payload === 'string' ? action.payload : 'Error'
       })
       .addCase(getIdUserAsync.fulfilled, (state, action) => {
         state.status = Constants.statusFetch.succeeded
-        state.data = action.payload
+        state.data.id = action.payload
 				state.error = null
       })
   },

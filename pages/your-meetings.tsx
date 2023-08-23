@@ -1,12 +1,12 @@
 import styles from '../styles/YourMeetingsPage.module.css'
-import { Main, Loading, Alert, Button, DivWithTopPanel, MeetingsList, ButtonList, FilterMeetings, BlockMeetings } from '../components';
-import { Cities, Countries, Interests, Languages, Categories, Meetings, Users, Desires } from '../models';
+import { Main, Loading, Button, BlockMeetings } from '../components';
+import { Cities, Countries, Interests, Languages, Categories, Meetings, Desires } from '../models';
 import { useRouter } from 'next/router';
-import { CountriesInterface, InterestsInterface, CitiesInterface, LanguagesInterface, CategoryInterface, MeetingsInterface, DesiresInterface } from '../interfaces';
+import { CountriesInterface, InterestsInterface, CitiesInterface, LanguagesInterface, CategoryInterface, MeetingsInterface, DesiresInterface, HttpInterface, YourMeetingsInterface } from '../typesAndInterfaces/interfaces';
 import { ML, Helpers, Constants } from '../globals';
 import { ReactElement, useEffect, useState } from 'react';
 import { useSession, signIn } from 'next-auth/react';
-import { AlertsSlice, MeetingsSlice, DesiresSlice, TextTranslationSlice, UserSlice, SelectFilterSlice } from '../store/slices'
+import { MeetingsSlice, DesiresSlice, TextTranslationSlice, UserSlice, SelectFilterSlice } from '../store/slices'
 import {useAppDispatch, useAppSelector} from '../store/hook'
 import Head from 'next/head';
 import { Layout } from '../layout/Layout';
@@ -24,7 +24,7 @@ export default function YourMeetingsPage(): JSX.Element {
 	const [listCities, setListCities] = useState<CitiesInterface.Db[]>([]);
 	const [listInterests, setListInterests] = useState<InterestsInterface.Db[]>([]);
 	const [listCategories, setListCategories] = useState<CategoryInterface.Db[]>([]);
-	const idUser = useAppSelector(state => UserSlice.userSelect(state));
+	const dataUser = useAppSelector(state => UserSlice.userSelect(state));
 	const meetings = useAppSelector(state => MeetingsSlice.meetingsSelect(state));
 	const listIdMeetings = useAppSelector(state => MeetingsSlice.listIdMeetingsSelect(state));
 	const selectFilter = useAppSelector(state => SelectFilterSlice.selectFilter(state));
@@ -32,23 +32,27 @@ export default function YourMeetingsPage(): JSX.Element {
 	useEffect(() => {
 		async function startFetching() {
 			const languagesDb = await Languages.getAll();
-			const listLanguagesDb = languagesDb.data;
-			setListLanguages(listLanguagesDb);
-			ML.setLanguageByBrowser(listLanguagesDb);
-
+			const listLanguagesDb = languagesDb?.data;
+			
 			const countriesDb = await Countries.getAll();
-			console.log('===countriesDb', countriesDb)
-			const listCountriesDb = countriesDb.data;
+			const listCountriesDb = countriesDb?.data;
 			
 			const citiesDb = await Cities.getAll();
-			const listCitiesDb = citiesDb.data;
+			const listCitiesDb = citiesDb?.data;
 			
 			const interestsDb = await Interests.getAll();
-			const listInterestsDb = interestsDb.data;
+			const listInterestsDb = interestsDb?.data;
 			
 			const categoriesDb = await Categories.getAll();
-			const listCategoriesDb = categoriesDb.data;
+			const listCategoriesDb = categoriesDb?.data;
+
+			if (!listLanguagesDb || !listCountriesDb || !listCitiesDb || !listInterestsDb || !listCategoriesDb) {
+				setLoading(false);
+				return;
+			}
 			
+			setListLanguages(listLanguagesDb);
+			ML.setLanguageByBrowser(listLanguagesDb);
 			setListCountries(listCountriesDb);
 			setListCities(listCitiesDb);
 			setListInterests(listInterestsDb);
@@ -78,7 +82,7 @@ export default function YourMeetingsPage(): JSX.Element {
 	}, [meetings])
 
 	useEffect(() => {
-		dispatch(UserSlice.getIdUserAsync(session));
+		if (session?.user?.email && session?.user?.image && session?.user?.name) dispatch(UserSlice.getIdUserAsync({email: session?.user?.email, image: session?.user?.image, name: session?.user?.name, textTranslation}));
 	}, [session]);
 	
 	const clearData = () => {
@@ -89,36 +93,38 @@ export default function YourMeetingsPage(): JSX.Element {
 
 	const getListMeetingsDb = async () => {
 		const currentDate = Helpers.convertDatetimeLocalForDb(new Date());
-		const idUserSession = idUser;
-		let desiresDb;
-		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.all) desiresDb = await Desires.getByIdUser(idUserSession);
-		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.my) desiresDb = await Desires.getByIdUserByStatusOrganizer(idUserSession, Constants.statusOrganizer.MY);
-		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.other) desiresDb = await Desires.getByIdUserByStatusOrganizer(idUserSession, Constants.statusOrganizer.ANOTHER);
-		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.passed) desiresDb = await Desires.getByIdUser(idUserSession);
+		const idUserSession = dataUser.id;
+		let desiresDb: HttpInterface.Get<DesiresInterface.Db> | undefined;
+		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.all && idUserSession) desiresDb = await Desires.getByIdUser(idUserSession);
+		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.my && idUserSession) desiresDb = await Desires.getByIdUserByStatusOrganizer(idUserSession, Constants.statusOrganizer.MY);
+		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.other && idUserSession) desiresDb = await Desires.getByIdUserByStatusOrganizer(idUserSession, Constants.statusOrganizer.ANOTHER);
+		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.passed && idUserSession) desiresDb = await Desires.getByIdUser(idUserSession);
 		
-		const selectedMeetings: number[] = [];
-		let listMeetings: MeetingsInterface.Db[] = [];
+		const selectedMeetings: YourMeetingsInterface.SelectedMeetings[] = [];
+		const listMeetings: MeetingsInterface.Db[] = [];
 		
-		for (let index = 0; index < desiresDb.data.length; index++) {
-			if (!selectedMeetings.includes(desiresDb.data[index]?.idMeeting)) {
-				selectedMeetings.push({idMeeting: desiresDb.data[index]?.idMeeting, statusWish: desiresDb.data[index]?.statusWish, statusReadiness: desiresDb.data[index]?.statusReadiness});
+		if (desiresDb?.data !== undefined) {
+			for (let index = 0; index < desiresDb.data.length; index++) {
+				if (!selectedMeetings.some(meeting => meeting.idMeeting === desiresDb?.data?.[index]?.idMeeting)) {
+					selectedMeetings.push({idMeeting: desiresDb.data[index]?.idMeeting, statusWish: desiresDb.data[index]?.statusWish, statusReadiness: desiresDb.data[index]?.statusReadiness});
+				}
 			}
 		}
 
 		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.passed) {
 			for await (const selectedMeeting of selectedMeetings) {
-				const meeting = (await Meetings.getByIdMeetingLessDate(selectedMeeting.idMeeting, currentDate))?.data[0];
+				const meeting = (await Meetings.getByIdMeetingLessDate(selectedMeeting.idMeeting, currentDate))?.data?.[0];
 				if (meeting) listMeetings.push(meeting);
 			}
 		} else {
 			for await (const selectedMeeting of selectedMeetings) {
-				const meeting = (await Meetings.getByIdMeetingMoreDate(selectedMeeting.idMeeting, currentDate))?.data[0];
+				const meeting = (await Meetings.getByIdMeetingMoreDate(selectedMeeting.idMeeting, currentDate))?.data?.[0];
 				if (meeting) listMeetings.push(meeting);
 			}
 		}
 
 		listMeetings.sort((a, b) => {
-			return new Date (a.dateMeeting) - new Date (b.dateMeeting);
+			return new Date (a.dateMeeting).getTime() - new Date (b.dateMeeting).getTime();
 		});
 
 		return listMeetings;

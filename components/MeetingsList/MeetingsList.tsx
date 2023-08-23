@@ -8,7 +8,7 @@ import { Constants, ML } from '../../globals';
 
 export const MeetingsList = ({namePagination}: MeetingsListProps):JSX.Element => {
 	const dispatch = useAppDispatch();
-	const idUser = useAppSelector(state => UserSlice.userSelect(state));
+	const dataUser = useAppSelector(state => UserSlice.userSelect(state));
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	const meetings = useAppSelector(state => MeetingsSlice.meetingsSelect(state));
 	const meetingsAllData = useAppSelector(state => MeetingsSlice.meetingsSelectAllData(state));
@@ -34,7 +34,7 @@ export const MeetingsList = ({namePagination}: MeetingsListProps):JSX.Element =>
 				<div className={styles.content}>
 					<div className={styles.meetings}>
 						{meetings && meetings.map((meeting) => (
-							<Meeting  key={meeting.id} meeting={meeting} idUser={idUser} />
+							<Meeting  key={meeting.id} meeting={meeting} idUser={dataUser.id} />
 						))}
 					</div>
 					<Pagination namePagination={namePagination} />

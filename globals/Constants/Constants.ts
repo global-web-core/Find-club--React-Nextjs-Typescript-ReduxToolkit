@@ -73,18 +73,18 @@ const typeMeeting: AdditionalInterface.OneOrZero = {
 	ALIEN: 1
 };
 
-const nameYourMeetingsFilter = {
-	all: 'all',
-	my: 'my',
-	other: 'other',
-	passed: 'passed'
-};
+const enum nameYourMeetingsFilter {
+	all = 'all',
+	my = 'my',
+	other = 'other',
+	passed = 'passed'
+}
 
-const nameBasicFilter = {
-	month: 'month',
-	week: 'week',
-	day: 'day'
-};
+const enum nameBasicFilter {
+	month = 'month',
+	week = 'week',
+	day = 'day'
+}
 
 const pagination = {
 	limit: 20
@@ -94,11 +94,11 @@ const namePagination = {
 	meetingsList: 'meetingsList'
 };
 
-const statusFetch = {
-	succeeded: 'succeeded',
-	failed: 'failed',
-	loading: 'loading',
-};
+const enum statusFetch {
+  succeeded = 'succeeded',
+  failed = 'failed',
+  loading = 'loading',
+}
 
 const accessMeeting = {
 	all: 0,

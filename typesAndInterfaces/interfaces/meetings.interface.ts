@@ -5,12 +5,12 @@ export interface Db {
 	idInterest: number;
 	idCategory: number;
 	idLanguage: number;
-	dateMeeting: Date;
+	dateMeeting: string;
 	placeMeeting: string | null;
 	typeMeeting: number;
 	accessMeeting: number;
-	dateCreation: Date;
-	dateModification: Date | null;
+	dateCreation: string;
+	dateModification: string | null;
 	status: number;
 }
 
@@ -25,7 +25,7 @@ export interface Add {
 	typeMeeting: number;
 	accessMeeting: number;
 	dateCreation: string;
-	dateModification?: Date | null;
+	dateModification?: string | null;
 	status: number;
 }
 
@@ -35,12 +35,12 @@ export interface Update {
   idInterest?: number;
   idCategory?: number;
   idLanguage?: number;
-  dateMeeting?: Date;
+  dateMeeting?: string;
   placeMeeting?: string | null;
   typeMeeting?: number;
   accessMeeting?: number;
-  dateCreation?: Date;
-  dateModification?: Date | null;
+  dateCreation?: string;
+  dateModification?: string | null;
   status?: number;
 }
 
@@ -60,10 +60,10 @@ export interface MeetingsWithDependentData {
 	interest: string;
 	category: string;
 	language: string;
-	dateMeeting: Date;
+	dateMeeting: string;
 	placeMeeting: string | null;
 	typeMeeting: number;
 	accessMeeting: number;
-	dateModification?: Date | null;
+	dateModification?: string | null;
 	status: number;
 }

@@ -1,14 +1,19 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { AppState } from '../../store';
+import { AppDispatch, AppState } from '../../store';
 import { AlertsSlice } from '../../slices';
-import {DesiresInterface} from '../../../interfaces'
+import {DesiresInterface, LanguageTranslationInterface} from '../../../typesAndInterfaces/interfaces'
 import { Constants, ML } from '../../../globals';
 import { Desires } from '../../../models';
 
 interface InitialState {
 	entities: DesiresInterface.Db[];
-  status: Constants.statusFetch.succeeded | Constants.statusFetch.failed | Constants.statusFetch.loading;
+  status: keyof typeof Constants.statusFetch;
 	error: string | null;
+}
+
+interface DataForDesiresByIdMeeting {
+	textTranslation: LanguageTranslationInterface.Txt,
+	listIdMeetings: number[]
 }
 
 const initialState:InitialState = {
@@ -17,7 +22,7 @@ const initialState:InitialState = {
 	error: null,
 }
 
-const getDesiresByIdMeeting = createAsyncThunk(
+const getDesiresByIdMeeting = createAsyncThunk<DesiresInterface.Db[] | undefined, DataForDesiresByIdMeeting, {dispatch: AppDispatch}>(
   'desires/getDesiresByIdMeeting',
   async (data, {dispatch, rejectWithValue}) => {
 		const error = () => {
@@ -30,16 +35,18 @@ const getDesiresByIdMeeting = createAsyncThunk(
 
 		const listDesiresDb: DesiresInterface.Db[] = [];
 		for await (const idMeeting of idMeetings) {
-			const listDesiresByIdMeeting: DesiresInterface.Db[] = (await Desires.getByIdMeeting(idMeeting))?.data;
-			listDesiresByIdMeeting.forEach(desire => {
-				if (!listDesiresDb.includes(desire)) {
-					listDesiresDb.push(desire);
-				}
-			});
-			listDesiresDb.push();
+			const listDesiresByIdMeeting = (await Desires.getByIdMeeting(idMeeting))?.data;
+			if (listDesiresByIdMeeting) {
+				listDesiresByIdMeeting.forEach(desire => {
+					if (!listDesiresDb.includes(desire)) {
+						listDesiresDb.push(desire);
+					}
+				});
+				listDesiresDb.push();
+			}
 		}
 		
-		if (!listDesiresDb) error()
+		if (!listDesiresDb) return error()
 		
 		return listDesiresDb;
   }
@@ -62,12 +69,14 @@ const desiresSlices = createSlice({
       })
       .addCase(getDesiresByIdMeeting.rejected, (state, action) => {
 				state.status = Constants.statusFetch.failed
-        state.error = action.payload
+        state.error = typeof action.payload === 'string' ? action.payload : 'Error'
       })
       .addCase(getDesiresByIdMeeting.fulfilled, (state, action) => {
-        state.status = Constants.statusFetch.succeeded
-        state.entities = action.payload
-				state.error = null
+				if (action?.payload !== undefined) {
+					state.status = Constants.statusFetch.succeeded
+					state.entities = action.payload
+					state.error = null
+				}
       })
   },
 });

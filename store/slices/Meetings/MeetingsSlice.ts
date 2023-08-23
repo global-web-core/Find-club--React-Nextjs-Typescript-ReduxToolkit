@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { AlertsSlice } from '../../slices';
-import { AppState } from '../../store';
-import {MeetingsInterface} from '../../../interfaces'
+import { AppDispatch, AppState } from '../../store';
+import {CountriesInterface, MeetingsInterface, CitiesInterface, InterestsInterface, CategoryInterface, LanguagesInterface, LanguageTranslationInterface} from '../../../typesAndInterfaces/interfaces'
 import { Constants, ML } from '../../../globals';
 
 interface InitialState {
 	entities: MeetingsInterface.MeetingsWithDependentData[];
+	listIdMeetings: number[];
   status: Constants.statusFetch.succeeded | Constants.statusFetch.failed | Constants.statusFetch.loading;
 	error: string | null;
 }
@@ -17,17 +18,31 @@ const initialState:InitialState = {
 	error: null,
 }
 
-const getMeetingsWithFullDataAsync = createAsyncThunk(
+interface DataForGetMeetingsWithFullDataAsync {
+	meetingsDb: MeetingsInterface.Db[],
+	listCountries: CountriesInterface.Db[],
+	listCities: CitiesInterface.Db[],
+	listInterests: InterestsInterface.Db[],
+	listCategories: CategoryInterface.Db[],
+	listLanguages: LanguagesInterface.Db[],
+	textTranslation: LanguageTranslationInterface.Txt 
+}
+
+interface GetMeetingsWithFullDataAsync {
+	dataMeetings: InitialState["entities"],
+	listIdMeetings: InitialState["listIdMeetings"]
+}
+
+const getMeetingsWithFullDataAsync = createAsyncThunk<GetMeetingsWithFullDataAsync | undefined, DataForGetMeetingsWithFullDataAsync, {dispatch: AppDispatch}>(
   'meetings/getMeetingsWithFullDataAsync',
   async (data, {dispatch, rejectWithValue}) => {
-		// console.log('===data', data)
 		const error = () => {
 			const textError = data.textTranslation[ML.key.receivingMeeting]
 			dispatch(AlertsSlice.add(textError, data.textTranslation[ML.key.error], 'danger'));
 			return rejectWithValue(textError)
 		}
 		
-		const getListIdMeetings = (meetings) => {
+		const getListIdMeetings = (meetings: MeetingsInterface.MeetingsWithDependentData[]) => {
 			const idMeetings: number[] = [];
 			for (let index = 0; index < meetings.length; index++) {
 				if (!idMeetings.includes(meetings[index]?.id)) idMeetings.push(meetings[index]?.id);
@@ -66,11 +81,9 @@ const getMeetingsWithFullDataAsync = createAsyncThunk(
 		const listIdMeetings = getListIdMeetings(dataMeetings);
 		
 		if (!dataMeetings && !listIdMeetings) {
-			error();
-			return;
+			return error();
 		}
-		// console.log('===dataMeetings', dataMeetings)
-		// console.log('===listIdMeetings', listIdMeetings)
+
 		return {dataMeetings, listIdMeetings};
   }
 )
@@ -92,13 +105,15 @@ const meetingsSlices = createSlice({
       })
       .addCase(getMeetingsWithFullDataAsync.rejected, (state, action) => {
 				state.status = Constants.statusFetch.failed
-        state.error = action.payload
+				state.error = typeof action.payload === 'string' ? action.payload : 'Error'
       })
       .addCase(getMeetingsWithFullDataAsync.fulfilled, (state, action) => {
-        state.status = Constants.statusFetch.succeeded
-        state.entities = action.payload.dataMeetings
-        state.listIdMeetings = action.payload.listIdMeetings
-				state.error = null
+				if (action?.payload !== undefined) {
+					state.status = Constants.statusFetch.succeeded
+					state.entities = action.payload.dataMeetings
+					state.listIdMeetings = action.payload.listIdMeetings
+					state.error = null
+				}
       })
   },
 });
