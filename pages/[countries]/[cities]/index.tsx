@@ -113,6 +113,8 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 	const pathCity = params.cities;
 	if (typeof pathCity === 'string' && lang) metadata = generateMetadata(textTranslation, pathCity, lang);
 
+	if (!listCities || !listLanguages || !listCountries || !listInterests || !listCategories || !textTranslation || !country || !city || !language || !metadata) return {props: {}};
+
 	return {
 		props: {
 			listCountries,
