@@ -64,9 +64,9 @@ const setLanguageByPath = (pathLanguage: string, listLanguages: LanguagesInterfa
 
 const getLanguageByPath = (pathLanguage: string, listLanguages: LanguagesInterface.Db[], country: CountriesInterface.Db) => {
 	const currentLanguage: LanguagesInterface.Db | undefined = listLanguages.find(language => language.idCountry === country.id);
-	pathLanguage = ((pathLanguage.length === 2 && currentLanguage?.route) || (pathLanguage.length === 5 && pathLanguage.slice(3, 5))) as string;
+	const language: TypeLanguages = ((pathLanguage.length === 2 && currentLanguage?.route) || (pathLanguage.length === 5 && pathLanguage.slice(3, 5))) as TypeLanguages;
 
-	return pathLanguage;
+	return language;
 }
 
 const setLanguageByBrowser = (listLanguages: LanguagesInterface.Db[]) => {

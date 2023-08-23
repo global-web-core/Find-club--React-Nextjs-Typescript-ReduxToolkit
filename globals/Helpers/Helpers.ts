@@ -124,7 +124,7 @@ const randomGenerateLetterAndNumber = (length) => {
 	return result;
 }
 
-const calculateCountPageByCountRows = (countRows) => {
+const calculateCountPageByCountRows = (countRows: number) => {
 	if (countRows && countRows > 0) {
 		const countPage = Math.ceil(countRows / Constants.pagination.limit);
 		return countPage;

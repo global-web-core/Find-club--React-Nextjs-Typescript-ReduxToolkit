@@ -1,17 +1,24 @@
 import {TypeObjectsFromDb} from '../types';
 
+type codeAnswer = 200 | 404;
+
 export interface Get<ObjectFromDB extends TypeObjectsFromDb> {
-	code: 200 | 404;
+	code: codeAnswer;
 	data: ObjectFromDB[] | undefined;
 }
 
+export interface GetCount {
+	code: codeAnswer;
+	data: {countRowsSqlRequest: string}[] | undefined;
+}
+
 export interface Add {
-	code: 200 | 404;
+	code: codeAnswer;
 	data: {id: string} | undefined;
 }
 
 export interface Update {
-	code: 200 | 404;
+	code: codeAnswer;
 	data: null | undefined;
 }
 

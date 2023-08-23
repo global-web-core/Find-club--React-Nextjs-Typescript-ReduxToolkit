@@ -1,5 +1,6 @@
 import * as CitiesInterface from './cities.interface';
 import * as CountriesInterface from './countries.interface';
+import * as CountriesPageInterface from './countriesPage.interface';
 import * as InterestsInterface from './interests.interface';
 import * as InterestsByCitiesInterface from './interestsByCities.interface';
 import * as CitiesByCountriesInterface from './citiesByCountries.interface';
@@ -24,6 +25,7 @@ import * as NotFoundInterface from './notFound.interface';
 export {
 	CitiesInterface,
 	CountriesInterface,
+	CountriesPageInterface,
 	InterestsInterface,
 	InterestsByCitiesInterface,
 	CitiesByCountriesInterface,

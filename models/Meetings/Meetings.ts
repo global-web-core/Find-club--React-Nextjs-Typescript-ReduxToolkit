@@ -33,7 +33,7 @@ const getPageByDateMeetingsAndCountry = async (idCountry: number, idLanguage: nu
 		{limit:pagination.limit, offset:(page ? (page - 1) * pagination.limit : 0)}
 	]
 });
-const getCountByDateMeetingAndCountry	= async (idCountry: number, idLanguage: number, startDate: string, endDate: string): Promise<HttpInterface.Get<MeetingsInterface.Db>> => await Http.getCount(controllers.meetings,
+const getCountByDateMeetingAndCountry	= async (idCountry: number, idLanguage: number, startDate: string, endDate: string): Promise<HttpInterface.GetCount> => await Http.getCount(controllers.meetings,
 	{conditions:[
 		{k:meetingsColumns.idCountry,v:idCountry},
 		{k:meetingsColumns.idLanguage,v:idLanguage},
@@ -70,7 +70,7 @@ const getPageByDateMeetingsAndCity = async (idCountry: number, idCity: number, i
 		{limit:pagination.limit, offset:(page ? (page - 1) * pagination.limit : 0)}
 	]
 });
-const getCountByDateMeetingAndCity = async (idCountry: number, idCity: number, idLanguage: number, startDate: string, endDate: string): Promise<HttpInterface.Get<MeetingsInterface.Db>> => await Http.getCount(controllers.meetings,
+const getCountByDateMeetingAndCity = async (idCountry: number, idCity: number, idLanguage: number, startDate: string, endDate: string): Promise<HttpInterface.GetCount> => await Http.getCount(controllers.meetings,
 	{conditions:[
 		{k:meetingsColumns.idCountry,v:idCountry},
 		{k:meetingsColumns.idCity,v:idCity},
@@ -110,7 +110,7 @@ const getPageByDateMeetingsAndInterest = async (idCountry: number, idCity: numbe
 		{limit:pagination.limit, offset:(page ? (page - 1) * pagination.limit : 0)}
 	]
 });
-const getCountByDateMeetingAndInterest = async (idCountry: number, idCity: number, idInterest: number, idLanguage: number, startDate: string, endDate: string): Promise<HttpInterface.Get<MeetingsInterface.Db>>		=> await Http.getCount(controllers.meetings,
+const getCountByDateMeetingAndInterest = async (idCountry: number, idCity: number, idInterest: number, idLanguage: number, startDate: string, endDate: string): Promise<HttpInterface.GetCount>		=> await Http.getCount(controllers.meetings,
 	{conditions:[
 		{k:meetingsColumns.idCountry,v:idCountry},
 		{k:meetingsColumns.idCity,v:idCity},
@@ -153,7 +153,7 @@ const getPageByDateMeetingsAndCategory = async (idCountry: number, idCity: numbe
 		{limit:pagination.limit, offset:(page ? (page - 1) * pagination.limit : 0)}
 	]
 });
-const getCountByDateMeetingAndCategory = async (idCountry: number, idCity: number, idInterest: number, idCategory: number, idLanguage: number, startDate: string, endDate: string): Promise<HttpInterface.Get<MeetingsInterface.Db>> => await Http.getCount(controllers.meetings,
+const getCountByDateMeetingAndCategory = async (idCountry: number, idCity: number, idInterest: number, idCategory: number, idLanguage: number, startDate: string, endDate: string): Promise<HttpInterface.GetCount> => await Http.getCount(controllers.meetings,
 	{conditions:[
 		{k:meetingsColumns.idCountry,v:idCountry},
 		{k:meetingsColumns.idCity,v:idCity},
