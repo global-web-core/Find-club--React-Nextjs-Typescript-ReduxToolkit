@@ -289,7 +289,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 								/>
 								<Select
 									nameSelect='selectInterest'
-									nameEmptyOption={textTranslation[ML.key.selectInterest] as string}
+									nameEmptyOption={textTranslation[ML.key.selectInterest]}
 									nameKeyOption='id'
 									nameValueOption='route'
 									nameInnerOption='translation'
@@ -301,7 +301,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 								/>
 								<Select
 									nameSelect='selectCategory'
-									nameEmptyOption={textTranslation[ML.key.selectCategory] as string}
+									nameEmptyOption={textTranslation[ML.key.selectCategory]}
 									nameKeyOption='id'
 									nameValueOption='route'
 									nameInnerOption='translation'
@@ -313,7 +313,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 								/>
 								<Select
 									nameSelect='selectLanguage'
-									nameEmptyOption={textTranslation[ML.key.selectLanguage] as string}
+									nameEmptyOption={textTranslation[ML.key.selectLanguage]}
 									nameKeyOption='id'
 									nameValueOption='route'
 									nameInnerOption='name'

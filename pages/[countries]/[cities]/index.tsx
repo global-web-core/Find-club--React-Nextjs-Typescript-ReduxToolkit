@@ -96,7 +96,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 
 		const listCities = cityData;
 
-		let textTranslation = {};
+		let textTranslation: LanguageTranslationInterface.Txt = {};
 		let lang;
 		let language;
 		const pathLanguage = params.countries;

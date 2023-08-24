@@ -24,8 +24,8 @@ export default function SignIn({ providers }: InferGetServerSidePropsType<typeof
 		dispatch(TextTranslationSlice.updateLanguageAsync())
 	}
 	const handleSignIn = (providerId: string) => {
-		const backRouter = (router.query.callbackUrl as string) || '/';
-		signIn(providerId, {callbackUrl: backRouter});
+		const backRouter = (router.query.callbackUrl) || '/';
+		if (typeof backRouter === 'string') signIn(providerId, {callbackUrl: backRouter});
 	}
 	useEffect(() => {
 		async function startFetching() {
