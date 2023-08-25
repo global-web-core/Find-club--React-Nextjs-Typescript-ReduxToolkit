@@ -60,24 +60,28 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 				}
 			}
 		} else {
-			const dataDesires: DesiresInterface.Add = {
-				idUser: idUser,
-				idMeeting: meeting.id,
-				statusOrganizer: Constants.statusOrganizer.ANOTHER,
-				statusWish: Constants.statusWish.WISH,
-				statusReadiness: Constants.statusReadiness.READINESS,
-				status: Constants.activyStatus.ACTIVE
-			};
-
-			const addReadiness = await Desires.add(dataDesires);
-			if (addReadiness?.data?.id) {
-				const getUpdateDesire = await Desires.getById(parseInt(addReadiness.data.id));
-				const updateDesire = getUpdateDesire.data?.[0];
-				const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data?.[0].id);
-				dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
-				dispatch(AlertsSlice.add(textTranslation[ML.key.yourConfirmationComeAccepted], textTranslation[ML.key.successfully], 'success'));
+			if (idUser) {
+				const dataDesires: DesiresInterface.Add = {
+					idUser: idUser,
+					idMeeting: meeting.id,
+					statusOrganizer: Constants.statusOrganizer.ANOTHER,
+					statusWish: Constants.statusWish.WISH,
+					statusReadiness: Constants.statusReadiness.READINESS,
+					status: Constants.activyStatus.ACTIVE
+				};
+	
+				const addReadiness = await Desires.add(dataDesires);
+				if (addReadiness?.data?.id) {
+					const getUpdateDesire = await Desires.getById(parseInt(addReadiness.data.id));
+					const updateDesire = getUpdateDesire.data?.[0];
+					const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data?.[0].id);
+					dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
+					dispatch(AlertsSlice.add(textTranslation[ML.key.yourConfirmationComeAccepted], textTranslation[ML.key.successfully], 'success'));
+				} else {
+					dispatch(AlertsSlice.add(textTranslation[ML.key.errorYourConfirmationComeAccepted], textTranslation[ML.key.error], 'danger'));
+				}
 			} else {
-				dispatch(AlertsSlice.add(textTranslation[ML.key.errorYourConfirmationComeAccepted], textTranslation[ML.key.error], 'danger'));
+				dispatch(AlertsSlice.add(textTranslation[ML.key.youNotAccessLogIn], textTranslation[ML.key.error], 'danger'));
 			}
 		}
 	}
@@ -105,26 +109,30 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 				}
 			}
 		} else {
-			const dataDesires: DesiresInterface.Add = {
-				idUser: idUser,
-				idMeeting: meeting.id,
-				statusOrganizer: Constants.statusOrganizer.ANOTHER,
-				statusWish: Constants.statusWish.WISH,
-				statusReadiness: Constants.statusReadiness.NOREADINESS,
-				status: Constants.activyStatus.ACTIVE
-			};
-
-			const addWish = await Desires.add(dataDesires);
-			if (addWish?.data?.id) {
-				const getUpdateDesire = await Desires.getById(parseInt(addWish.data.id));
-				const updateDesire = getUpdateDesire.data?.[0];
-				const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data?.[0].id);
-				dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
-				dispatch(AlertsSlice.add(textTranslation[ML.key.yourWishComeAccepted], textTranslation[ML.key.successfully], 'success'));
+			if (idUser) {
+				const dataDesires: DesiresInterface.Add = {
+					idUser: idUser,
+					idMeeting: meeting.id,
+					statusOrganizer: Constants.statusOrganizer.ANOTHER,
+					statusWish: Constants.statusWish.WISH,
+					statusReadiness: Constants.statusReadiness.NOREADINESS,
+					status: Constants.activyStatus.ACTIVE
+				};
+	
+				const addWish = await Desires.add(dataDesires);
+				if (addWish?.data?.id) {
+					const getUpdateDesire = await Desires.getById(parseInt(addWish.data.id));
+					const updateDesire = getUpdateDesire.data?.[0];
+					const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data?.[0].id);
+					dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
+					dispatch(AlertsSlice.add(textTranslation[ML.key.yourWishComeAccepted], textTranslation[ML.key.successfully], 'success'));
+				} else {
+					dispatch(AlertsSlice.add(textTranslation[ML.key.errorYourWishComeAccepted], textTranslation[ML.key.error], 'danger'));
+				}
 			} else {
-				dispatch(AlertsSlice.add(textTranslation[ML.key.errorYourWishComeAccepted], textTranslation[ML.key.error], 'danger'));
+				dispatch(AlertsSlice.add(textTranslation[ML.key.youNotAccessLogIn], textTranslation[ML.key.error], 'danger'));
 			}
-		}
+			}
 	}
 
 	const checkOwnDesires = (idMeeting: number) => {

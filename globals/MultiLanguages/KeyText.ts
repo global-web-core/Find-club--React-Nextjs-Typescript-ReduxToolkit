@@ -118,6 +118,7 @@ const keyText = {
 	descriptionPageNotFound: 'description-page-not-found',
 	goToHome: 'go-to-home',
 	ooopsPageNoExist: 'ooops-page-no-exist',
+	youNotAccessLogIn: 'you-not-access-log-in',
 }
 
 export default keyText;
