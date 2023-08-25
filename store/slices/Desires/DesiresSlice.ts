@@ -4,11 +4,12 @@ import { AlertsSlice } from '../../slices';
 import {DesiresInterface, LanguageTranslationInterface} from '../../../typesAndInterfaces/interfaces'
 import { Constants, ML } from '../../../globals';
 import { Desires } from '../../../models';
+import { ErrorFetchRedux, StatusFetchRedux } from '../../../typesAndInterfaces/types';
 
 interface InitialState {
 	entities: DesiresInterface.Db[];
-  status: keyof typeof Constants.statusFetch;
-	error: string | null;
+  status: StatusFetchRedux;
+	error: ErrorFetchRedux;
 }
 
 interface DataForDesiresByIdMeeting {

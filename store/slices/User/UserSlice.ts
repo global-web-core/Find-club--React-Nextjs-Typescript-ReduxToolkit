@@ -2,14 +2,14 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { AlertsSlice } from '../../slices';
 import { AppState, AppDispatch } from '../../store';
 import { LanguageTranslationInterface, UsersInterface } from '../../../typesAndInterfaces/interfaces';
-import { TypeEmail, TypeImage, TypeName } from '../../../typesAndInterfaces/types';
+import { ErrorFetchRedux, StatusFetchRedux, TypeEmail, TypeImage, TypeName } from '../../../typesAndInterfaces/types';
 import { Users } from '../../../models';
 import { Constants, ML } from '../../../globals';
 
 interface InitialState {
 	data: {id: UsersInterface.Db["id"] | null};
-  status: keyof typeof Constants.statusFetch;
-	error: string | null;
+  status: StatusFetchRedux;
+	error: ErrorFetchRedux;
 }
 
 interface DataForGetIdUserAsync {

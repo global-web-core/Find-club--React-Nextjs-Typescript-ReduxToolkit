@@ -1,4 +1,3 @@
-// export * from './test/testSlice';
 export * as AlertsSlice from './Alerts/AlertsSlice';
 export * as MeetingsSlice from './Meetings/MeetingsSlice';
 export * as DesiresSlice from './Desires/DesiresSlice';

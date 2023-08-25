@@ -3,12 +3,13 @@ import { AlertsSlice } from '../../slices';
 import { AppDispatch, AppState } from '../../store';
 import {CountriesInterface, MeetingsInterface, CitiesInterface, InterestsInterface, CategoryInterface, LanguagesInterface, LanguageTranslationInterface} from '../../../typesAndInterfaces/interfaces'
 import { Constants, ML } from '../../../globals';
+import { ErrorFetchRedux, StatusFetchRedux } from '../../../typesAndInterfaces/types';
 
 interface InitialState {
 	entities: MeetingsInterface.MeetingsWithDependentData[];
 	listIdMeetings: number[];
-  status: Constants.statusFetch.succeeded | Constants.statusFetch.failed | Constants.statusFetch.loading;
-	error: string | null;
+  status: StatusFetchRedux;
+	error: ErrorFetchRedux;
 }
 
 const initialState:InitialState = {

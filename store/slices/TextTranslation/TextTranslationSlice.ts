@@ -3,11 +3,12 @@ import { Constants, ML } from '../../../globals';
 import { AlertsSlice } from '../../slices';
 import { AppState, AppDispatch } from '../../store';
 import { LanguageTranslationInterface } from '../../../typesAndInterfaces/interfaces';
+import { ErrorFetchRedux, StatusFetchRedux } from '../../../typesAndInterfaces/types';
 
 interface InitialState {
 	entities: LanguageTranslationInterface.Txt;
-  status: keyof typeof Constants.statusFetch;
-	error: string | null;
+  status: StatusFetchRedux;
+	error: ErrorFetchRedux;
 }
 
 const initialState: InitialState = {
