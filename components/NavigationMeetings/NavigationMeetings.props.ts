@@ -1,5 +1,8 @@
 import { DetailedHTMLProps, HTMLAttributes, ReactNode} from 'react';
+import { CountriesInterface, LanguageTranslationInterface, LanguagesInterface } from '../../typesAndInterfaces/interfaces';
 
 export interface NavigationMeetingsProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
-	// children: ReactNode;
+	listCountries: CountriesInterface.Db[];
+	listLanguages: LanguagesInterface.Db[];
+	textTranslation: LanguageTranslationInterface.Txt;
 }

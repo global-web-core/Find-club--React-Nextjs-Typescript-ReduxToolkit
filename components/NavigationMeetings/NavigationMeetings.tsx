@@ -1,37 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import styles from './NavigationMeetings.module.css';
 import { NavigationMeetingsProps } from './NavigationMeetings.props';
-import cn from 'classnames';
 import { useRouter } from 'next/router';
 import { Constants, Helpers, ML } from '../../globals';
-import { useAppSelector } from '../../store/hook';
-import { TextTranslationSlice } from '../../store/slices';
-import {Button, SelectCountry, SelectWithImage, SelectWithSearch} from '../../components';
+import {Button, SelectWithSearch} from '../../components';
 import { Categories, CategoriesByInterests, Cities, CitiesByCountries, Interests, InterestsByCities } from '../../models';
-import { CitiesByCountriesInterface, CitiesInterface } from '../../interfaces';
+import { AdditionalInterface, CitiesByCountriesInterface, CitiesInterface, CountriesInterface } from '../../typesAndInterfaces/interfaces';
+import { DefaultValues, Navigation } from './NavigationMeetings.types';
 
 export const NavigationMeetings = ({listCountries, listLanguages, textTranslation}: NavigationMeetingsProps): JSX.Element => {
 	const router = useRouter();
-	const [optionsCountries, setOptionsCountries] = useState([]);
-	const [optionsCities, setOptionsCities] = useState([]);
-	const [optionsInterest, setOptionsInterest] = useState([]);
-	const [optionsCategories, setOptionsCategories] = useState([]);
-	const [navigation, setNavigation] = useState({});
-	const [defaultValues, setDefaultValues] = useState({
-		country: Helpers.getCountryByUrlCountry(router.query.countries),
-		city: router.query.cities,
-		interest: router.query.interests,
-		category: router.query.categories
+	const [optionsCountries, setOptionsCountries] = useState<AdditionalInterface.ListOptions>([]);
+	const [optionsCities, setOptionsCities] = useState<AdditionalInterface.ListOptions>([]);
+	const [optionsInterest, setOptionsInterest] = useState<AdditionalInterface.ListOptions>([]);
+	const [optionsCategories, setOptionsCategories] = useState<AdditionalInterface.ListOptions>([]);
+	const [navigation, setNavigation] = useState<Navigation>({});
+	const [defaultValues, setDefaultValues] = useState<DefaultValues>({
+		country: typeof router.query.countries === "string" ? Helpers.getCountryByUrlCountry(router.query.countries) || null : null,
+		city: typeof router.query.cities === "string" ? router.query.cities : null,
+		interest: typeof router.query.interests === "string" ? router.query.interests : null,
+		category: typeof router.query.categories === "string" ? router.query.categories : null
 	});
 
-	const createListCountriesForOptions = (listCountries) => {
-		const options = [];
+	const createListCountriesForOptions = (listCountries: CountriesInterface.Db[]) => {
+		const options: AdditionalInterface.ListOptions = [];
 		listCountries.forEach(country => {
-			if (!country.route || !textTranslation[ML.key[country.route] as keyof typeof textTranslation]) return;
+			if (!country.route || !textTranslation[ML.key[country.route]]) return;
 
 			const option = {
 				value: country.route,
-				label: textTranslation[ML.key[country.route] as keyof typeof textTranslation]
+				label: textTranslation[ML.key[country.route]]
 			}
 			if (!options.includes(option)) options.push(option);
 		})
@@ -39,85 +37,88 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 	}
 
 	const createListCitiesForOptions = async () => {
-		const options = [];
-		if (navigation?.country.length >= 0) {
-			const currentCountry = listCountries.find(country => country.route === navigation.country)
-			if (currentCountry) {
-				const citiesCountry = await CitiesByCountries.getAllByCountry(currentCountry.id);
-				const idCities = citiesCountry.data.map((city: CitiesByCountriesInterface.Db) => city.idCity);
-				const citiesData = await Cities.getAll();
-				const listCities = citiesData.data.filter((city: CitiesInterface.Db) => idCities.includes(city.id));
-				listCities.forEach(city => {
-					if (!city.route || !textTranslation[city.route as keyof typeof textTranslation]) return;
-		
-					const option = {
-						value: city.route,
-						label: textTranslation[city.route as keyof typeof textTranslation]
-					}
-					if (!options.includes(option)) options.push(option);
-				})
+		const options: AdditionalInterface.ListOptions = [];
+		if (navigation?.country) {
+			if (navigation?.country.length >= 0) {
+				const currentCountry = listCountries.find(country => country.route === navigation.country)
+				if (currentCountry) {
+					const citiesCountry = await CitiesByCountries.getAllByCountry(currentCountry.id);
+					const idCities = citiesCountry?.data?.map((city: CitiesByCountriesInterface.Db) => city.idCity);
+					const citiesData = await Cities.getAll();
+					const listCities = citiesData?.data?.filter((city: CitiesInterface.Db) => idCities?.includes(city.id));
+					listCities?.forEach(city => {
+						if (!city.route || !textTranslation[city.route]) return;
+			
+						const option = {
+							value: city.route,
+							label: textTranslation[city.route]
+						}
+						if (!options.includes(option)) options.push(option);
+					})
+				}
 			}
+			setOptionsCities(options);
 		}
-		setOptionsCities(options);
 	}
 
 	const createListInterestForOptions = async () => {
-		const options = [];
-		if (navigation?.city?.length >= 0) {
-			const currentCity = (await Cities.getAllByRouteCity(navigation.city))?.data[0];
-			if (currentCity) {
-				const interestscity = (await InterestsByCities.getAllByCity(currentCity.id))?.data;
-				const idInterests = interestscity.map((interest) => interest.idInterest);
-				const interestsData = await Interests.getAll();
-				const listInterests = interestsData.data.filter((interest) => idInterests.includes(interest.id));
-				listInterests.forEach(interest => {
-					if (!interest.route || !textTranslation[interest.route as keyof typeof textTranslation]) return;
-					
-					const option = {
-						value: interest.route,
-						label: textTranslation[interest.route as keyof typeof textTranslation]
-					}
-					if (!options.includes(option)) options.push(option);
-				})
+		const options: AdditionalInterface.ListOptions = [];
+		if (navigation?.city) {
+			if (navigation?.city?.length >= 0) {
+				const currentCity = (await Cities.getAllByRouteCity(navigation.city))?.data?.[0];
+				if (currentCity) {
+					const interestscity = (await InterestsByCities.getAllByCity(currentCity.id))?.data;
+					const idInterests = interestscity?.map((interest) => interest.idInterest);
+					const interestsData = await Interests.getAll();
+					const listInterests = interestsData?.data?.filter((interest) => idInterests?.includes(interest.id));
+					listInterests?.forEach(interest => {
+						if (!interest.route || !textTranslation[interest.route]) return;
+						
+						const option = {
+							value: interest.route,
+							label: textTranslation[interest.route]
+						}
+						if (!options.includes(option)) options.push(option);
+					})
+				}
 			}
+			setOptionsInterest(options);
 		}
-		setOptionsInterest(options);
 	}
 
 	const createListCategoriesForOptions = async () => {
-		const options = [];
-		if (navigation?.interest?.length >= 0) {
-			const currentInterest = (await Interests.getAllByRouteInterest(navigation.interest))?.data[0];
-			if (currentInterest) {
-				const categoriesCity = (await CategoriesByInterests.getAllByIdInterest(currentInterest.id))?.data;
-				const idCategories = categoriesCity.map((category) => category.idCategory);
-				const categoriesData = await Categories.getAll();
-				const listCategories = categoriesData.data.filter((category) => idCategories.includes(category.id));
-				listCategories.forEach(category => {
-					if (!category.route || !textTranslation[category.route as keyof typeof textTranslation]) return;
-					
-					const option = {
-						value: category.route,
-						label: textTranslation[category.route as keyof typeof textTranslation]
-					}
-					if (!options.includes(option)) options.push(option);
-				})
+		const options: AdditionalInterface.ListOptions = [];
+		if (navigation?.interest) {
+			if (navigation?.interest?.length >= 0) {
+				const currentInterest = (await Interests.getAllByRouteInterest(navigation.interest))?.data?.[0];
+				if (currentInterest) {
+					const categoriesCity = (await CategoriesByInterests.getAllByIdInterest(currentInterest.id))?.data;
+					const idCategories = categoriesCity?.map((category) => category.idCategory);
+					const categoriesData = await Categories.getAll();
+					const listCategories = categoriesData?.data?.filter((category) => idCategories?.includes(category.id));
+					listCategories?.forEach(category => {
+						if (!category.route || !textTranslation[category.route]) return;
+						
+						const option = {
+							value: category.route,
+							label: textTranslation[category.route]
+						}
+						if (!options.includes(option)) options.push(option);
+					})
+				}
 			}
+			setOptionsCategories(options);
 		}
-		setOptionsCategories(options);
 	}
 
 	useEffect(() => {
-		// console.log('===route', router.query.cities)
 		if (listCountries && Object.keys(textTranslation).length > 0) {
 			createListCountriesForOptions(listCountries);
 		}
 	}, [listCountries]);
 
 
-	const handleSelects = (selectValue) => {
-		// console.log('===selectValue', selectValue)
-		// console.log('===navigation-1', navigation)
+	const handleSelects = (selectValue: AdditionalInterface.SelectValue) => {
     const { name, value } = selectValue;
 		if (name === Constants.navigationMeetings.country && navigation?.city) {
 			if (router.query.cities) {
@@ -186,10 +187,12 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 	}
 
 	useEffect(() => {
-		if (navigation?.country?.length >=0 && Object.keys(textTranslation).length > 0) {
-			createListCitiesForOptions();
-			createListInterestForOptions();
-			createListCategoriesForOptions();
+		if (navigation?.country) {
+			if (navigation?.country?.length >=0 && Object.keys(textTranslation).length > 0) {
+				createListCitiesForOptions();
+				createListInterestForOptions();
+				createListCategoriesForOptions();
+			}
 		}
 	}, [navigation])
 
@@ -230,28 +233,28 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 			<div className={styles.navigationMeetings}>
 				<SelectWithSearch
 					name={Constants.navigationMeetings.country}
-					placeholder={textTranslation[ML.key.selectCountry as keyof typeof textTranslation]}
+					placeholder={textTranslation[ML.key.selectCountry]}
 					options={optionsCountries}
 					onChange={handleSelects}
-					defaultValue={defaultValues.country}
+					defaultValue={defaultValues?.country}
 				/>
 				<SelectWithSearch
 					name={Constants.navigationMeetings.city}
-					placeholder={textTranslation[ML.key.selectCity as keyof typeof textTranslation]}
+					placeholder={textTranslation[ML.key.selectCity]}
 					options={optionsCities}
 					onChange={handleSelects}
 					defaultValue={defaultValues.city}
 				/>
 				<SelectWithSearch
 					name={Constants.navigationMeetings.interest}
-					placeholder={textTranslation[ML.key.selectInterest as keyof typeof textTranslation]}
+					placeholder={textTranslation[ML.key.selectInterest]}
 					options={optionsInterest}
 					onChange={handleSelects}
 					defaultValue={defaultValues.interest}
 				/>
 				<SelectWithSearch
 					name={Constants.navigationMeetings.category}
-					placeholder={textTranslation[ML.key.selectCategory as keyof typeof textTranslation]}
+					placeholder={textTranslation[ML.key.selectCategory]}
 					options={optionsCategories}
 					onChange={handleSelects}
 					defaultValue={defaultValues.category}

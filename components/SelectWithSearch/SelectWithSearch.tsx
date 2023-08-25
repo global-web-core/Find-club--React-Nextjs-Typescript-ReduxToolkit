@@ -1,26 +1,24 @@
-import { RefObject, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { ArrowOpen } from '../ArrowOpen/ArrowOpen';
 import styles from './SelectWithSearch.module.css';
 import { SelectWithSearchProps } from './SelectWithSearch.props';
 import cn from 'classnames';
-import { useRouter } from 'next/router';
 import {useOutsideClick} from '../../hooks';
-import { ML } from '../../globals';
-import { useAppSelector } from '../../store/hook';
-import { TextTranslationSlice } from '../../store/slices';
 import { ListEmpty } from '../ListEmpty/ListEmpty';
+import { AdditionalInterface } from '../../typesAndInterfaces/interfaces';
 
-const getLabelFromOptions = (options, selectValue) => {
-	if (options, selectValue) {
+const getLabelFromOptions = (options: AdditionalInterface.ListOptions, selectValue: string) => {
+	if (options && selectValue) {
 		const findElement = options.find(el => el.value === selectValue)
 		if (findElement) return findElement.label
 	}
+	console.log('===test1')
 }
 
 export const SelectWithSearch = ({name, options, placeholder, defaultValue, onChange}: SelectWithSearchProps): JSX.Element => {
 	const blockRef = useRef(null);
 	const [open, setOpen] = useState(false);
-	const [value, setValue] = useState('');
+	const [value, setValue] = useState<string | undefined>('');
 	const [selectedOption, setSelectedOption] = useState({name, value: ''});
 	const [activeOptions, setActiveOptions] = useState(options || []);
 
@@ -29,18 +27,19 @@ export const SelectWithSearch = ({name, options, placeholder, defaultValue, onCh
 	}
 	useOutsideClick(blockRef, () => handleOutsideClick())
 
-	const changeSelectedOption = (selectValue) => {
-		if (selectValue?.length >= 0) {
-			setOpen(false);
-			const result = {name: name, value: selectValue};
-			onChange(result);
-			setSelectedOption(result)
-	
-			setValue(getLabelFromOptions(options, selectValue))
+	const changeSelectedOption = (selectValue: string | null) => {
+		if (selectValue) {
+			if (selectValue?.length >= 0) {
+				setOpen(false);
+				const result = {name: name, value: selectValue};
+				onChange(result);
+				setSelectedOption(result)
+				setValue(getLabelFromOptions(options, selectValue))
+			}
 		}
 	}
 
-	const handleInput = (e) => {
+	const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
 		setOpen(true);
 
 		setValue(e.target.value)
@@ -64,7 +63,7 @@ export const SelectWithSearch = ({name, options, placeholder, defaultValue, onCh
 		if (options && defaultValue) {
 			if (selectedOption.value == defaultValue) setValue(getLabelFromOptions(options, defaultValue))
 			if (selectedOption.value != defaultValue) setValue(getLabelFromOptions(options, selectedOption.value))
-		} else if (options && !defaultValue && value?.length > 0) {
+		} else if (options && !defaultValue && value && value?.length > 0) {
 			const selectedValue = options.find(option => option.label === value);
 			if (!selectedValue) setValue('')
 		}

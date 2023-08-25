@@ -88,7 +88,7 @@ const setLanguage = (language: string) => {
 	LS.set(LS.key.language, language);
 }
 
-const key = keyText;
+const key: {[key: string] : string} = keyText;
 
 export {
 	addInPathLanguage,

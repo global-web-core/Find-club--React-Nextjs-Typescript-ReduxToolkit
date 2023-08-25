@@ -106,11 +106,11 @@ const accessMeeting = {
 	wishing: 2,
 };
 
-const navigationMeetings = {
-	country: 'country',
-	city: 'city',
-	interest: 'interest',
-	category: 'category',
+const enum navigationMeetings {
+	country = 'country',
+	city = 'city',
+	interest = 'interest',
+	category = 'category',
 }
 
 const basicNameLanguagetranslation = 'languagetranslation';
