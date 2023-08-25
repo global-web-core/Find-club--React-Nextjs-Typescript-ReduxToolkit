@@ -7,7 +7,7 @@ import cn from 'classnames';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { AlertsSlice, DesiresSlice, MeetingsSlice, TextTranslationSlice } from '../../store/slices';
 import { Desires, Meetings } from '../../models';
-import { DesiresInterface, MeetingsInterface } from '../../interfaces';
+import { DesiresInterface, MeetingsInterface } from '../../typesAndInterfaces/interfaces';
 
 export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
@@ -18,24 +18,23 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 	const [ownDesires, setOwnDesires] = useState(false);
 	const [noAccessToControl, setNoAccessToControl] = useState(false);
 	const dispatch = useAppDispatch();
-
 	const changeStatusMeeting = async (status: number, idMeeting: number) => {
-		let newStatus: {status: 0 | 1} | undefined;
+		let newStatus: {status: MeetingsInterface.MeetingsWithDependentData["status"]} | undefined;
 		if (status === Constants.activyStatus.ACTIVE) newStatus = {status: Constants.activyStatus.NOT_ACTIVE};
 		if (status === Constants.activyStatus.NOT_ACTIVE) newStatus = {status: Constants.activyStatus.ACTIVE};
-		await Meetings.update(idMeeting, newStatus);
+		if (newStatus) {
+			await Meetings.update(idMeeting, newStatus);
+		}
 		const updateMeeting: MeetingsInterface.MeetingsWithDependentData[] = [];
 		
 		meetings.forEach(meeting => {
 			const currentMeeting: MeetingsInterface.MeetingsWithDependentData = JSON.parse(JSON.stringify(meeting));
-			
 			if (currentMeeting.id === idMeeting) {
 				if (newStatus?.status !== undefined) currentMeeting.status = newStatus?.status;
 			}
 			updateMeeting.push(currentMeeting);
 		})
 		dispatch(MeetingsSlice.addAll(updateMeeting));
-		
 	}
 
 	const checkStatusReadiness = (idMeeting: number) => {
@@ -53,10 +52,12 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 			const newStatusReadiness = currentDesires.statusReadiness === Constants.statusReadiness.READINESS ? {statusReadiness: Constants.statusReadiness.NOREADINESS} : {statusWish: Constants.statusWish.WISH, statusReadiness: Constants.statusReadiness.READINESS};
 			const updateRequest = await Desires.update(currentDesires.id, newStatusReadiness);
 			const getUpdateDesire = await Desires.getById(currentDesires.id);
-			if (updateRequest.code === Constants.codeHttp.ok && getUpdateDesire?.data.length > 0) {
-				const updateDesire = getUpdateDesire.data[0];
-				const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data[0].id);
-				dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
+			if (getUpdateDesire?.data) {
+				if (updateRequest.code === Constants.codeHttp.ok && getUpdateDesire?.data.length > 0) {
+					const updateDesire = getUpdateDesire.data[0];
+					const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data?.[0].id);
+					dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
+				}
 			}
 		} else {
 			const dataDesires: DesiresInterface.Add = {
@@ -70,9 +71,9 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 
 			const addReadiness = await Desires.add(dataDesires);
 			if (addReadiness?.data?.id) {
-				const getUpdateDesire = await Desires.getById(addReadiness.data.id);
-				const updateDesire = getUpdateDesire.data[0];
-				const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data[0].id);
+				const getUpdateDesire = await Desires.getById(parseInt(addReadiness.data.id));
+				const updateDesire = getUpdateDesire.data?.[0];
+				const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data?.[0].id);
 				dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
 				dispatch(AlertsSlice.add(textTranslation[ML.key.yourConfirmationComeAccepted], textTranslation[ML.key.successfully], 'success'));
 			} else {
@@ -90,17 +91,18 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 	}
 
 	const changeStatusWish = async (idMeeting: number) => {
-		
 		const currentDesires = desires.find(desire => desire.idMeeting === idMeeting && desire.idUser === idUser);
 		
 		if (currentDesires && currentDesires?.id) {
 			const newStatusWish = currentDesires.statusWish === Constants.statusWish.WISH ? {statusReadiness: Constants.statusReadiness.NOREADINESS, statusWish: Constants.statusWish.NOWISH} : {statusWish: Constants.statusWish.WISH};
 			const updateRequest = await Desires.update(currentDesires.id, newStatusWish);
 			const getUpdateDesire = await Desires.getById(currentDesires.id);
-			if (updateRequest.code === Constants.codeHttp.ok && getUpdateDesire?.data.length > 0) {
-				const updateDesire = getUpdateDesire.data[0];
-				const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data[0].id);
-				dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
+			if (getUpdateDesire?.data) {
+				if (updateRequest.code === Constants.codeHttp.ok && getUpdateDesire?.data.length > 0) {
+					const updateDesire = getUpdateDesire.data[0];
+					const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data?.[0].id);
+					dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
+				}
 			}
 		} else {
 			const dataDesires: DesiresInterface.Add = {
@@ -114,9 +116,9 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 
 			const addWish = await Desires.add(dataDesires);
 			if (addWish?.data?.id) {
-				const getUpdateDesire = await Desires.getById(addWish.data.id);
-				const updateDesire = getUpdateDesire.data[0];
-				const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data[0].id);
+				const getUpdateDesire = await Desires.getById(parseInt(addWish.data.id));
+				const updateDesire = getUpdateDesire.data?.[0];
+				const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data?.[0].id);
 				dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
 				dispatch(AlertsSlice.add(textTranslation[ML.key.yourWishComeAccepted], textTranslation[ML.key.successfully], 'success'));
 			} else {
@@ -148,12 +150,11 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 
 	const getLengthDesires = async () => {
 		const listLengthDesires: LengthDesires[] = [];
-		
 		for await (const idMeeting of listIdMeetings) {
 			let lengthWish = 0;
 			let lengthReadiness = 0;
 			
-			(await Desires.getByIdMeeting(idMeeting))?.data.forEach((desire: DesiresInterface.Db) => {
+			(await Desires.getByIdMeeting(idMeeting))?.data?.forEach((desire: DesiresInterface.Db) => {
 				if (desire.statusWish === Constants.statusWish.WISH) lengthWish++;
 				if (desire.statusReadiness === Constants.statusReadiness.READINESS) lengthReadiness++;
 			})
@@ -186,9 +187,9 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 		}
 	}, [desires])
 
-	const handleChangeAccessMeeting = async (e) => {
+	const handleChangeAccessMeeting = async (e: React.ChangeEvent<HTMLSelectElement>) => {
 		if (e?.target?.value) {
-			const data = {accessMeeting: e.target.value}
+			const data = {accessMeeting: parseInt(e.target.value)}
 			const result = await Meetings.update(meeting.id, data);
 			if (!result) dispatch(AlertsSlice.add(textTranslation[ML.key.whenChangingAccessMeeting], textTranslation[ML.key.error], 'danger'));
 		}
@@ -247,7 +248,7 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 									<div>{meeting.country}&nbsp;→&nbsp;</div>
 									<div>{meeting.city}</div>
 								</div>
-								<div>{meeting.placeMeeting.length > 0 ? textTranslation[ML.key.meetingPoint] + ': ' + meeting.placeMeeting : textTranslation[ML.key.meetingNotSpecifiedDiscuss]}</div>
+								<div>{meeting.placeMeeting && meeting.placeMeeting.length > 0 ? textTranslation[ML.key.meetingPoint] + ': ' + meeting.placeMeeting : textTranslation[ML.key.meetingNotSpecifiedDiscuss]}</div>
 								{noAccessToControl && <div>{textTranslation[ML.key.youNotConfirmMeeting]}</div>}
 								{ownDesires &&
 									<div className={styles.accessMeeting}>

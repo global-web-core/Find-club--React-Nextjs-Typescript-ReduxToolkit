@@ -1,3 +1,5 @@
+import {TypeOneOrZero} from '../types';
+
 export interface Db {
 	id: number;
 	idCountry: number;
@@ -11,7 +13,7 @@ export interface Db {
 	accessMeeting: number;
 	dateCreation: string;
 	dateModification: string | null;
-	status: number;
+	status: TypeOneOrZero;
 }
 
 export interface Add {
@@ -26,7 +28,7 @@ export interface Add {
 	accessMeeting: number;
 	dateCreation: string;
 	dateModification?: string | null;
-	status: number;
+	status: TypeOneOrZero;
 }
 
 export interface Update {
@@ -41,7 +43,7 @@ export interface Update {
   accessMeeting?: number;
   dateCreation?: string;
   dateModification?: string | null;
-  status?: number;
+  status?: TypeOneOrZero;
 }
 
 export interface DataForm {
@@ -65,5 +67,5 @@ export interface MeetingsWithDependentData {
 	typeMeeting: number;
 	accessMeeting: number;
 	dateModification?: string | null;
-	status: number;
+	status: TypeOneOrZero;
 }
