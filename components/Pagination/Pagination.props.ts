@@ -1,5 +1,6 @@
-import { DetailedHTMLProps, HTMLAttributes, ReactNode} from 'react';
+import { DetailedHTMLProps, HTMLAttributes} from 'react';
+import { TypeNamePagination } from '../../typesAndInterfaces/types';
 
 export interface PaginationProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
-	namePagination: string;
+	namePagination: TypeNamePagination;
 }
