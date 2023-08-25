@@ -1,13 +1,10 @@
-import styles from './FilterMeetings.module.css';
-import { FilterMeetingsProps } from './FilterMeetings.props';
-import cn from 'classnames';
 import { useRouter } from 'next/router';
 import {Button, ButtonList} from '../../components';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { CalendarMeetingsSlice, SelectFilterSlice, TextTranslationSlice } from '../../store/slices';
 import { Constants, Helpers, ML } from '../../globals';
 
-export const FilterMeetings = ({}: FilterMeetingsProps): JSX.Element => {
+export const FilterMeetings = (): JSX.Element => {
 	const router = useRouter();
 	const dispatch = useAppDispatch();
 	const calendarMeetings = useAppSelector(state => CalendarMeetingsSlice.calendarMeetingsSelect(state));
