@@ -90,9 +90,9 @@ const pagination = {
 	limit: 20
 };
 
-const namePagination = {
-	meetingsList: 'meetingsList'
-};
+const enum namePagination {
+	meetingsList = 'meetingsList'
+}
 
 const enum statusFetch {
   succeeded = 'succeeded',

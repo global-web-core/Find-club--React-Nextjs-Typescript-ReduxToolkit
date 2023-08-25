@@ -1,6 +1,7 @@
-import { DetailedHTMLProps, HTMLAttributes, ReactNode} from 'react';
+import { DetailedHTMLProps, HTMLAttributes} from 'react';
+import { LanguagesInterface, MetadataInterface } from '../../typesAndInterfaces/interfaces';
 
 export interface CalendarMeetingsProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
-	language: string;
-	country: number;
+	language: LanguagesInterface.Db;
+	metadataLanguage: MetadataInterface.Main["lang"];
 }

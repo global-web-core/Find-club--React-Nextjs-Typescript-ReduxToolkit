@@ -1,16 +1,17 @@
 import { Constants } from "..";
 import {ML} from '../../globals';
-import { LanguagesInterface } from "../../interfaces";
+import { LanguagesInterface } from "../../typesAndInterfaces/interfaces";
+import { TypeLanguages } from "../../typesAndInterfaces/types";
 
-const copyOfDateInStringTimezoneUTC = (date) => {
+const copyOfDateInStringTimezoneUTC = (date: Date | undefined): string | undefined => {
 	if (typeof date === 'object') return JSON.parse(JSON.stringify(date))
 }
 
-const convertDatetimeForRedux = (date) => {
+const convertDatetimeForRedux = (date: Date) => {
 	if (typeof date === 'object') return copyOfDateInStringTimezoneUTC(date);
 }
 
-const convertFromReduxToDatetime = (date) => {
+const convertFromReduxToDatetime = (date: string | Date) => {
 	if (typeof date === 'string') {
 		const dateTimeLocal = new Date(date);
 		if (typeof dateTimeLocal === 'object') {
@@ -45,7 +46,7 @@ const currentDatetimeDbToDatetimeLocalString = (date) => {
 	return changeDate.toLocaleString();
 }
 
-const convertDatetimeLocalForRedux = (date) => {
+const convertDatetimeLocalForRedux = (date: Date | null) => {
 	if (!date) return date
 	const datetimeForRedux = convertDatetimeForRedux(date);
 	if (typeof datetimeForRedux === 'string') {
@@ -73,7 +74,7 @@ const getDatetimeLocalToStringShiftDateToUtc = (date) => {
 	}
 }
 
-const convertDatetimeAndShiftTimezoneForRedux = (date) => {
+const convertDatetimeAndShiftTimezoneForRedux = (date: Date): string | null | undefined => {
 	if (!date) return date
 	const dateTimeNewCopy = copyOfDateInStringTimezoneUTC(date);
 	const dateShiftTimezone = removeTimezoneShiftDateToTimezone(new Date (dateTimeNewCopy));
@@ -83,7 +84,7 @@ const convertDatetimeAndShiftTimezoneForRedux = (date) => {
 	}
 }
 
-const convertFromReduxToDatetimeLocal = (date) => {
+const convertFromReduxToDatetimeLocal = (date): Date | undefined => {
 	if (!date) return date;
 	return convertFromReduxToDatetime(date);
 }
@@ -131,12 +132,15 @@ const calculateCountPageByCountRows = (countRows: number) => {
 	}
 }
 
-const increaseDateByMonths = (date, countMonths) => {
-	if (date, countMonths) {
-		let incrementedDate;
-		const incrementedMonths = new Date(date.setMonth(date.getMonth()+countMonths));
-		incrementedDate = new Date(incrementedMonths.setHours(23, 59, 59, 999));
-		return incrementedDate;
+const increaseDateByMonths = (date: Date, countMonths: number) => {
+	if (date && countMonths) {
+		const dateTimeNewCopyInString = copyOfDateInStringTimezoneUTC(date);
+		const newIndependentDate = dateTimeNewCopyInString && new Date(dateTimeNewCopyInString);
+		if (newIndependentDate) {
+			const incrementedMonths = new Date(newIndependentDate.setMonth(newIndependentDate.getMonth()+countMonths));
+			const incrementedDate = new Date(incrementedMonths.setHours(23, 59, 59, 999));
+			return incrementedDate;
+		}
 	}
 };
 
@@ -158,12 +162,12 @@ const getEndMonthByDate = (date) => {
 	}
 };
 
-const getNameMonthByDate = (date, language) => {
-	if (typeof date === 'string', language) {
+const getNameMonthByDate = (date: Date | string, language: TypeLanguages): string | undefined => {
+	if (typeof date === 'string' && language) {
 		const nameMonthByDate = new Date(date).toLocaleString(language, { month: 'long' });
 		if (nameMonthByDate) return nameMonthByDate;
 	}
-	if (typeof date === 'object', language) {
+	if (typeof date === 'object' && language) {
 		const nameMonthByDate = date.toLocaleString(language, { month: 'long' });
 		if (nameMonthByDate) return nameMonthByDate;
 	}
@@ -193,6 +197,7 @@ const getUrlCountry = (pathCountry, countries, languages) => {
 }
 
 const getStartDateAndEndDateBySelectFilter = (selectFilter, calendarMeetings, activeStartDateChange, selectedDay) => {
+	// if (!selectFilter || !calendarMeetings || !activeStartDateChange || !selectedDay) return;
 	if (selectFilter.basic === Constants.nameBasicFilter.month) {
 		const startDate = calendarMeetings.activePeriod.start;
 		const endDate = calendarMeetings.activePeriod.end;
@@ -225,7 +230,7 @@ const getStartDateAndEndDateBySelectFilter = (selectFilter, calendarMeetings, ac
 	}
 }
 
-const getCountryByUrlCountry = (urlCountry) => {
+const getCountryByUrlCountry = (urlCountry: string) => {
 	if (typeof urlCountry === 'string') {
 		return urlCountry.slice(0,2);
 	}

@@ -37,7 +37,7 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 			if (selectFilter.basic === Constants.nameBasicFilter.day) {
 				dispatch(CalendarMeetingsSlice.setSelectedDay(dates.selectedDay));
 			}
-			return getMeetingsFromDb(dates.startDate, dates.endDate);
+			return getMeetingsFromDb(dates?.startDate, dates?.endDate);
 		}
 		clearDataMeetings();
 	}
@@ -82,7 +82,7 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 		<>
 			{mounted &&
 				<div>
-					<CalendarMeetings metadataLanguage={metadata.lang} country={country.id} language={language} />
+					<CalendarMeetings metadataLanguage={metadata.lang} language={language} />
 				</div>
 			}
 			<NavigationMeetings listCountries={listCountries} listLanguages={listLanguages} textTranslation={textTranslation} />

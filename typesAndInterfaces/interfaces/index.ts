@@ -24,6 +24,7 @@ import * as YourMeetingsInterface from './yourMeetings.interface';
 import * as NotFoundInterface from './notFound.interface';
 import * as InterestsPageInterface from './interestsPage.interface';
 import * as CategoriesPageInterface from './categoriesPage.interface';
+import * as CalendarInterface from './calendar.interface';
 
 export {
 	CitiesInterface,
@@ -51,5 +52,6 @@ export {
 	YourMeetingsInterface,
 	NotFoundInterface,
 	InterestsPageInterface,
-	CategoriesPageInterface
+	CategoriesPageInterface,
+	CalendarInterface
 }
