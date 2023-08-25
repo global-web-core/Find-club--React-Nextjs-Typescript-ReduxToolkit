@@ -10,7 +10,7 @@ import { TextTranslationSlice } from '../../store/slices';
 import { Constants, ML } from '../../globals';
 import { useRouter } from 'next/router';
 import { Languages } from '../../models';
-import { LanguagesInterface } from '../../interfaces';
+import { LanguagesInterface } from '../../typesAndInterfaces/interfaces';
 
 export const Header = ({pageProps}: HeaderProps):JSX.Element => {
 	const router = useRouter();
@@ -25,8 +25,10 @@ export const Header = ({pageProps}: HeaderProps):JSX.Element => {
 			if (missingServerProps) {
 				const languagesDb = await Languages.getAll();
 				const listLanguagesDb = languagesDb.data;
-				setListLanguages(listLanguagesDb);
-				ML.setLanguageByBrowser(listLanguagesDb);
+				if (listLanguagesDb) {
+					setListLanguages(listLanguagesDb);
+					ML.setLanguageByBrowser(listLanguagesDb);
+				}
 			} else {
 				setListLanguages(pageProps.listLanguages);
 			}
