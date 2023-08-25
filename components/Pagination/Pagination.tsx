@@ -1,22 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ArrowNavigation } from '../../components';
 import styles from './Pagination.module.css';
 import { PaginationProps } from './Pagination.props';
-import cn from 'classnames';
-import { useRouter } from 'next/router';
 import { PaginationSlice } from '../../store/slices';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 
 export const Pagination = ({namePagination}: PaginationProps): JSX.Element => {
 	const dispatch = useAppDispatch();
 	const currentPagination = useAppSelector(state => PaginationSlice.paginationSelect(state, namePagination));
-
-	// useEffect(() => {
-	// 	if (maxPage > 0 && namePagination) {
-	// 		dispatch(PaginationSlice.setPagination({maxPage, namePagination}));
-	// 	}
-
-	// }, [namePagination, maxPage])
 
 	return (
 		<>

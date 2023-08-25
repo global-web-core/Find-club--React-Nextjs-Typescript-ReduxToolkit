@@ -14,5 +14,3 @@ export const Loading = ({textTranslation}: LoadingProps): JSX.Element => {
 		</>
 	);
 };
-
-

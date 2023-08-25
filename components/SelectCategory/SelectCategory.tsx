@@ -2,7 +2,7 @@ import { SelectCategoryProps } from "./SelectCategory.props";
 import React, { useState, useEffect } from 'react';
 import { Select, Button } from '../../components';
 import { useRouter } from "next/router";
-import { CategoryInterface } from '../../interfaces';
+import { CategoryInterface } from '../../typesAndInterfaces/interfaces';
 import { ML } from "../../globals";
 
 export const SelectCategory = ({ listCategories, text }: SelectCategoryProps): JSX.Element => {

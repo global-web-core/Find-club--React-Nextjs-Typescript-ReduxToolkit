@@ -2,7 +2,7 @@ import {SelectInterestProps} from './SelectInterest.props';
 import React, { useState, useEffect } from 'react';
 import { Select, Button } from '../../components';
 import { useRouter } from "next/router";
-import { InterestsInterface } from '../../interfaces';
+import { InterestsInterface } from '../../typesAndInterfaces/interfaces';
 import { ML } from '../../globals';
 
 export const SelectInterest = ({ listInterests, text }: SelectInterestProps): JSX.Element => {

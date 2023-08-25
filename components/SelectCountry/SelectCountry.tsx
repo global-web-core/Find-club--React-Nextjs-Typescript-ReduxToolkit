@@ -1,5 +1,5 @@
 import {SelectCountryProps} from './SelectCountry.props';
-import {CountriesInterface, LanguagesInterface} from '../../interfaces';
+import {CountriesInterface, LanguagesInterface} from '../../typesAndInterfaces/interfaces';
 import React, {useState} from 'react';
 import {useRouter} from "next/router";
 import {Helpers, ML} from '../../globals';

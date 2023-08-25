@@ -1,7 +1,7 @@
 import {DetailedHTMLProps, HTMLAttributes} from 'react';
-import { CategoryInterface } from '../../interfaces';
+import { CategoryInterface } from '../../typesAndInterfaces/interfaces';
 
 export interface SelectCategoryProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-	listCategories: CategoryInterface.Db[];
+	listCategories: CategoryInterface.WithTranslation[];
 	text: {[key: string]: string};
 }

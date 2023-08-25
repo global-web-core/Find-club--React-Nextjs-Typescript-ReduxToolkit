@@ -1,5 +1,5 @@
 import { SelectCityProps } from './SelectCity.props';
-import { CitiesInterface } from '../../interfaces';
+import { CitiesInterface } from '../../typesAndInterfaces/interfaces';
 import React, { useState, useEffect } from 'react';
 import { Select, Button } from '../../components';
 import { useRouter } from "next/router";

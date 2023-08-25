@@ -1,7 +1,7 @@
 import { TypeClickButton } from './Login.types';
 import styles from './Login.module.css';
 import cn from 'classnames';
-import React, { useState, useEffect, useRef, RefObject } from 'react';
+import React, { useState, useRef } from 'react';
 import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/react"
 import Image from 'next/image';
@@ -17,7 +17,7 @@ export const Login = (): JSX.Element => {
 	const loginRef = useRef(null);
 	const [userHover, setUserHover] = useState(false);
 	const { data: session } = useSession();
-	const pathIconUser = session?.user?.image || iconUser;
+	const pathIconUser: string = session?.user?.image || iconUser;
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 
 	const handleUserMouseEnter = () => {

@@ -1,7 +1,7 @@
 import { SelectWithImageProps, OptionsType } from './SelectWithImage.props';
 import styles from './SelectWithImage.module.css';
 import cn from 'classnames';
-import React, { useEffect, useState, useRef, useLayoutEffect, MouseEvent, RefObject } from 'react';
+import React, { useEffect, useState, useRef, useLayoutEffect, MouseEvent } from 'react';
 import Image from 'next/image';
 import {iconList} from './images';
 import { ArrowOpen, Button } from '../../components';

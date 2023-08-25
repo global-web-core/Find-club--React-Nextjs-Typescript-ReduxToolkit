@@ -1,7 +1,7 @@
 import {SelectLanguageProps} from './SelectLanguage.props';
 import React, { useState, useEffect } from 'react';
 import { SelectWithImage } from '../../components';
-import { LanguagesInterface } from '../../interfaces';
+import { LanguagesInterface } from '../../typesAndInterfaces/interfaces';
 import { ML } from '../../globals';
 import { useRouter } from 'next/router';
 
