@@ -10,7 +10,7 @@ const alertsSlices = createSlice({
 	reducers: {
 		add: {
 			reducer: (state, action: PayloadAction<TypeItemMessage>) => {
-				let preparedMessage
+				let preparedMessage: TypeItemMessage;
 				const message = action.payload;
 				if (!message?.title) message.title = null;
 				if (!message?.typeAlert) message.typeAlert = 'info';
@@ -28,7 +28,7 @@ const alertsSlices = createSlice({
 		},
 		removeAll: () => initialState,
 		removeMessage: (state, action) => {
-			const idMessage = action.payload;
+			const idMessage: TypeItemMessage["id"] = action.payload;
 			const newState = state.filter(itemMessage => itemMessage.id !== idMessage) || [];
 			return state = newState;
 		}
