@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Constants, Helpers, ML } from '../../globals';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
-import { CalendarMeetingsSlice, DesiresSlice, MeetingsSlice, PaginationSlice, SelectFilterSlice, UserSlice } from '../../store/slices';
+import { CalendarMeetingsSlice, MeetingsSlice, PaginationSlice, SelectFilterSlice, UserSlice } from '../../store/slices';
 import styles from './PublicMeetings.module.css';
 import { PublicMeetingsProps } from './PublicMeetings.props';
-import cn from 'classnames';
 import { useRouter } from 'next/router';
 import {BlockMeetings, CalendarMeetings, Loading, NavigationMeetings} from '../../components';
 
@@ -19,7 +18,7 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 	const selectFilter = useAppSelector(state => SelectFilterSlice.selectFilter(state));
 	const [loading, setLoading] = useState(true);
 	const [mounted, setMounted] = useState(false);
-	const [title, setTitle] = useState('');
+	const [title, setTitle] = useState<string | undefined>('');
 
 	const clearDataUsers = () => {
 		dispatch(UserSlice.clearAll());
@@ -35,7 +34,7 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 		if (selectFilter.basic === Constants.nameBasicFilter.month || selectFilter.basic === Constants.nameBasicFilter.day) {
 			const dates = Helpers.getStartDateAndEndDateBySelectFilter(selectFilter, calendarMeetings, activeStartDateChange, selectedDay);
 			if (selectFilter.basic === Constants.nameBasicFilter.day) {
-				dispatch(CalendarMeetingsSlice.setSelectedDay(dates.selectedDay));
+				dispatch(CalendarMeetingsSlice.setSelectedDay(dates?.selectedDay));
 			}
 			return getMeetingsFromDb(dates?.startDate, dates?.endDate);
 		}
@@ -44,7 +43,7 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 
 	const getMainData = async () => {
 		const meetingsDb = await getFilteredMeetings();
-		dispatch(MeetingsSlice.getMeetingsWithFullDataAsync({meetingsDb, listCountries, listCities, listInterests, listCategories, listLanguages, textTranslation}));
+		if (meetingsDb) dispatch(MeetingsSlice.getMeetingsWithFullDataAsync({meetingsDb, listCountries, listCities, listInterests, listCategories, listLanguages, textTranslation}));
 	}
 
 	useEffect(() => {
@@ -67,13 +66,14 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 	const getTitle = () => {
 		let currentTitle;
 		if (Object.keys(router.query).length === 1 && router.query.countries) {
-			currentTitle = textTranslation[Helpers.getCountryByUrlCountry(router.query.countries)] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+			const countryFromUrl = typeof router.query.countries === "string" && Helpers.getCountryByUrlCountry(router.query.countries);
+			if (countryFromUrl) currentTitle = textTranslation[countryFromUrl] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
 		} else if (Object.keys(router.query).length === 2 && router.query.cities) {
-			currentTitle = textTranslation[router.query.cities] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+			if (typeof router.query.cities === "string") currentTitle = textTranslation[router.query.cities] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
 		} else if (Object.keys(router.query).length === 3 && router.query.interests) {
-			currentTitle = textTranslation[router.query.interests] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+			if (typeof router.query.interests === "string") currentTitle = textTranslation[router.query.interests] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
 		} else if (Object.keys(router.query).length === 4 && router.query.categories) {
-			currentTitle = textTranslation[router.query.categories] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
+			if (typeof router.query.categories === "string") currentTitle = textTranslation[router.query.categories] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
 		}
 		setTitle(currentTitle);
 	}
