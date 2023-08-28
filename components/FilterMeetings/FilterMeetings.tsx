@@ -3,6 +3,7 @@ import {Button, ButtonList} from '../../components';
 import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { CalendarMeetingsSlice, SelectFilterSlice, TextTranslationSlice } from '../../store/slices';
 import { Constants, Helpers, ML } from '../../globals';
+import { useEffect } from 'react';
 
 export const FilterMeetings = (): JSX.Element => {
 	const router = useRouter();
@@ -11,6 +12,17 @@ export const FilterMeetings = (): JSX.Element => {
 	const selectFilter = useAppSelector(state => SelectFilterSlice.selectFilter(state));
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
 	const pageYourMeetings = router.pathname === '/your-meetings' || false;
+	const setNameMonth = () => {
+		const language = ML.getLanguage()
+		if (language) {
+			const activePeriodNameMonth = Helpers.getNameMonthByDate(new Date(), language);
+			dispatch(CalendarMeetingsSlice.setActivePeriodNameMonth(activePeriodNameMonth));
+		}
+	}
+
+	useEffect(() => {
+		setNameMonth();
+	}, [])
 
 	return (
 		<>

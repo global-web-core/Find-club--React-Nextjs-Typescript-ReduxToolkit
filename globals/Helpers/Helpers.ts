@@ -162,7 +162,7 @@ const getEndMonthByDate = (date) => {
 	}
 };
 
-const getNameMonthByDate = (date: Date | string, language: TypeLanguages): string | undefined => {
+const getNameMonthByDate = (date: Date | string, language: TypeLanguages) => {
 	if (typeof date === 'string' && language) {
 		const nameMonthByDate = new Date(date).toLocaleString(language, { month: 'long' });
 		if (nameMonthByDate) return nameMonthByDate;
@@ -171,6 +171,7 @@ const getNameMonthByDate = (date: Date | string, language: TypeLanguages): strin
 		const nameMonthByDate = date.toLocaleString(language, { month: 'long' });
 		if (nameMonthByDate) return nameMonthByDate;
 	}
+	return null;
 }
 
 const getNameDayByDate = (date) => {

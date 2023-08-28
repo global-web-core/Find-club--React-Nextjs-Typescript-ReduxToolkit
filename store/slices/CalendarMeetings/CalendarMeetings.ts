@@ -12,13 +12,12 @@ const startDayByDate = Helpers.getStartDayByDate(now);
 const activePeriodStart = startDayByDate && Helpers.convertDatetimeForRedux(startDayByDate);
 const endMonthByDate = Helpers.getEndMonthByDate(now);
 const activePeriodEnd = endMonthByDate && Helpers.convertDatetimeForRedux(endMonthByDate);
-const activePeriodNameMonth = Helpers.getNameMonthByDate(now, ML.getLanguage());
 
 type InitialState = {
 	selectedDay: string | null;
 	maxDate: string;
 	activeStartDateChange: CalendarInterface.EventActiveStartDateChangeForRedux | null;
-	activePeriod: {nameMonth: string, start: string, end: string};
+	activePeriod: {nameMonth: string | null, start: string, end: string};
 	listDatemeetingsPerMonth: {data: string[], status: keyof typeof Constants.statusFetch, error: string | null}
 	status: StatusFetchRedux;
 	error: ErrorFetchRedux;
@@ -29,13 +28,13 @@ interface DataForSetListDatemeetingsPerMonthAsync {
 	language: LanguagesInterface.Db
 }
 let initialState: InitialState = {};
-if (typeof maxDate === "string" && typeof activePeriodStart === "string" && typeof activePeriodEnd === "string" && typeof activePeriodNameMonth === "string") {
+if (typeof maxDate === "string" && typeof activePeriodStart === "string" && typeof activePeriodEnd === "string") {
 		initialState = {
 		selectedDay: null,
 		maxDate: maxDate,
 		activeStartDateChange: null,
 		activePeriod: {
-			nameMonth: activePeriodNameMonth,
+			nameMonth: null,
 			start: activePeriodStart,
 			end: activePeriodEnd
 		},
@@ -273,6 +272,9 @@ const calendarMeetingsSlices = createSlice({
 				return {payload: data};
 			}
 		},
+		setActivePeriodNameMonth: (state, action: PayloadAction<InitialState["activePeriod"]["nameMonth"]>) => {
+			if (action.payload !== undefined && Object.keys(state).length > 0) state.activePeriod.nameMonth = action.payload
+		},
 	},
 	extraReducers: (builder) => {
     builder
@@ -298,7 +300,7 @@ const calendarMeetingsSlices = createSlice({
   },
 });
 
-const { setSelectedDay, setActiveStartDateChange } = calendarMeetingsSlices.actions
+const { setSelectedDay, setActiveStartDateChange, setActivePeriodNameMonth } = calendarMeetingsSlices.actions
 const reducer = calendarMeetingsSlices.reducer
 
 const selectedDaySelect = (state: AppState) => {
@@ -320,5 +322,6 @@ export {
 	calendarMeetingsSelect,
 	activeStartDateChangeSelect,
 	setActiveStartDateChange,
-	setListDatemeetingsPerMonthAsync
+	setListDatemeetingsPerMonthAsync,
+	setActivePeriodNameMonth
 }
