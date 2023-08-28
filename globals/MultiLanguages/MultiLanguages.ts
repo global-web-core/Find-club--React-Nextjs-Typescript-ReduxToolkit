@@ -46,7 +46,7 @@ const getPathByCountry = (countries: CountriesInterface.Db[], languages: Languag
 	}
 }
 
-const addInPathLanguage = (statedLanguage: string, language: LanguagesInterface.Db | undefined, urlCountry: string) => {
+const addInPathLanguage = (statedLanguage: string | null, language: LanguagesInterface.Db | undefined, urlCountry: string) => {
 	if (!statedLanguage || statedLanguage === language?.route) {
 		return '';
 	} else {
@@ -81,11 +81,11 @@ const setLanguageByBrowser = (listLanguages: LanguagesInterface.Db[]) => {
 }
 
 const getLanguage = () => {
-	return LS.get(LS.key.language);
+	return LS.get(LS.Key.language);
 }
 
 const setLanguage = (language: string) => {
-	LS.set(LS.key.language, language);
+	LS.set(LS.Key.language, language);
 }
 
 const key: {[key: string] : string} = keyText;

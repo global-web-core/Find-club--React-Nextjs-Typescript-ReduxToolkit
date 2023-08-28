@@ -102,14 +102,14 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
 
 export function generateMetadata(text: LanguageTranslationInterface.Txt, pathCountries: string, lang: string):MetadataInterface.Main {
 	const getTextForTitle = () => {
-		const country = pathCountries?.length ? text[pathCountries.slice(0, 2) as keyof typeof text] + ' ' : '';
+		const country = pathCountries?.length ? text[pathCountries.slice(0, 2)] + ' ' : '';
 		const mainText = text[ML.key.titleCountries];
 		const title = country + mainText;
 		return title;
 	}
 
 	const getTextForDescription = () => {
-		const country = pathCountries?.length ? text[pathCountries.slice(0, 2) as keyof typeof text] + ' ' : '';
+		const country = pathCountries?.length ? text[pathCountries.slice(0, 2)] + ' ' : '';
 		const mainText = text[ML.key.descriptionCountries];
 		const description = country + mainText;
 		return description;

@@ -12,7 +12,6 @@ const getLabelFromOptions = (options: AdditionalInterface.ListOptions, selectVal
 		const findElement = options.find(el => el.value === selectValue)
 		if (findElement) return findElement.label
 	}
-	console.log('===test1')
 }
 
 export const SelectWithSearch = ({name, options, placeholder, defaultValue, onChange}: SelectWithSearchProps): JSX.Element => {

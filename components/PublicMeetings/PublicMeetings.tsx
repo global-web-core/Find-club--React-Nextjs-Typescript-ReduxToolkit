@@ -49,7 +49,7 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 	useEffect(() => {
 		clearData();
 		async function startFetching() {
-			ML.setLanguageByPath(router.query.countries as string, listLanguages, country);
+			if (typeof router.query.countries === "string") ML.setLanguageByPath(router.query.countries, listLanguages, country);
 			setLoading(false);
 		}
 		startFetching();

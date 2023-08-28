@@ -59,7 +59,7 @@ export const SelectLanguage = ({ listLanguages, updateLanguage, text, country }:
 	return (
 		<div>
 			{list?.length && <SelectWithImage
-				nameEmptyOption={text[ML.key.selectLanguage as keyof typeof text]}
+				nameEmptyOption={text[ML.key.selectLanguage]}
 				nameKeyOption='id'
 				nameValueOption='route'
 				nameInnerOption='name'

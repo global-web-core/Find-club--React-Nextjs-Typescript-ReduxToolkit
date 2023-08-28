@@ -27,7 +27,7 @@ export const SelectInterest = ({ listInterests, text }: SelectInterestProps): JS
 		}
 	};
 
-	const handleSelect = (value:string) => setPathInterest(value);
+	const handleSelect = (value: string) => setPathInterest(value);
 
 	useEffect(() => {
 		setList(listInterests);
@@ -36,7 +36,7 @@ export const SelectInterest = ({ listInterests, text }: SelectInterestProps): JS
 	return (
 		<div>
 			<Select
-				nameEmptyOption={text[ML.key.selectInterest] as string}
+				nameEmptyOption={text[ML.key.selectInterest]}
 				nameKeyOption='id'
 				nameValueOption='route'
 				nameInnerOption='translation'
@@ -45,7 +45,7 @@ export const SelectInterest = ({ listInterests, text }: SelectInterestProps): JS
 				rightAngle={true}
 			/>
 			<Button
-				name={text[ML.key.goTo] as string}
+				name={text[ML.key.goTo]}
 				onClick={handleClick}
 				leftAngle={true}
 			/>

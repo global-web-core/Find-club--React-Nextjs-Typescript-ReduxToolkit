@@ -35,7 +35,6 @@ export const SelectCity = ({ listCities, text }: SelectCityProps): JSX.Element =
 	
 	return (
 		<div>
-			{/* {console.log('===list',list)} */}
 			<Select
 				nameEmptyOption={text[ML.key.selectCity]}
 				nameKeyOption='id'

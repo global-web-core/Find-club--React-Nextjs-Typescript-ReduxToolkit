@@ -20,7 +20,7 @@ export const SelectCountry = ({listCountries, listLanguages, text}: SelectCountr
 	const [pathCountry, setPathCountry] = useState<string | null>(null);
 
 	const handleClick = () => {
-		const urlCountry = Helpers.getUrlCountry(pathCountry, countries, languages);
+		const urlCountry = pathCountry && Helpers.getUrlCountry(pathCountry, countries, languages);
 		if (urlCountry) {
 			router.push({
 				pathname: '[countries]',
@@ -36,11 +36,10 @@ export const SelectCountry = ({listCountries, listLanguages, text}: SelectCountr
 	return (
 		<div className={styles.selectCountry}>
 			<SelectWithImage
-				nameEmptyOption={text[ML.key.selectCountry as keyof typeof text]}
+				nameEmptyOption={text[ML.key.selectCountry]}
 				nameKeyOption='id'
 				nameValueOption='route'
 				nameInnerOption='translation'
-				// nameSelectedOption={null}
 				settingPathsImages='selectwithimage/countries'
 				extensionFilesImages='png'
 				list={countries}

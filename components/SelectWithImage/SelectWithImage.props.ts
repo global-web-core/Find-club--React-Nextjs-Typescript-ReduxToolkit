@@ -7,7 +7,7 @@ export interface SelectWithImageProps extends DetailedHTMLProps<HTMLAttributes<H
 	nameValueOption: string;
 	nameInnerOption: string;
 	nameEmptyOption: string;
-	nameSelectedOption?: string;
+	nameSelectedOption?: string | undefined;
 	valueSelect: (value: string) => void;
 	settingPathsImages: string;
 	extensionFilesImages: string;

@@ -1,6 +1,6 @@
 import { Constants } from "..";
 import {ML} from '../../globals';
-import { LanguagesInterface } from "../../typesAndInterfaces/interfaces";
+import { CountriesInterface, LanguagesInterface } from "../../typesAndInterfaces/interfaces";
 import { TypeLanguages } from "../../typesAndInterfaces/types";
 
 const copyOfDateInStringTimezoneUTC = (date: Date | undefined): string | undefined => {
@@ -182,7 +182,7 @@ const getNameDayByDate = (date) => {
 	}
 }
 
-const getUrlCountry = (pathCountry, countries, languages) => {
+const getUrlCountry = (pathCountry: string, countries: CountriesInterface.Db[], languages: LanguagesInterface.Db[]) => {
 	let urlCountry = pathCountry;
 	if (urlCountry) {
 		const settingLanguage = ML.getLanguage();
@@ -194,6 +194,7 @@ const getUrlCountry = (pathCountry, countries, languages) => {
 
 		return urlCountry;
 	}
+	return null;
 }
 
 const getStartDateAndEndDateBySelectFilter = (selectFilter, calendarMeetings, activeStartDateChange, selectedDay) => {

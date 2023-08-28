@@ -27,7 +27,7 @@ export const SelectCategory = ({ listCategories, text }: SelectCategoryProps): J
 		}
 	};
 
-	const handleSelect = (value:string) => setPathCategory(value);
+	const handleSelect = (value: string) => setPathCategory(value);
 
 	useEffect(() => {
 		setList(listCategories);
