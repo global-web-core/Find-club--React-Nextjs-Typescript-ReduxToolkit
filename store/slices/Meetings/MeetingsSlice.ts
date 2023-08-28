@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { AlertsSlice } from '../../slices';
 import { AppDispatch, AppState } from '../../store';
 import {CountriesInterface, MeetingsInterface, CitiesInterface, InterestsInterface, CategoryInterface, LanguagesInterface, LanguageTranslationInterface} from '../../../typesAndInterfaces/interfaces'
@@ -93,7 +93,7 @@ const meetingsSlices = createSlice({
 	name: 'meetings',
 	initialState: initialState,
 	reducers: {
-		addAll: (state, action) => {
+		addAll: (state, action: PayloadAction<InitialState["entities"]>) => {
 			state.entities = action.payload
 		},
 		clearAll: () => initialState
