@@ -13,19 +13,24 @@ export const SignInUser = ({ listProviders, handleSignIn }: SignInUserProps): JS
 		handleSignIn(providerId);
 	}
 	
-	return (
-		<>
-			{Object.values(listProviders).map((provider) => (
-				<div key={provider.name} className={styles.signin}>
-					<div className={styles.main}>
-						<h1>{textTranslation[ML.key.logInYourAccount]}</h1>
-						<div className={styles.item} onClick={() => handleClick(provider.id)}>
-							<Image  className={styles.image} src={provider.id === 'google' && iconGoogle || ''} alt="icon" width={48} height={48} />
-							<span>{provider.name}</span>
+	if (listProviders) {
+		return (
+			<>
+				{Object.values(listProviders).map((provider) => (
+					<div key={provider.name} className={styles.signin}>
+						<div className={styles.main}>
+							<h1>{textTranslation[ML.key.logInYourAccount]}</h1>
+							<div className={styles.item} onClick={() => handleClick(provider.id)}>
+								<Image  className={styles.image} src={provider.id === 'google' && iconGoogle || ''} alt="icon" width={48} height={48} />
+								<span>{provider.name}</span>
+							</div>
 						</div>
 					</div>
-        </div>
-      ))}
-		</>
+				))}
+			</>
+		);
+	}
+	return (
+		<></>
 	);
 };
