@@ -25,6 +25,7 @@ import * as NotFoundInterface from './notFound.interface';
 import * as InterestsPageInterface from './interestsPage.interface';
 import * as CategoriesPageInterface from './categoriesPage.interface';
 import * as CalendarInterface from './calendar.interface';
+import * as SelectFilterInterface from './selectFilter.interface';
 
 export {
 	CitiesInterface,
@@ -53,5 +54,6 @@ export {
 	NotFoundInterface,
 	InterestsPageInterface,
 	CategoriesPageInterface,
-	CalendarInterface
+	CalendarInterface,
+	SelectFilterInterface
 }

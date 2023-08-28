@@ -3,7 +3,7 @@ import { AppDispatch, AppState } from '../../store';
 import { Constants, Helpers, ML } from '../../../globals';
 import { Categories, CategoriesByInterests, Cities, CitiesByCountries, Countries, Interests, InterestsByCities, Meetings } from '../../../models';
 import { CalendarInterface, CountriesInterface, LanguagesInterface, CitiesInterface, InterestsInterface, CategoryInterface } from '../../../typesAndInterfaces/interfaces';
-import { ErrorFetchRedux, RouterQueryAdditional, StatusFetchRedux } from '../../../typesAndInterfaces/types';
+import { RouterQueryAdditional, TypeInitialStateCalandarMeeting } from '../../../typesAndInterfaces/types';
 
 const now = new Date();
 const increaseDateByMonths = Helpers.increaseDateByMonths(now, 3)
@@ -13,21 +13,11 @@ const activePeriodStart = startDayByDate && Helpers.convertDatetimeForRedux(star
 const endMonthByDate = Helpers.getEndMonthByDate(now);
 const activePeriodEnd = endMonthByDate && Helpers.convertDatetimeForRedux(endMonthByDate);
 
-type InitialState = {
-	selectedDay: string | null;
-	maxDate: string;
-	activeStartDateChange: CalendarInterface.EventActiveStartDateChangeForRedux | null;
-	activePeriod: {nameMonth: string | null, start: string, end: string};
-	listDatemeetingsPerMonth: {data: string[], status: keyof typeof Constants.statusFetch, error: string | null}
-	status: StatusFetchRedux;
-	error: ErrorFetchRedux;
-} | Record<string, never>
-
 interface DataForSetListDatemeetingsPerMonthAsync {
 	router: RouterQueryAdditional,
 	language: LanguagesInterface.Db
 }
-let initialState: InitialState = {};
+let initialState: TypeInitialStateCalandarMeeting = {};
 if (typeof maxDate === "string" && typeof activePeriodStart === "string" && typeof activePeriodEnd === "string") {
 		initialState = {
 		selectedDay: null,
@@ -239,7 +229,7 @@ const calendarMeetingsSlices = createSlice({
 					if (endMonth && startPeriod) {
 						const endPeriod = endMonth < new Date(state.maxDate) ? endMonth : new Date(state.maxDate);
 		
-						let activePeriod: InitialState["activePeriod"] | undefined;
+						let activePeriod: TypeInitialStateCalandarMeeting["activePeriod"] | undefined;
 						const nameMonth = Helpers.getNameMonthByDate(activeStartDate, ML.getLanguage());
 						const start = Helpers.convertDatetimeForRedux(startPeriod);
 						const end = Helpers.convertDatetimeForRedux(endPeriod);
@@ -272,7 +262,7 @@ const calendarMeetingsSlices = createSlice({
 				return {payload: data};
 			}
 		},
-		setActivePeriodNameMonth: (state, action: PayloadAction<InitialState["activePeriod"]["nameMonth"]>) => {
+		setActivePeriodNameMonth: (state, action: PayloadAction<TypeInitialStateCalandarMeeting["activePeriod"]["nameMonth"]>) => {
 			if (action.payload !== undefined && Object.keys(state).length > 0) state.activePeriod.nameMonth = action.payload
 		},
 	},

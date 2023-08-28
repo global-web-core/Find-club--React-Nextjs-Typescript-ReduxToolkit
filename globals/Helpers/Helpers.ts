@@ -1,9 +1,9 @@
 import { Constants } from "..";
 import {ML} from '../../globals';
-import { CountriesInterface, LanguagesInterface } from "../../typesAndInterfaces/interfaces";
-import { TypeLanguages } from "../../typesAndInterfaces/types";
+import { CountriesInterface, LanguagesInterface, SelectFilterInterface } from "../../typesAndInterfaces/interfaces";
+import { TypeInitialStateCalandarMeeting, TypeLanguages } from "../../typesAndInterfaces/types";
 
-const copyOfDateInStringTimezoneUTC = (date: Date | undefined): string | undefined => {
+const copyOfDateInStringTimezoneUTC = (date: Date): string | undefined => {
 	if (typeof date === 'object') return JSON.parse(JSON.stringify(date))
 }
 
@@ -11,7 +11,7 @@ const convertDatetimeForRedux = (date: Date) => {
 	if (typeof date === 'object') return copyOfDateInStringTimezoneUTC(date);
 }
 
-const convertFromReduxToDatetime = (date: string | Date) => {
+const convertFromReduxToDatetime = (date: string) => {
 	if (typeof date === 'string') {
 		const dateTimeLocal = new Date(date);
 		if (typeof dateTimeLocal === 'object') {
@@ -20,30 +20,40 @@ const convertFromReduxToDatetime = (date: string | Date) => {
 	}
 }
 
-const convertDatetimeForDb = (date) => {
-	return date.toISOString().replace('T', ' ').replace('Z', '');
+const convertDatetimeForDb = (date: Date) => {
+	if (typeof date === 'object') {
+		return date.toISOString().replace('T', ' ').replace('Z', '');
+	}
 }
 
-const removeFromDatetimeTAndZ = (date) => {
-	return date.replace('T', ' ').replace('Z', '');
+const removeFromDatetimeTAndZ = (date: string) => {
+	if (typeof date === 'string') {
+		return date.replace('T', ' ').replace('Z', '');
+	}
 }
 
-const convertDatetimeLocalForDb = (date) => {
-	return new Date(date).toISOString().replace('T', ' ').replace('Z', '');
+const convertDatetimeLocalForDb = (date: Date) => {
+	if (typeof date === 'object') {
+		return new Date(date).toISOString().replace('T', ' ').replace('Z', '');
+	}
 }
 
 const currentDatetimeForDb = () => {
 	return new Date().toISOString().replace('T', ' ').replace('Z', '');
 }
 
-const currentDatetimeDbToDatetimeLocal = (date) => {
-	const dateTimeUtsTZ = date.replace(/\s/g,'T') + 'Z';
-	return new Date(dateTimeUtsTZ);
+const currentDatetimeDbToDatetimeLocal = (date: string) => {
+	if (typeof date === 'string') {
+		const dateTimeUtsTZ = date.replace(/\s/g,'T') + 'Z';
+		return new Date(dateTimeUtsTZ);
+	}
 }
 
-const currentDatetimeDbToDatetimeLocalString = (date) => {
-	const changeDate = currentDatetimeDbToDatetimeLocal(date);
-	return changeDate.toLocaleString();
+const currentDatetimeDbToDatetimeLocalString = (date: string) => {
+	if (typeof date === 'string') {
+		const changeDate = currentDatetimeDbToDatetimeLocal(date);
+		if (changeDate) return changeDate.toLocaleString();
+	}
 }
 
 const convertDatetimeLocalForRedux = (date: Date | null) => {
@@ -54,7 +64,7 @@ const convertDatetimeLocalForRedux = (date: Date | null) => {
 	}
 }
 
-const removeTimezoneShiftDateToTimezone = (date) => {
+const removeTimezoneShiftDateToTimezone = (date: Date) => {
 	if (typeof date === 'object') {
 		const year = date.getFullYear();
 		const month = date.getMonth();
@@ -67,7 +77,7 @@ const removeTimezoneShiftDateToTimezone = (date) => {
 	}
 }
 
-const getDatetimeLocalToStringShiftDateToUtc = (date) => {
+const getDatetimeLocalToStringShiftDateToUtc = (date: string) => {
 	if (typeof date === 'string') {
 		const datetimeLocal = removeFromDatetimeTAndZ(date);
 		if (typeof datetimeLocal === 'string') return datetimeLocal;
@@ -77,37 +87,44 @@ const getDatetimeLocalToStringShiftDateToUtc = (date) => {
 const convertDatetimeAndShiftTimezoneForRedux = (date: Date): string | null | undefined => {
 	if (!date) return date
 	const dateTimeNewCopy = copyOfDateInStringTimezoneUTC(date);
-	const dateShiftTimezone = removeTimezoneShiftDateToTimezone(new Date (dateTimeNewCopy));
-	const datetimeForRedux = convertDatetimeForRedux(dateShiftTimezone);
-	if (typeof datetimeForRedux === 'string') {
-		return datetimeForRedux;
+	if (dateTimeNewCopy) {
+		const dateShiftTimezone = removeTimezoneShiftDateToTimezone(new Date (dateTimeNewCopy));
+		if (dateShiftTimezone) {
+			const datetimeForRedux = convertDatetimeForRedux(dateShiftTimezone);
+			if (typeof datetimeForRedux === 'string') {
+				return datetimeForRedux;
+			}
+		}
 	}
 }
 
-const convertFromReduxToDatetimeLocal = (date): Date | undefined => {
-	if (!date) return date;
-	return convertFromReduxToDatetime(date);
+const convertFromReduxToDatetimeLocal = (date: string): Date | undefined => {
+	if (!date) return;
+	if (typeof date === 'string') {
+		return convertFromReduxToDatetime(date);
+	}
 }
 
-const convertFromReduxToDatetimeLocalAndShiftTimezone = (date) => {
-	if (!date) return date
+const convertFromReduxToDatetimeLocalAndShiftTimezone = (date: string) => {
+	if (!date) return;
 	const dateShiftTimezone = getDatetimeLocalToStringShiftDateToUtc(date);
-
-	return convertFromReduxToDatetime(dateShiftTimezone);
+	if (dateShiftTimezone) return convertFromReduxToDatetime(dateShiftTimezone);
 }
 
-const filterPastDate = (list, nameFilterColumn) => {
+const filterPastDate = (list: any[], nameFilterColumn: string) => {
 	if (list.length > 0) {
 		const filteresList = list.filter(item => {
 			const currentDateTime = new Date();
 			const dateTimeFromList = currentDatetimeDbToDatetimeLocal(item[nameFilterColumn]);
-			return currentDateTime >= dateTimeFromList;
+			if (dateTimeFromList) {
+				return currentDateTime >= dateTimeFromList;
+			}
 		});
 		return filteresList;
 	}
 }
 
-const randomGenerateLetterAndNumber = (length) => {
+const randomGenerateLetterAndNumber = (length: number) => {
 	let result = '';
 	const characters = 'abcdefghijklmnopqrstuvwxyz';
 	const numbers = '0123456789';
@@ -144,19 +161,19 @@ const increaseDateByMonths = (date: Date, countMonths: number) => {
 	}
 };
 
-const getStartDayByDate = (date) => {
+const getStartDayByDate = (date: Date) => {
 	if (date) {
 		return new Date(date.setHours(0, 0, 0, 0));
 	}
 };
 
-const getEndDayByDate = (date) => {
+const getEndDayByDate = (date: Date) => {
 	if (date) {
 		return new Date(date.setHours(23, 59, 59, 999));
 	}
 };
 
-const getEndMonthByDate = (date) => {
+const getEndMonthByDate = (date: Date) => {
 	if (date) {
 		return new Date(date.getFullYear(), date.getMonth()+1, 0, 23, 59, 59, 999);
 	}
@@ -174,7 +191,7 @@ const getNameMonthByDate = (date: Date | string, language: TypeLanguages) => {
 	return null;
 }
 
-const getNameDayByDate = (date) => {
+const getNameDayByDate = (date: string) => {
 	if (typeof date === 'string') {
 		const dateTimeLocal = new Date(date);
 		if (typeof dateTimeLocal === 'object') {
@@ -198,8 +215,7 @@ const getUrlCountry = (pathCountry: string, countries: CountriesInterface.Db[], 
 	return null;
 }
 
-const getStartDateAndEndDateBySelectFilter = (selectFilter, calendarMeetings, activeStartDateChange, selectedDay) => {
-	// if (!selectFilter || !calendarMeetings || !activeStartDateChange || !selectedDay) return;
+const getStartDateAndEndDateBySelectFilter = (selectFilter: SelectFilterInterface.InitialState, calendarMeetings: TypeInitialStateCalandarMeeting, activeStartDateChange: TypeInitialStateCalandarMeeting["activeStartDateChange"], selectedDay: Date | undefined) => {
 	if (selectFilter.basic === Constants.nameBasicFilter.month) {
 		const startDate = calendarMeetings.activePeriod.start;
 		const endDate = calendarMeetings.activePeriod.end;
@@ -211,8 +227,9 @@ const getStartDateAndEndDateBySelectFilter = (selectFilter, calendarMeetings, ac
 		const newDate = new Date();
 		let currentDate;
 		if (activeStartDateChange && !selectedDay) {
-			const activeStartDate = convertFromReduxToDatetimeLocalAndShiftTimezone(activeStartDateChange?.activeStartDate);
-			if (activeStartDate > newDate) {
+			let activeStartDate: Date | undefined;
+			if (activeStartDateChange?.activeStartDate) activeStartDate = convertFromReduxToDatetimeLocalAndShiftTimezone(activeStartDateChange?.activeStartDate);
+			if (activeStartDate && activeStartDate > newDate) {
 				currentDate = activeStartDate;
 			} else {
 				currentDate = newDate;
@@ -222,9 +239,10 @@ const getStartDateAndEndDateBySelectFilter = (selectFilter, calendarMeetings, ac
 		} else {
 			currentDate = newDate;
 		}
-		const startDay = convertDatetimeLocalForDb(getStartDayByDate(currentDate));
+		const startDayByDate = getStartDayByDate(currentDate);
+		const startDay = startDayByDate && convertDatetimeLocalForDb(startDayByDate);
 		const endDay = getEndDayByDate(currentDate);
-		const lastDate = convertDatetimeLocalForDb(endDay);
+		const lastDate = endDay && convertDatetimeLocalForDb(endDay);
 		const startDate = startDay;
 		const endDate = lastDate;
 

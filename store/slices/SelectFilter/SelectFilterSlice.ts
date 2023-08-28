@@ -1,13 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { AppState } from '../../store';
 import { Constants } from '../../../globals';
+import { SelectFilterInterface } from '../../../typesAndInterfaces/interfaces';
 
-interface InitialState {
-	basic: keyof typeof Constants.nameBasicFilter,
-	yourMeetings: keyof typeof Constants.nameYourMeetingsFilter,
-}
-
-const initialState:InitialState = {
+const initialState: SelectFilterInterface.InitialState = {
   basic: Constants.nameBasicFilter.month,
 	yourMeetings: Constants.nameYourMeetingsFilter.all
 }
