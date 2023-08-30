@@ -10,6 +10,7 @@ import { useSession, signIn } from 'next-auth/react';
 import { AlertsSlice, TextTranslationSlice } from '../store/slices'
 import { useAppDispatch, useAppSelector } from '../store/hook'
 import { Layout } from '../layout/Layout';
+import { Get } from '../typesAndInterfaces/interfaces/http.interface';
 
 export default function ProposeMeetingPage(): JSX.Element {
 	const { data: session, status } = useSession();
@@ -26,11 +27,12 @@ export default function ProposeMeetingPage(): JSX.Element {
 	const [listInterestsByCities, setListInterestsByCities] = useState<InterestsByCitiesInterface.Db[]>([]);
 	const [listCategoriesByInterests, setListCategoriesByInterests] = useState<CategoriesByInterestsInterface.Db[]>([]);
 	const [dataForm, setDataForm] = useState<ProposeMeetingInterface.DataForm>({selectCountry: '', selectCity: '', selectInterest: '', selectCategory: '', selectLanguage: '', selectDateMeeting: '', selectPlaceMeeting: ''});
-	const [dataSelects, setDataSelects] = useState({listCities: [], listInterests: [], listCategories: []})
+	const [dataSelects, setDataSelects] = useState<ProposeMeetingInterface.DataSelects>({listCities: [], listInterests: [], listCategories: []})
 	const [trySubmit, setTrySubmit] = useState(false);
 
 	const updateLanguage = async () => {
-		if (typeof window !== "undefined") document.documentElement.lang = ML.getLanguage()
+		const language = ML.getLanguage();
+		if (typeof window !== "undefined" && language) document.documentElement.lang = language
 		dispatch(TextTranslationSlice.updateLanguageAsync())
 	}
 
@@ -131,7 +133,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 			newDataForm = {...dataForm, [name]: value, selectCategory: ''};
 		}
 		if (name === 'selectDateMeeting') {
-			newDataForm = {...dataForm, ['selectDateMeeting']: value.length? Helpers.convertDatetimeLocalForDb(value) : ''};
+			newDataForm = {...dataForm, ['selectDateMeeting']: value.length ? Helpers.convertDatetimeLocalForDb(new Date(value)) || '' : ''};
 		}
 		setDataForm(newDataForm);
 		filterLists(newDataForm);
@@ -170,8 +172,10 @@ export default function ProposeMeetingPage(): JSX.Element {
 						};
 		
 						const oldMeetings = await Meetings.getByDataForm(dataMeeting);
-						let oldDesires;
-						if (oldMeetings?.data) oldDesires = oldMeetings?.data?.length > 0 && await Desires.getByIdUserAndIdMeeting(idUser, oldMeetings?.data[0].id);
+						let oldDesires: Get<DesiresInterface.Db> | undefined;
+						if (oldMeetings?.data) {
+							if (oldMeetings?.data?.length > 0) oldDesires =  await Desires.getByIdUserAndIdMeeting(idUser, oldMeetings?.data[0].id);
+						}
 		
 						if (oldMeetings?.data?.length === 0 || !oldMeetings || !oldDesires) {
 							const idMeetingsAddDb = await Meetings.add(dataMeeting);
@@ -204,7 +208,7 @@ export default function ProposeMeetingPage(): JSX.Element {
   }
 
 	const filterLists = (newDataForm: ProposeMeetingInterface.DataForm) => {
-		let newDataSelects = JSON.parse(JSON.stringify(dataSelects)); // a deep copy of the object, to make sure that I do not change the object when assigning a new value
+		let newDataSelects: ProposeMeetingInterface.DataSelects = JSON.parse(JSON.stringify(dataSelects)); // a deep copy of the object, to make sure that I do not change the object when assigning a new value
 		
 		const currentCountry = listCountries.find(country => country.route === newDataForm.selectCountry)
 		const idCitiesByCountry: number[] = [];
@@ -246,10 +250,10 @@ export default function ProposeMeetingPage(): JSX.Element {
 		return new Date().toISOString().substring(0,16)
 	}
 
-	const plusYearsDateYYYYMMDD = () => {
+	const getMaxDateYYYYMMDD = () => {
 		const currentDate = new Date();
-		currentDate.setFullYear(currentDate.getFullYear() + 1);
-		return currentDate.toISOString().substring(0,16)
+		const increaseDate = Helpers.increaseDateByMonths(currentDate, Constants.maxVisibleMonth);
+		if (increaseDate) return increaseDate.toISOString().substring(0,16)
 	}
 
 	if (session) {
@@ -323,9 +327,9 @@ export default function ProposeMeetingPage(): JSX.Element {
 									error={(dataForm.selectLanguage.length === 0 && trySubmit) ? true : false}
 								/>
 								<input type="datetime-local" id="start" name="selectDateMeeting"
-									className={(dataForm.selectDateMeeting.length === 0 && trySubmit) ? 'error' : ''}
+									className={(dataForm.selectDateMeeting?.length === 0 && trySubmit) ? 'error' : ''}
 									min={getCurrentDateYYYYMMDD()}
-									max={plusYearsDateYYYYMMDD()}
+									max={getMaxDateYYYYMMDD()}
 									required
 									onChange={(value) => handleSelect(value.target.value, value.target.name)}
 								/>

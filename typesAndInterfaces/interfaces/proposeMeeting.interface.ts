@@ -1,3 +1,5 @@
+import {CitiesInterface, InterestsInterface, CategoryInterface} from '../interfaces';
+
 export interface DataMeeting {
 	idUser: string;
 	idCountry: number;
@@ -21,4 +23,10 @@ export interface DataForm {
 	selectLanguage: string;
 	selectDateMeeting: string;
 	selectPlaceMeeting: string;
+}
+
+export interface DataSelects {
+	listCities: CitiesInterface.WithTranslation[];
+	listInterests: InterestsInterface.WithTranslation[];
+	listCategories: CategoryInterface.WithTranslation[];
 }

@@ -150,6 +150,10 @@ input[type=datetime-local]::-webkit-calendar-picker-indicator{
 	filter: invert(1);
 }
 
+input[type="datetime-local"]::-webkit-datetime-edit-year-field {
+  color: white;
+}
+
 textarea {
   padding: 6px 10px;
   border-radius: var(--border-radius-default);
