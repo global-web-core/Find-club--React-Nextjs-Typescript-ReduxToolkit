@@ -27,8 +27,7 @@ const updateLanguageAsync = createAsyncThunk<LanguageTranslationInterface.Txt, L
 			dispatch(AlertsSlice.add('Ошибка загрузки переведенного текста', '', 'danger'));
 			return rejectWithValue('no get ML.getTranslationText')
 		}
-		console.log
-		return currentTranslationText as LanguageTranslationInterface.Txt
+		return currentTranslationText
   }
 )
 
@@ -44,7 +43,7 @@ const textTranslationSlices = createSlice({
       })
       .addCase(updateLanguageAsync.rejected, (state, action) => {
 				state.status = Constants.statusFetch.failed
-        state.error = action.payload
+        state.error = typeof action.payload === 'string' ? action.payload : 'Error'
       })
       .addCase(updateLanguageAsync.fulfilled, (state, action) => {
         state.status = Constants.statusFetch.succeeded
