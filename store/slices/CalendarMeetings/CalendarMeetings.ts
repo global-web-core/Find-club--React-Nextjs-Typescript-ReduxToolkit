@@ -63,10 +63,12 @@ const setListDatemeetingsPerMonthAsync = createAsyncThunk<string[] | undefined, 
 			if (countryRoute) country = (await Countries.getByRoute(countryRoute))?.data?.[0]
 			if (Object.keys(parametersRequest.router).length === 1 && parametersRequest.router?.countries) {
 				for await (const date of listDatePerMonth) {
-					const startDay = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(date));
-					const endDay = Helpers.convertDatetimeLocalForDb(Helpers.getEndDayByDate(date));
+					const startDayByDate = Helpers.getStartDayByDate(date);
+					const startDay = startDayByDate && Helpers.convertDatetimeLocalForDb(startDayByDate);
+					const endDayByDate = Helpers.getEndDayByDate(date);
+					const endDay = endDayByDate && Helpers.convertDatetimeLocalForDb(endDayByDate);
 		
-					const meetingDb = country && await Meetings.getOneByDateMeetingsAndCountry(country.id, parametersRequest.language.id, startDay, endDay);
+					const meetingDb = (country && startDay && endDay) ? await Meetings.getOneByDateMeetingsAndCountry(country.id, parametersRequest.language.id, startDay, endDay) : undefined;
 					if (meetingDb?.data) {
 						if (meetingDb?.data?.length > 0) listDatemeetingsPerMonth.push(date)
 					}
@@ -89,10 +91,12 @@ const setListDatemeetingsPerMonthAsync = createAsyncThunk<string[] | undefined, 
 				}
 
 				for await (const date of listDatePerMonth) {
-					const startDay = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(date));
-					const endDay = Helpers.convertDatetimeLocalForDb(Helpers.getEndDayByDate(date));
+					const startDayByDate = Helpers.getStartDayByDate(date);
+					const startDay = startDayByDate && Helpers.convertDatetimeLocalForDb(startDayByDate);
+					const endDayByDate = Helpers.getEndDayByDate(date);
+					const endDay = endDayByDate && Helpers.convertDatetimeLocalForDb(endDayByDate);
 		
-					const meetingDb = city && country && await Meetings.getOneByDateMeetingsAndCity(country.id, city.id, parametersRequest.language.id, startDay, endDay);
+					const meetingDb = (city && country && startDay && endDay) ? await Meetings.getOneByDateMeetingsAndCity(country.id, city.id, parametersRequest.language.id, startDay, endDay) : undefined;
 					if (meetingDb?.data) {
 						if (meetingDb.data.length > 0) listDatemeetingsPerMonth.push(date)
 					}
@@ -129,10 +133,12 @@ const setListDatemeetingsPerMonthAsync = createAsyncThunk<string[] | undefined, 
 				}
 
 				for await (const date of listDatePerMonth) {
-					const startDay = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(date));
-					const endDay = Helpers.convertDatetimeLocalForDb(Helpers.getEndDayByDate(date));
+					const startDayByDate = Helpers.getStartDayByDate(date);
+					const startDay = startDayByDate && Helpers.convertDatetimeLocalForDb(startDayByDate);
+					const endDayByDate = Helpers.getEndDayByDate(date);
+					const endDay = endDayByDate && Helpers.convertDatetimeLocalForDb(endDayByDate);
 		
-					const meetingDb = country && city && interest && await Meetings.getOneByDateMeetingsAndInterest(country.id, city.id, interest.id, parametersRequest.language.id, startDay, endDay);
+					const meetingDb = (country && city && interest && startDay && endDay) ? await Meetings.getOneByDateMeetingsAndInterest(country.id, city.id, interest.id, parametersRequest.language.id, startDay, endDay) : undefined;
 					if (meetingDb?.data) {
 						if (meetingDb.data.length > 0) listDatemeetingsPerMonth.push(date)
 					}
@@ -184,10 +190,12 @@ const setListDatemeetingsPerMonthAsync = createAsyncThunk<string[] | undefined, 
 				}
 
 				for await (const date of listDatePerMonth) {
-					const startDay = Helpers.convertDatetimeLocalForDb(Helpers.getStartDayByDate(date));
-					const endDay = Helpers.convertDatetimeLocalForDb(Helpers.getEndDayByDate(date));
+					const startDayByDate = Helpers.getStartDayByDate(date);
+					const startDay = startDayByDate && Helpers.convertDatetimeLocalForDb(startDayByDate);
+					const endDayByDate = Helpers.getEndDayByDate(date);
+					const endDay = endDayByDate && Helpers.convertDatetimeLocalForDb(endDayByDate);
 		
-					const meetingDb = country && city && interest && category && await Meetings.getOneByDateMeetingsAndCategory(country.id, city.id, interest.id, category.id, parametersRequest.language.id, startDay, endDay);
+					const meetingDb = (country && city && interest && category && startDay && endDay) ? await Meetings.getOneByDateMeetingsAndCategory(country.id, city.id, interest.id, category.id, parametersRequest.language.id, startDay, endDay) : undefined;
 					if (meetingDb?.data) {
 						if (meetingDb.data.length > 0) listDatemeetingsPerMonth.push(date)
 					}
@@ -230,7 +238,8 @@ const calendarMeetingsSlices = createSlice({
 						const endPeriod = endMonth < new Date(state.maxDate) ? endMonth : new Date(state.maxDate);
 		
 						let activePeriod: TypeInitialStateCalandarMeeting["activePeriod"] | undefined;
-						const nameMonth = Helpers.getNameMonthByDate(activeStartDate, ML.getLanguage());
+						const language = ML.getLanguage();
+						const nameMonth = language && Helpers.getNameMonthByDate(activeStartDate, language);
 						const start = Helpers.convertDatetimeForRedux(startPeriod);
 						const end = Helpers.convertDatetimeForRedux(endPeriod);
 
@@ -268,7 +277,7 @@ const calendarMeetingsSlices = createSlice({
 	},
 	extraReducers: (builder) => {
     builder
-      .addCase(setListDatemeetingsPerMonthAsync.pending, (state, action) => {
+      .addCase(setListDatemeetingsPerMonthAsync.pending, (state) => {
 				if (Object.keys(state).length > 0) {
 					state.status = Constants.statusFetch.loading
 					state.error = null
