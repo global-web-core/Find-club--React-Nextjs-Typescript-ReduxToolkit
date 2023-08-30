@@ -75,8 +75,12 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 					const getUpdateDesire = await Desires.getById(parseInt(addReadiness.data.id));
 					const updateDesire = getUpdateDesire.data?.[0];
 					const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data?.[0].id);
-					dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
-					dispatch(AlertsSlice.add(textTranslation[ML.key.yourConfirmationComeAccepted], textTranslation[ML.key.successfully], 'success'));
+					if (desiresWithoutUpdateDesire && updateDesire) {
+						dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
+						dispatch(AlertsSlice.add(textTranslation[ML.key.yourConfirmationComeAccepted], textTranslation[ML.key.successfully], 'success'));
+					} else {
+						dispatch(AlertsSlice.add(textTranslation[ML.key.errorYourConfirmationComeAccepted], textTranslation[ML.key.error], 'danger'));
+					}
 				} else {
 					dispatch(AlertsSlice.add(textTranslation[ML.key.errorYourConfirmationComeAccepted], textTranslation[ML.key.error], 'danger'));
 				}
@@ -124,8 +128,12 @@ export const Meeting = ({meeting, idUser}: MeetingProps):JSX.Element => {
 					const getUpdateDesire = await Desires.getById(parseInt(addWish.data.id));
 					const updateDesire = getUpdateDesire.data?.[0];
 					const desiresWithoutUpdateDesire = desires.filter(desire => desire.id !== getUpdateDesire.data?.[0].id);
-					dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
-					dispatch(AlertsSlice.add(textTranslation[ML.key.yourWishComeAccepted], textTranslation[ML.key.successfully], 'success'));
+					if (desiresWithoutUpdateDesire && updateDesire) {
+						dispatch(DesiresSlice.addAll([...desiresWithoutUpdateDesire, updateDesire]));
+						dispatch(AlertsSlice.add(textTranslation[ML.key.yourWishComeAccepted], textTranslation[ML.key.successfully], 'success'));
+					} else {
+						dispatch(AlertsSlice.add(textTranslation[ML.key.errorYourWishComeAccepted], textTranslation[ML.key.error], 'danger'));
+					}
 				} else {
 					dispatch(AlertsSlice.add(textTranslation[ML.key.errorYourWishComeAccepted], textTranslation[ML.key.error], 'danger'));
 				}
