@@ -147,6 +147,7 @@ const codeHttp = {
 	bad: 404,
 }
 
+const maxVisibleMonth = 3;
 
 export {
 	API,
@@ -172,5 +173,6 @@ export {
 	methodHttp,
 	basicNameLanguagetranslation,
 	codeHttp,
-	avaliableLanguages
+	avaliableLanguages,
+	maxVisibleMonth
 };

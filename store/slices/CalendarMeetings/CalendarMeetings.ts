@@ -6,7 +6,7 @@ import { CalendarInterface, CountriesInterface, LanguagesInterface, CitiesInterf
 import { RouterQueryAdditional, TypeInitialStateCalandarMeeting } from '../../../typesAndInterfaces/types';
 
 const now = new Date();
-const increaseDateByMonths = Helpers.increaseDateByMonths(now, 3)
+const increaseDateByMonths = Helpers.increaseDateByMonths(now, Constants.maxVisibleMonth)
 const maxDate = increaseDateByMonths && Helpers.convertDatetimeLocalForRedux(increaseDateByMonths);
 const startDayByDate = Helpers.getStartDayByDate(now);
 const activePeriodStart = startDayByDate && Helpers.convertDatetimeForRedux(startDayByDate);
