@@ -113,12 +113,12 @@ export default function YourMeetingsPage(): JSX.Element {
 
 		if (selectFilter.yourMeetings === Constants.nameYourMeetingsFilter.passed) {
 			for await (const selectedMeeting of selectedMeetings) {
-				const meeting = (await Meetings.getByIdMeetingLessDate(selectedMeeting.idMeeting, currentDate))?.data?.[0];
+				const meeting = currentDate ? (await Meetings.getByIdMeetingLessDate(selectedMeeting.idMeeting, currentDate))?.data?.[0] : undefined;
 				if (meeting) listMeetings.push(meeting);
 			}
 		} else {
 			for await (const selectedMeeting of selectedMeetings) {
-				const meeting = (await Meetings.getByIdMeetingMoreDate(selectedMeeting.idMeeting, currentDate))?.data?.[0];
+				const meeting = currentDate ?  (await Meetings.getByIdMeetingMoreDate(selectedMeeting.idMeeting, currentDate))?.data?.[0] : undefined;
 				if (meeting) listMeetings.push(meeting);
 			}
 		}
