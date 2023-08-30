@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { AppState } from '../../store';
 import { Constants } from '../../../globals';
 import { SelectFilterInterface } from '../../../typesAndInterfaces/interfaces';
@@ -12,10 +12,10 @@ const SelectFilterSlice = createSlice({
 	name: 'selectFilter',
 	initialState: initialState,
 	reducers: {
-		setYourMeetingsFilter: (state, action) => {
+		setYourMeetingsFilter: (state, action: PayloadAction<SelectFilterInterface.InitialState["yourMeetings"]>) => {
 			state.yourMeetings = action.payload;
 		},
-		setBasicFilterFilter: (state, action) => {
+		setBasicFilterFilter: (state, action: PayloadAction<SelectFilterInterface.InitialState["basic"]>) => {
 			state.basic = action.payload;
 		}
 	}
