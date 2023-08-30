@@ -17,7 +17,7 @@ const getChangeTranslationText = async (text:LanguageTranslationInterface.Txt | 
 	if(!checkNeedTranslationText() && text) {
 		return text;
 	}
-	const changeTextTranslation = await getTranslationText(saveSetLanguage);
+	const changeTextTranslation = saveSetLanguage ? await getTranslationText(saveSetLanguage) : null;
 	if (changeTextTranslation) return changeTextTranslation;
 }
 
@@ -81,7 +81,7 @@ const setLanguageByBrowser = (listLanguages: LanguagesInterface.Db[]) => {
 }
 
 const getLanguage = () => {
-	return LS.get(LS.Key.language);
+	return LS.get(LS.Key.language) as TypeLanguages | null;
 }
 
 const setLanguage = (language: string) => {

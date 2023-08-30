@@ -4,6 +4,7 @@ import { SelectWithImage } from '../../components';
 import { LanguagesInterface } from '../../typesAndInterfaces/interfaces';
 import { ML } from '../../globals';
 import { useRouter } from 'next/router';
+import { TypeLanguages } from '../../typesAndInterfaces/types';
 
 export const SelectLanguage = ({ listLanguages, updateLanguage, text, country }: SelectLanguageProps): JSX.Element => {
 	const router = useRouter();
@@ -13,7 +14,7 @@ export const SelectLanguage = ({ listLanguages, updateLanguage, text, country }:
 	
 	const [selectedOption, setSelectedOption] = useState(statedLanguage);
 
-	const handleSelect = (value:string) => {
+	const handleSelect = (value: TypeLanguages) => {
 		if (value) {
 			ML.setLanguage(value);
 			setSelectedOption(value);
@@ -67,7 +68,7 @@ export const SelectLanguage = ({ listLanguages, updateLanguage, text, country }:
 				settingPathsImages='selectwithimage/languages'
 				extensionFilesImages='png'
 				list={list}
-				valueSelect={(value:string) => handleSelect(value)}
+				valueSelect={(value:string) => handleSelect(value as TypeLanguages)}
 			/>}
 		</div>
 	);
