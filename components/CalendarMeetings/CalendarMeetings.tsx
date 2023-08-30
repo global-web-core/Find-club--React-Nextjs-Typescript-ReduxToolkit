@@ -11,7 +11,7 @@ export const CalendarMeetings = ({language, metadataLanguage, ...props}: Calenda
 	const router = useRouter();
 	const dispatch = useAppDispatch();
 	const selectedDayCalendar = useAppSelector(state => CalendarMeetingsSlice.selectedDaySelect(state));
-	const selectedDay = Helpers.convertFromReduxToDatetimeLocal(selectedDayCalendar);
+	const selectedDay = selectedDayCalendar ? Helpers.convertFromReduxToDatetimeLocal(selectedDayCalendar) : undefined;
 	const calendarMeetings = useAppSelector(state => CalendarMeetingsSlice.calendarMeetingsSelect(state));
 	const activeStartDateChange = useAppSelector(state => CalendarMeetingsSlice.activeStartDateChangeSelect(state));
 	const selectFilter = useAppSelector(state => SelectFilterSlice.selectFilter(state));
@@ -20,7 +20,7 @@ export const CalendarMeetings = ({language, metadataLanguage, ...props}: Calenda
 
 	const changeSelectedDay = (e?: Date | undefined) => {
 		if (!e && activeStartDateChange) {
-			const activeStartDate = Helpers.convertFromReduxToDatetimeLocalAndShiftTimezone(activeStartDateChange?.activeStartDate);
+			const activeStartDate = activeStartDateChange?.activeStartDate ? Helpers.convertFromReduxToDatetimeLocalAndShiftTimezone(activeStartDateChange?.activeStartDate) : undefined;
 			e = activeStartDate;
 		}
 		dispatch(CalendarMeetingsSlice.setSelectedDay(e || null));
@@ -52,7 +52,7 @@ export const CalendarMeetings = ({language, metadataLanguage, ...props}: Calenda
 			<Calendar
 				// @ts-ignore // turned off type checking types because i use custom function conflicting react-calendar types for onChange
 				onChange={changeSelectedDay} value={selectedDay}
-				minDate={new Date()} maxDate={new Date(maxDate)}
+				minDate={new Date()} maxDate={maxDate ? new Date(maxDate) : undefined}
 				minDetail={"month"} maxDetail={"month"}
 				locale={metadataLanguage}
 				onActiveStartDateChange={changeActiveStartDateChange}
