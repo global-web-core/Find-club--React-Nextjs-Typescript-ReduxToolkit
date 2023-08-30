@@ -11,7 +11,7 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 	const dispatch = useAppDispatch();
 	const router = useRouter();
 	const selectedDayCalendar = useAppSelector(state => CalendarMeetingsSlice.selectedDaySelect(state));
-	const selectedDay = Helpers.convertFromReduxToDatetimeLocal(selectedDayCalendar);
+	const selectedDay = selectedDayCalendar ? Helpers.convertFromReduxToDatetimeLocal(selectedDayCalendar) : undefined;
 	const activeStartDateChange = useAppSelector(state => CalendarMeetingsSlice.activeStartDateChangeSelect(state));
 	const calendarMeetings = useAppSelector(state => CalendarMeetingsSlice.calendarMeetingsSelect(state));
 	const currentPagination = useAppSelector(state => PaginationSlice.paginationSelect(state, Constants.namePagination.meetingsList));
@@ -34,9 +34,9 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 		if (selectFilter.basic === Constants.nameBasicFilter.month || selectFilter.basic === Constants.nameBasicFilter.day) {
 			const dates = Helpers.getStartDateAndEndDateBySelectFilter(selectFilter, calendarMeetings, activeStartDateChange, selectedDay);
 			if (selectFilter.basic === Constants.nameBasicFilter.day) {
-				dispatch(CalendarMeetingsSlice.setSelectedDay(dates?.selectedDay));
+				if (dates?.selectedDay) dispatch(CalendarMeetingsSlice.setSelectedDay(dates?.selectedDay));
 			}
-			return getMeetingsFromDb(dates?.startDate, dates?.endDate);
+			if (dates?.startDate && dates?.endDate) return getMeetingsFromDb(dates?.startDate, dates?.endDate);
 		}
 		clearDataMeetings();
 	}
@@ -64,7 +64,7 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 	}, [loading, selectFilter, currentPagination?.currentPage, activeStartDateChange, selectedDayCalendar])
 
 	const getTitle = () => {
-		let currentTitle;
+		let currentTitle: string | undefined;
 		if (Object.keys(router.query).length === 1 && router.query.countries) {
 			const countryFromUrl = typeof router.query.countries === "string" && Helpers.getCountryByUrlCountry(router.query.countries);
 			if (countryFromUrl) currentTitle = textTranslation[countryFromUrl] + ' - ' + textTranslation[ML.key.allAvailableMeetings];
