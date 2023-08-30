@@ -11,15 +11,15 @@ export const Pagination = ({namePagination}: PaginationProps): JSX.Element => {
 
 	return (
 		<>
-			{currentPagination?.currentPage > 0 && currentPagination?.maxPage > 0 &&
+			{currentPagination && currentPagination?.currentPage > 0 && currentPagination?.maxPage > 0 &&
 				<div className={styles.pagination}>
-				<ArrowNavigation direction={'left'} onClick={() => dispatch(PaginationSlice.decrimentPagination( namePagination))}  disabled={currentPagination?.currentPage === 1} />
+				<ArrowNavigation direction={'left'} onClick={() => namePagination && dispatch(PaginationSlice.decrimentPagination( namePagination))}  disabled={currentPagination?.currentPage === 1} />
 				<div>
 					<span>{currentPagination?.currentPage}</span>
 					<span>/</span>
 					<span>{currentPagination?.maxPage}</span>
 				</div>
-				<ArrowNavigation direction={'right'}  onClick={() => dispatch(PaginationSlice.incrimentPagination( namePagination))} disabled={currentPagination?.currentPage === currentPagination?.maxPage} />
+				<ArrowNavigation direction={'right'}  onClick={() => namePagination && dispatch(PaginationSlice.incrimentPagination( namePagination))} disabled={currentPagination?.currentPage === currentPagination?.maxPage} />
 			</div>}
 		</>
 	);

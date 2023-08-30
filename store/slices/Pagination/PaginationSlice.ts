@@ -1,33 +1,49 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { AppState } from '../../store';
+import { Constants } from '../../../globals';
+import { TypeNamePagination } from '../../../typesAndInterfaces/types';
 
-interface InitialState {
-	openHamburger: boolean;
+type ListNamePagination = keyof typeof Constants.namePagination
+
+type Pagination = {
+	maxPage: number;
+	currentPage: number;
 }
 
-const initialState:InitialState = {};
+type InitialState = Record<string, never> | {
+	[key in ListNamePagination]?: Pagination
+}
+
+type SetPagination = {
+	namePagination: ListNamePagination,
+	maxPage: Pagination["maxPage"]
+}
+
+const initialState: InitialState = {};
 
 const PaginationSlice = createSlice({
 	name: 'pagination',
 	initialState: initialState,
 	reducers: {
-		setPagination: (state, action) => {
+		setPagination: (state, action: PayloadAction<SetPagination>) => {
 			if (action.payload.namePagination && action.payload.maxPage > 0) {
 				state[action.payload.namePagination] = {maxPage: action.payload.maxPage, currentPage: 1};
 			}
 		},
 		clearAll: () => initialState,
-		incrimentPagination: (state, action) => {
+		incrimentPagination: (state, action: PayloadAction<ListNamePagination>) => {
 			if (Object.prototype.hasOwnProperty.call(state, action.payload)) {
-				if (state[action.payload].currentPage < state[action.payload].maxPage) {
-					state[action.payload].currentPage = ++state[action.payload].currentPage;
+				const pagination = state[action.payload];
+				if (pagination && pagination.currentPage < pagination.maxPage) {
+					pagination.currentPage = ++pagination.currentPage;
 				}
 			}
 		},
-		decrimentPagination: (state, action) => {
+		decrimentPagination: (state, action: PayloadAction<ListNamePagination>) => {
 			if (Object.prototype.hasOwnProperty.call(state, action.payload)) {
-				if (state[action.payload].currentPage > 0) {
-					state[action.payload].currentPage = --state[action.payload].currentPage;
+				const pagination = state[action.payload];
+				if (pagination && pagination.currentPage > 0) {
+					pagination.currentPage = --pagination.currentPage;
 				}
 			}
 		}
@@ -37,7 +53,7 @@ const PaginationSlice = createSlice({
 const { setPagination, incrimentPagination, decrimentPagination, clearAll } = PaginationSlice.actions
 const reducer = PaginationSlice.reducer
 
-const paginationSelect = (state: AppState, namePagination) => {
+const paginationSelect = (state: AppState, namePagination: TypeNamePagination) => {
 	if (namePagination) return state.pagination[namePagination];	
 }
 
