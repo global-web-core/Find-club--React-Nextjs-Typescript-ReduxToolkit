@@ -197,7 +197,7 @@ export const NavigationMeetings = ({listCountries, listLanguages, textTranslatio
 	}, [navigation])
 
 	const handleGoTo = () => {
-		const urlCountry = Helpers.getUrlCountry(navigation.country, listCountries, listLanguages);
+		const urlCountry = navigation.country ? Helpers.getUrlCountry(navigation.country, listCountries, listLanguages): null;
 		const urlCity = navigation?.city;
 		const urlInterest = navigation?.interest;
 		const urlCategory = navigation?.category;

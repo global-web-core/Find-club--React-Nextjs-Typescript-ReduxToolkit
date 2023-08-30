@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, HTMLAttributes, ReactNode} from 'react';
+import { DetailedHTMLProps, HTMLAttributes} from 'react';
 import { CountriesInterface, LanguageTranslationInterface, LanguagesInterface } from '../../typesAndInterfaces/interfaces';
 
 export interface NavigationMeetingsProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
