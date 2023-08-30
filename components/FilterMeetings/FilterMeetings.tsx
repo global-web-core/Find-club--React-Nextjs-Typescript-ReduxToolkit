@@ -29,7 +29,7 @@ export const FilterMeetings = (): JSX.Element => {
 			<ButtonList>
 				{!pageYourMeetings &&
 					<>
-						<Button name={calendarMeetings?.activePeriod?.nameMonth} selected={selectFilter.basic === Constants.nameBasicFilter.month ? true : false} onClick={() => dispatch(SelectFilterSlice.setBasicFilterFilter(Constants.nameBasicFilter.month))} />
+						<Button name={calendarMeetings?.activePeriod?.nameMonth || ''} selected={selectFilter.basic === Constants.nameBasicFilter.month ? true : false} onClick={() => dispatch(SelectFilterSlice.setBasicFilterFilter(Constants.nameBasicFilter.month))} />
 						<Button name={Helpers.getNameDayByDate(calendarMeetings?.selectedDay || calendarMeetings?.activePeriod?.start) || ''} selected={selectFilter.basic === Constants.nameBasicFilter.day ? true : false} onClick={() => dispatch(SelectFilterSlice.setBasicFilterFilter(Constants.nameBasicFilter.day))} />
 					</>
 				}
