@@ -1,11 +1,13 @@
 import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit'
 import { TypeItemMessage, TypeAlert } from '../../../components/Alert/Alert.types';
 import type { AppState } from '../../store'
+import { Constants } from '../../../globals';
 
+const nameSlice = 'alerts';
 const initialState: TypeItemMessage[] = [];
 
 const alertsSlices = createSlice({
-	name: 'alerts',
+	name: nameSlice,
 	initialState: initialState,
 	reducers: {
 		add: {
@@ -13,7 +15,7 @@ const alertsSlices = createSlice({
 				let preparedMessage: TypeItemMessage;
 				const message = action.payload;
 				if (!message?.title) message.title = null;
-				if (!message?.typeAlert) message.typeAlert = 'info';
+				if (!message?.typeAlert) message.typeAlert = Constants.typeAlert.info;
 				if (message?.message) {
 					preparedMessage = {id: message.id, message: message.message, title: message.title, typeAlert: message.typeAlert}
 					state.push(preparedMessage)

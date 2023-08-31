@@ -5,12 +5,13 @@ interface InitialState {
 	openHamburger: boolean;
 }
 
+const nameSlice = 'basic';
 const initialState:InitialState = {
   openHamburger: false,
 }
 
 const basicSlices = createSlice({
-	name: 'basic',
+	name: nameSlice,
 	initialState: initialState,
 	reducers: {
 		changeOpenHamburger: (state) => {

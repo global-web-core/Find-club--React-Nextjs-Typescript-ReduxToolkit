@@ -193,6 +193,10 @@ const enum statusAuth {
 	authenticated = "authenticated",
 }
 
+const error = 'Error';
+
+const errorLoadingText = 'Error loading translated text';
+
 export {
 	API,
 	url,
@@ -225,5 +229,7 @@ export {
 	namePages,
 	paths,
 	listProvider,
-	statusAuth
+	statusAuth,
+	error,
+	errorLoadingText
 };

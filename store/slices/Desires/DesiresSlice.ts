@@ -17,6 +17,8 @@ interface DataForDesiresByIdMeeting {
 	listIdMeetings: number[]
 }
 
+const nameSlice = "desires";
+const nameAsyncActionGetDesiresByIdMeeting = "getDesiresByIdMeeting";
 const initialState:InitialState = {
   entities: [],
   status: Constants.statusFetch.succeeded,
@@ -24,11 +26,11 @@ const initialState:InitialState = {
 }
 
 const getDesiresByIdMeeting = createAsyncThunk<DesiresInterface.Db[] | undefined, DataForDesiresByIdMeeting, {dispatch: AppDispatch}>(
-  'desires/getDesiresByIdMeeting',
+  nameSlice + '/' + nameAsyncActionGetDesiresByIdMeeting,
   async (data, {dispatch, rejectWithValue}) => {
 		const error = () => {
-			const textError = 'Ошибка получения desires'
-			dispatch(AlertsSlice.add(textError, data.textTranslation[ML.key.error], 'danger'));
+			const textError = data.textTranslation[ML.key.errorReceivingParticipants] || data.textTranslation[ML.key.error]
+			dispatch(AlertsSlice.add(textError, data.textTranslation[ML.key.error], Constants.typeAlert.danger));
 			return rejectWithValue(textError)
 		}
 
@@ -54,7 +56,7 @@ const getDesiresByIdMeeting = createAsyncThunk<DesiresInterface.Db[] | undefined
 )
 
 const desiresSlices = createSlice({
-	name: 'desires',
+	name: nameSlice,
 	initialState: initialState,
 	reducers: {
 		addAll: (state, action: PayloadAction<InitialState["entities"]>) => {
@@ -70,7 +72,7 @@ const desiresSlices = createSlice({
       })
       .addCase(getDesiresByIdMeeting.rejected, (state, action) => {
 				state.status = Constants.statusFetch.failed
-        state.error = typeof action.payload === 'string' ? action.payload : 'Error'
+        state.error = typeof action.payload === 'string' ? action.payload : Constants.error
       })
       .addCase(getDesiresByIdMeeting.fulfilled, (state, action) => {
 				if (action?.payload !== undefined) {

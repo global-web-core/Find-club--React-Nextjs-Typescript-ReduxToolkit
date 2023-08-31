@@ -34,12 +34,15 @@ interface GetMeetingsWithFullDataAsync {
 	listIdMeetings: InitialState["listIdMeetings"]
 }
 
+const nameSlice = "meetings";
+const nameAsyncActionGetMeetingsWithFullDataAsync = "getMeetingsWithFullDataAsync";
+
 const getMeetingsWithFullDataAsync = createAsyncThunk<GetMeetingsWithFullDataAsync | undefined, DataForGetMeetingsWithFullDataAsync, {dispatch: AppDispatch}>(
-  'meetings/getMeetingsWithFullDataAsync',
+  nameSlice + '/' + nameAsyncActionGetMeetingsWithFullDataAsync,
   async (data, {dispatch, rejectWithValue}) => {
 		const error = () => {
 			const textError = data.textTranslation[ML.key.receivingMeeting]
-			dispatch(AlertsSlice.add(textError, data.textTranslation[ML.key.error], 'danger'));
+			dispatch(AlertsSlice.add(textError, data.textTranslation[ML.key.error], Constants.typeAlert.danger));
 			return rejectWithValue(textError)
 		}
 		
@@ -90,7 +93,7 @@ const getMeetingsWithFullDataAsync = createAsyncThunk<GetMeetingsWithFullDataAsy
 )
 
 const meetingsSlices = createSlice({
-	name: 'meetings',
+	name: nameSlice,
 	initialState: initialState,
 	reducers: {
 		addAll: (state, action: PayloadAction<InitialState["entities"]>) => {
@@ -106,7 +109,7 @@ const meetingsSlices = createSlice({
       })
       .addCase(getMeetingsWithFullDataAsync.rejected, (state, action) => {
 				state.status = Constants.statusFetch.failed
-				state.error = typeof action.payload === 'string' ? action.payload : 'Error'
+				state.error = typeof action.payload === 'string' ? action.payload : Constants.error
       })
       .addCase(getMeetingsWithFullDataAsync.fulfilled, (state, action) => {
 				if (action?.payload !== undefined) {

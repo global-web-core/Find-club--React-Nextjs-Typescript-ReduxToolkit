@@ -5,6 +5,8 @@ import { Categories, CategoriesByInterests, Cities, CitiesByCountries, Countries
 import { CalendarInterface, CountriesInterface, LanguagesInterface, CitiesInterface, InterestsInterface, CategoryInterface } from '../../../typesAndInterfaces/interfaces';
 import { RouterQueryAdditional, TypeInitialStateCalandarMeeting } from '../../../typesAndInterfaces/types';
 
+const nameSlice = "calendarMeetings";
+const nameAsyncActionSetListDatemeetings = "setListDatemeetingsPerMonthAsync";
 const now = new Date();
 const increaseDateByMonths = Helpers.increaseDateByMonths(now, Constants.maxVisibleMonth)
 const maxDate = increaseDateByMonths && Helpers.convertDatetimeLocalForRedux(increaseDateByMonths);
@@ -35,7 +37,7 @@ if (typeof maxDate === "string" && typeof activePeriodStart === "string" && type
 }
 
 const setListDatemeetingsPerMonthAsync = createAsyncThunk<string[] | undefined, DataForSetListDatemeetingsPerMonthAsync, {dispatch: AppDispatch}>(
-  'calendarMeetings/setListDatemeetingsPerMonthAsync',
+  nameSlice + '/' + nameAsyncActionSetListDatemeetings,
   async (parametersRequest, {getState}) => {
 		const {calendarMeetings} = getState() as AppState;
 		if (parametersRequest.router) {
@@ -216,7 +218,7 @@ const setListDatemeetingsPerMonthAsync = createAsyncThunk<string[] | undefined, 
 )
 
 const calendarMeetingsSlices = createSlice({
-	name: 'calendarMeetings',
+	name: nameSlice,
 	initialState: initialState,
 	reducers: {
 		setSelectedDay: {
@@ -286,7 +288,7 @@ const calendarMeetingsSlices = createSlice({
       .addCase(setListDatemeetingsPerMonthAsync.rejected, (state, action) => {
 				if (Object.keys(state).length > 0) {
 					state.status = Constants.statusFetch.failed
-					state.error = typeof action.payload === 'string' ? action.payload : 'Error'
+					state.error = typeof action.payload === 'string' ? action.payload : Constants.error
 				}
       })
       .addCase(setListDatemeetingsPerMonthAsync.fulfilled, (state, action) => {

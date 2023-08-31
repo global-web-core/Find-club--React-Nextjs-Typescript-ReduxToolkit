@@ -19,10 +19,11 @@ type SetPagination = {
 	maxPage: Pagination["maxPage"]
 }
 
+const nameSlice = "pagination";
 const initialState: InitialState = {};
 
 const PaginationSlice = createSlice({
-	name: 'pagination',
+	name: nameSlice,
 	initialState: initialState,
 	reducers: {
 		setPagination: (state, action: PayloadAction<SetPagination>) => {

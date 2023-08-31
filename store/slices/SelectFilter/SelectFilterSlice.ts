@@ -3,13 +3,14 @@ import { AppState } from '../../store';
 import { Constants } from '../../../globals';
 import { SelectFilterInterface } from '../../../typesAndInterfaces/interfaces';
 
+const nameSlice = "selectFilter";
 const initialState: SelectFilterInterface.InitialState = {
   basic: Constants.nameBasicFilter.month,
 	yourMeetings: Constants.nameYourMeetingsFilter.all
 }
 
 const SelectFilterSlice = createSlice({
-	name: 'selectFilter',
+	name: nameSlice,
 	initialState: initialState,
 	reducers: {
 		setYourMeetingsFilter: (state, action: PayloadAction<SelectFilterInterface.InitialState["yourMeetings"]>) => {

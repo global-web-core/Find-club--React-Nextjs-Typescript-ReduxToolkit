@@ -120,6 +120,9 @@ const keyText = {
 	ooopsPageNoExist: 'ooops-page-no-exist',
 	youNotAccessLogIn: 'you-not-access-log-in',
 	listIsEmpty: 'list-is-empty',
+	errorReceivingParticipants: 'error-receiving-participants',
+	errorLoadingTranslatedText: 'error-loading-translated-text',
+	errorReceivingUserData: 'error-receiving-user-data',
 }
 
 export default keyText;

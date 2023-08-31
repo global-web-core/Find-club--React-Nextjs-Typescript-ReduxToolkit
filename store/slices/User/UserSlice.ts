@@ -19,6 +19,8 @@ interface DataForGetIdUserAsync {
 	textTranslation: LanguageTranslationInterface.Txt,
 }
 
+const nameSlice = "user";
+const nameAsyncActionUpdateUserAsync = "updateUserAsync";
 const initialState: InitialState = {
   data: {id: null},
   status: Constants.statusFetch.succeeded,
@@ -26,14 +28,15 @@ const initialState: InitialState = {
 }
 
 const getIdUserAsync = createAsyncThunk<UsersInterface.Db["id"], DataForGetIdUserAsync, {dispatch: AppDispatch}>(
-  'user/updateUserAsync',
-  async (data, {dispatch, rejectWithValue}) => {
+  nameSlice + '/' + nameAsyncActionUpdateUserAsync,
+  async (data, {dispatch, rejectWithValue, getState}) => {
+		const {textTranslation} = getState() as AppState;
 		const dataUserBySession = await Users.getBySession(data.email, data.image, data.name)
 		
 		const idUserSession = dataUserBySession?.data?.length && dataUserBySession?.data[0]?.id || null;
 		if (!idUserSession) {
-			const textError = 'Ошибка получения данных пользователя';
-			dispatch(AlertsSlice.add(textError, data.textTranslation[ML.key.error], 'danger'));
+			const textError = textTranslation.entities[ML.key.errorReceivingUserData] || Constants.error;
+			dispatch(AlertsSlice.add(textError, data.textTranslation[ML.key.error], Constants.typeAlert.danger));
 			return rejectWithValue(textError)
 		}
 		return idUserSession
@@ -41,7 +44,7 @@ const getIdUserAsync = createAsyncThunk<UsersInterface.Db["id"], DataForGetIdUse
 )
 
 const UserSlice = createSlice({
-	name: 'user',
+	name: nameSlice,
 	initialState: initialState,
 	reducers: {
 		clearAll: () => initialState
@@ -54,7 +57,7 @@ const UserSlice = createSlice({
       })
       .addCase(getIdUserAsync.rejected, (state, action) => {
 				state.status = Constants.statusFetch.failed
-        state.error = typeof action.payload === 'string' ? action.payload : 'Error'
+        state.error = typeof action.payload === 'string' ? action.payload : Constants.error
       })
       .addCase(getIdUserAsync.fulfilled, (state, action) => {
         state.status = Constants.statusFetch.succeeded

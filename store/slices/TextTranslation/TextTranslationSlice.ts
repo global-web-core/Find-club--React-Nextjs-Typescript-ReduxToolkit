@@ -11,6 +11,8 @@ interface InitialState {
 	error: ErrorFetchRedux;
 }
 
+const nameSlice = "textTranslation";
+const nameAsyncActionUpdateLanguageAsync = "updateLanguageAsync";
 const initialState: InitialState = {
   entities: {},
   status: Constants.statusFetch.succeeded,
@@ -18,21 +20,20 @@ const initialState: InitialState = {
 }
 
 const updateLanguageAsync = createAsyncThunk<LanguageTranslationInterface.Txt, LanguageTranslationInterface.Txt | undefined, {dispatch: AppDispatch}>(
-  'textTranslation/updateLanguageAsync',
+  nameSlice + '/' + nameAsyncActionUpdateLanguageAsync,
   async (text, {dispatch, rejectWithValue}) => {
 		const textDb = text ? text : await ML.getTranslationText();
 		const currentTranslationText = await ML.getChangeTranslationText(textDb)
-
 		if (!currentTranslationText) {
-			dispatch(AlertsSlice.add('Ошибка загрузки переведенного текста', '', 'danger'));
-			return rejectWithValue('no get ML.getTranslationText')
+			dispatch(AlertsSlice.add(Constants.errorLoadingText, '', Constants.typeAlert.danger));
+			return rejectWithValue(Constants.errorLoadingText)
 		}
 		return currentTranslationText
   }
 )
 
 const textTranslationSlices = createSlice({
-	name: 'textTranslation',
+	name: nameSlice,
 	initialState: initialState,
 	reducers: {},
 	extraReducers: (builder) => {
@@ -43,7 +44,7 @@ const textTranslationSlices = createSlice({
       })
       .addCase(updateLanguageAsync.rejected, (state, action) => {
 				state.status = Constants.statusFetch.failed
-        state.error = typeof action.payload === 'string' ? action.payload : 'Error'
+        state.error = typeof action.payload === 'string' ? action.payload : Constants.error
       })
       .addCase(updateLanguageAsync.fulfilled, (state, action) => {
         state.status = Constants.statusFetch.succeeded
