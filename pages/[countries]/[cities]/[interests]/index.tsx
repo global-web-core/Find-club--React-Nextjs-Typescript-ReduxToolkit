@@ -258,8 +258,8 @@ export default function InterestsPage({ listCountries, listCities, listInterests
 					clearDataMeetings={clearDataMeetings}
 					language={language}
 				/>
-				<Button name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: '/propose-meeting'})}} />
-				<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: '/your-meetings'})}} />
+				<Button name={textTranslation[ML.key.offerToMeet]} onClick={() => {router.push({pathname: Constants.paths.pathProposeMeeting})}} />
+				<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: Constants.paths.pathYourMeetings})}} />
 			</Main>
 		</>
 	)

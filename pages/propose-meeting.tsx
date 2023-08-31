@@ -12,6 +12,14 @@ import { useAppDispatch, useAppSelector } from '../store/hook'
 import { Layout } from '../layout/Layout';
 import { Get } from '../typesAndInterfaces/interfaces/http.interface';
 
+const nameSelectCountry = "selectCountry";
+const nameSelectCity = "selectCity";
+const nameSelectInterest = "selectInterest";
+const nameSelectDateMeeting = "selectDateMeeting";
+const nameSelectCategory = "selectCategory";
+const nameSelectLanguage = "selectLanguage";
+const nameSelectPlaceMeeting = "selectPlaceMeeting";
+
 export default function ProposeMeetingPage(): JSX.Element {
 	const { data: session, status } = useSession();
 	const router = useRouter();
@@ -109,7 +117,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 	}, [])
 
 	useEffect(() => {
-		if (!session && status !== 'loading') {
+		if (!session && status !== Constants.statusAuth.loading) {
 			signIn();
 		}
 	}, [session])
@@ -123,17 +131,17 @@ export default function ProposeMeetingPage(): JSX.Element {
 	const handleSelect = (value: string, name?: string) => {
 		if (!value || !name) return;
 		let newDataForm = {...dataForm, [name]: value};
-		if (name === 'selectCountry') {
+		if (name === nameSelectCountry) {
 			newDataForm = {...dataForm, [name]: value, selectCity: '', selectInterest: '', selectCategory: ''};
 		} // to clear the selected values to update the dependent values
-		if (name === 'selectCity') {
+		if (name === nameSelectCity) {
 			newDataForm = {...dataForm, [name]: value, selectInterest: '', selectCategory: ''};
 		}
-		if (name === 'selectInterest') {
+		if (name === nameSelectInterest) {
 			newDataForm = {...dataForm, [name]: value, selectCategory: ''};
 		}
-		if (name === 'selectDateMeeting') {
-			newDataForm = {...dataForm, ['selectDateMeeting']: value.length ? Helpers.convertDatetimeLocalForDb(new Date(value)) || '' : ''};
+		if (name === nameSelectDateMeeting) {
+			newDataForm = {...dataForm, [nameSelectDateMeeting]: value.length ? Helpers.convertDatetimeLocalForDb(new Date(value)) || '' : ''};
 		}
 		setDataForm(newDataForm);
 		filterLists(newDataForm);
@@ -191,20 +199,20 @@ export default function ProposeMeetingPage(): JSX.Element {
 		
 								await Desires.add(dataDesires);
 									
-								dispatch(AlertsSlice.add(textTranslation[ML.key.addedMeeting], textTranslation[ML.key.successfully], 'success'));
+								dispatch(AlertsSlice.add(textTranslation[ML.key.addedMeeting], textTranslation[ML.key.successfully], Constants.typeAlert.success));
 								return;
 							}
-							dispatch(AlertsSlice.add(textTranslation[ML.key.onAddingMeeting], textTranslation[ML.key.error], 'danger'));
+							dispatch(AlertsSlice.add(textTranslation[ML.key.onAddingMeeting], textTranslation[ML.key.error], Constants.typeAlert.danger));
 							return;
 						}
-						dispatch(AlertsSlice.add(textTranslation[ML.key.meetingExists], textTranslation[ML.key.error], 'warning'));
+						dispatch(AlertsSlice.add(textTranslation[ML.key.meetingExists], textTranslation[ML.key.error], Constants.typeAlert.warning));
 						return;
 					}
 				}
 			}
 		}
 
-		dispatch(AlertsSlice.add(textTranslation[ML.key.onAddingMeeting], textTranslation[ML.key.error], 'danger'));
+		dispatch(AlertsSlice.add(textTranslation[ML.key.onAddingMeeting], textTranslation[ML.key.error], Constants.typeAlert.danger));
   }
 
 	const filterLists = (newDataForm: ProposeMeetingInterface.DataForm) => {
@@ -267,9 +275,9 @@ export default function ProposeMeetingPage(): JSX.Element {
 					<h1 className={styles.title}>{textTranslation[ML.key.offerToMeet]}</h1>
 					{loading ? <Loading/> : 
 						<DivDefault className={styles.divForm}>
-							<form  id="propose-meeting" onSubmit={handleSubmit}  className={styles.form}>
+							<form id={Constants.namePages.proposeMeeting} onSubmit={handleSubmit}  className={styles.form}>
 								<Select
-									nameSelect='selectCountry'
+									nameSelect={nameSelectCountry}
 									nameEmptyOption={textTranslation[ML.key.selectCountry]}
 									nameKeyOption='id'
 									nameValueOption='route'
@@ -280,7 +288,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 									error={(dataForm.selectCountry.length === 0 && trySubmit) ? true : false}
 								/>
 								<Select
-									nameSelect='selectCity'
+									nameSelect={nameSelectCity}
 									nameEmptyOption={textTranslation[ML.key.selectCity]}
 									nameKeyOption='id'
 									nameValueOption='route'
@@ -292,7 +300,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 									error={(dataForm.selectCity.length === 0 && trySubmit) ? true : false}
 								/>
 								<Select
-									nameSelect='selectInterest'
+									nameSelect={nameSelectInterest}
 									nameEmptyOption={textTranslation[ML.key.selectInterest]}
 									nameKeyOption='id'
 									nameValueOption='route'
@@ -304,7 +312,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 									error={(dataForm.selectInterest.length === 0 && trySubmit) ? true : false}
 								/>
 								<Select
-									nameSelect='selectCategory'
+									nameSelect={nameSelectCategory}
 									nameEmptyOption={textTranslation[ML.key.selectCategory]}
 									nameKeyOption='id'
 									nameValueOption='route'
@@ -316,7 +324,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 									error={(dataForm.selectCategory.length === 0 && trySubmit) ? true : false}
 								/>
 								<Select
-									nameSelect='selectLanguage'
+									nameSelect={nameSelectLanguage}
 									nameEmptyOption={textTranslation[ML.key.selectLanguage]}
 									nameKeyOption='id'
 									nameValueOption='route'
@@ -326,7 +334,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 									required={true}
 									error={(dataForm.selectLanguage.length === 0 && trySubmit) ? true : false}
 								/>
-								<input type="datetime-local" id="start" name="selectDateMeeting"
+								<input type="datetime-local" id="start" name={nameSelectDateMeeting}
 									className={(dataForm.selectDateMeeting?.length === 0 && trySubmit) ? 'error' : ''}
 									min={getCurrentDateYYYYMMDD()}
 									max={getMaxDateYYYYMMDD()}
@@ -334,7 +342,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 									onChange={(value) => handleSelect(value.target.value, value.target.name)}
 								/>
 								<textarea
-									name="selectPlaceMeeting" rows={3} placeholder={textTranslation[ML.key.writeMeetingPlace]}
+									name={nameSelectPlaceMeeting} rows={3} placeholder={textTranslation[ML.key.writeMeetingPlace]}
 									onChange={(value) => handleSelect(value.target.value, value.target.name)}
 								/>
 								<button type='submit'>{textTranslation[ML.key.add]}</button>
@@ -342,7 +350,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 							</form>
 						</DivDefault>
 					}
-					<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: '/your-meetings'})}} />
+					<Button  name={textTranslation[ML.key.yourMeetings]} onClick={() => {router.push({pathname: Constants.paths.pathYourMeetings})}} />
 				</Main>
 			</div>
 		);

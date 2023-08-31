@@ -1,4 +1,3 @@
-import { Constants } from "..";
 import { AdditionalInterface } from "../../typesAndInterfaces/interfaces";
 import {TypeLanguages,TypeController, TypeMethodHttp} from "../../typesAndInterfaces/types";
 
@@ -189,6 +188,11 @@ const enum listProvider {
 	google = "google"
 }
 
+const enum statusAuth {
+	loading = "loading",
+	authenticated = "authenticated",
+}
+
 export {
 	API,
 	url,
@@ -220,5 +224,6 @@ export {
 	direction,
 	namePages,
 	paths,
-	listProvider
+	listProvider,
+	statusAuth
 };
