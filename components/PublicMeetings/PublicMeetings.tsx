@@ -88,7 +88,7 @@ export const PublicMeetings = ({listCountries, listLanguages, country, textTrans
 			<NavigationMeetings listCountries={listCountries} listLanguages={listLanguages} textTranslation={textTranslation} />
 			<h1 className={styles.title}>{title}</h1>
 			{loading
-				? <Loading textTranslation={textTranslation[ML.key.loading]} />
+				? <Loading/>
 				: 
 					<BlockMeetings/>
 			}

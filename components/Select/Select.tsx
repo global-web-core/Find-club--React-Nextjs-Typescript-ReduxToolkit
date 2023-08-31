@@ -20,7 +20,7 @@ export const Select = ({ list, nameKeyOption, nameValueOption, nameInnerOption, 
 	
 	return (
 		<>
-			<select name={nameSelect} className={cn(styles.select, {[styles.rightAngle]: rightAngle, [styles.error]: error})} id="cars" onChange={handleChange} value={selectValue} required={required}>
+			<select name={nameSelect} className={cn(styles.select, {[styles.rightAngle]: rightAngle, [styles.error]: error})} onChange={handleChange} value={selectValue} required={required}>
 				<option value="">{nameEmptyOption}</option>
 				{list.length && nameKeyOption && nameValueOption && nameInnerOption && 
 					list.map((v) => (

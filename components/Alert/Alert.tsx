@@ -6,6 +6,9 @@ import {iconDone, iconInfo, iconWarning, iconDanger} from './images';
 import Image from 'next/image';
 import { AlertsSlice } from '../../store/slices'
 import { useAppDispatch, useAppSelector } from '../../store/hook'
+import { Constants } from '../../globals';
+
+const timeTimeout = 3000;
 
 export const Alert = (): JSX.Element => {
 	const dispatch = useAppDispatch();
@@ -17,10 +20,10 @@ export const Alert = (): JSX.Element => {
 	}
 
 	const pathCurrentIcon = {
-		'success': iconDone,
-		'info': iconInfo,
-		'warning': iconWarning,
-		'danger': iconDanger
+		[Constants.typeAlert.success]: iconDone,
+		[Constants.typeAlert.info]: iconInfo,
+		[Constants.typeAlert.warning]: iconWarning,
+		[Constants.typeAlert.danger]: iconDanger
 	}
 
 	const handleClickRemove = (idMessage: string) => {
@@ -30,7 +33,7 @@ export const Alert = (): JSX.Element => {
 	useEffect(() => {
 		const interval = setTimeout(() => {	
 			if (listMessages[0]?.id) handleClickRemove(listMessages[0].id)
-		}, 3000);			
+		}, timeTimeout);			
 		return () => clearTimeout(interval);
 	}, [listMessages])
 
@@ -45,7 +48,7 @@ export const Alert = (): JSX.Element => {
 			<div className={styles.content}>
 				{listMessages.length > 0 && listMessages.map(message => (
 						<div
-							className={cn(styles.alert, {[styles.alertSuccess]: message.typeAlert === 'success',[styles.alertInfo]: message.typeAlert === 'info', [styles.alertWarning]: message.typeAlert === 'warning', [styles.alertDanger]: message.typeAlert === 'danger'})}
+							className={cn(styles.alert, {[styles.alertSuccess]: message.typeAlert === Constants.typeAlert.success,[styles.alertInfo]: message.typeAlert === Constants.typeAlert.info, [styles.alertWarning]: message.typeAlert === Constants.typeAlert.warning, [styles.alertDanger]: message.typeAlert === Constants.typeAlert.danger})}
 							key={message.id}
 						>
 							<div className={styles.icon}>

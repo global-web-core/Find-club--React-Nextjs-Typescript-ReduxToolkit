@@ -119,6 +119,7 @@ const keyText = {
 	goToHome: 'go-to-home',
 	ooopsPageNoExist: 'ooops-page-no-exist',
 	youNotAccessLogIn: 'you-not-access-log-in',
+	listIsEmpty: 'list-is-empty',
 }
 
 export default keyText;

@@ -9,7 +9,7 @@ import {iconUser} from './images';
 import { Button } from '../../components';
 import { useAppSelector } from '../../store/hook';
 import { TextTranslationSlice } from '../../store/slices';
-import { ML } from '../../globals';
+import { Constants, ML } from '../../globals';
 import { useOutsideClick } from '../../hooks';
 
 export const Login = (): JSX.Element => {
@@ -36,11 +36,11 @@ export const Login = (): JSX.Element => {
 
 	const handleClickSignOut = (e: TypeClickButton) => {
 		e.preventDefault();
-		if (router.pathname === '/propose-meeting') {
+		if (router.pathname === Constants.paths.pathProposeMeeting) {
 			signOut({ callbackUrl: '/' });
 			return;
 		}
-		if (router.pathname === '/your-meetings') {
+		if (router.pathname === Constants.paths.pathYourMeetings) {
 			signOut({ callbackUrl: '/' });
 			return;
 		}

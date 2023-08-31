@@ -41,7 +41,7 @@ export const MeetingsList = ({namePagination}: MeetingsListProps):JSX.Element =>
 				</div>
 			}
 			{meetings?.length === 0 && !loading && <ListEmpty/>}
-			{loading && <Loading textTranslation={textTranslation[ML.key.loading]} />}
+			{loading && <Loading/>}
 		</>
 	);
 };

@@ -3,7 +3,7 @@ import { CitiesInterface } from '../../typesAndInterfaces/interfaces';
 import React, { useState, useEffect } from 'react';
 import { Select, Button } from '../../components';
 import { useRouter } from "next/router";
-import { ML } from '../../globals';
+import { Constants, ML } from '../../globals';
 
 export const SelectCity = ({ listCities, text }: SelectCityProps): JSX.Element => {
 	const translateCountries = () => {
@@ -20,7 +20,7 @@ export const SelectCity = ({ listCities, text }: SelectCityProps): JSX.Element =
 	const handleClick = () => {
 		if (pathCity) {
 			router.push({
-				pathname: '[countries]/[cities]',
+				pathname: Constants.paths.pathAllWithCities,
 				query: {countries: router.query.countries, cities: pathCity}
 			});
 		}

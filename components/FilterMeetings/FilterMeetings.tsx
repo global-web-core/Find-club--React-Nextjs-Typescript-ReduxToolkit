@@ -11,7 +11,7 @@ export const FilterMeetings = (): JSX.Element => {
 	const calendarMeetings = useAppSelector(state => CalendarMeetingsSlice.calendarMeetingsSelect(state));
 	const selectFilter = useAppSelector(state => SelectFilterSlice.selectFilter(state));
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
-	const pageYourMeetings = router.pathname === '/your-meetings' || false;
+	const pageYourMeetings = router.pathname === Constants.paths.pathYourMeetings || false;
 	const setNameMonth = () => {
 		const language = ML.getLanguage()
 		if (language) {

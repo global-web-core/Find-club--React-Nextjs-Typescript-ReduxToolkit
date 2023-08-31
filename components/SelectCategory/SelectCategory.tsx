@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Select, Button } from '../../components';
 import { useRouter } from "next/router";
 import { CategoryInterface } from '../../typesAndInterfaces/interfaces';
-import { ML } from "../../globals";
+import { Constants, ML } from "../../globals";
 
 export const SelectCategory = ({ listCategories, text }: SelectCategoryProps): JSX.Element => {
 	const router = useRouter();
@@ -21,7 +21,7 @@ export const SelectCategory = ({ listCategories, text }: SelectCategoryProps): J
 	const handleClick = () => {
 		if (pathCategory) {
 			router.push({
-				pathname: '/[countries]/[cities]/[interests]/[categories]',
+				pathname: Constants.paths.pathAllWithCategories,
 				query: {countries: router.query.countries, cities: router.query.cities, interests: router.query.interests, categories: pathCategory}
 			});
 		}

@@ -6,6 +6,7 @@ import cn from 'classnames';
 import {useOutsideClick} from '../../hooks';
 import { ListEmpty } from '../ListEmpty/ListEmpty';
 import { AdditionalInterface } from '../../typesAndInterfaces/interfaces';
+import { Constants } from '../../globals';
 
 const getLabelFromOptions = (options: AdditionalInterface.ListOptions, selectValue: string) => {
 	if (options && selectValue) {
@@ -81,7 +82,7 @@ export const SelectWithSearch = ({name, options, placeholder, defaultValue, onCh
 						value={value || ''}
 					/>
 					<div className={styles.arrow}>
-						<ArrowOpen open={open} color='light' />
+						<ArrowOpen open={open} color={Constants.color.light} />
 					</div>
 				</div>
 				<div className={styles.list}>

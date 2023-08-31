@@ -1,3 +1,4 @@
+import { Constants } from "..";
 import { AdditionalInterface } from "../../typesAndInterfaces/interfaces";
 import {TypeLanguages,TypeController, TypeMethodHttp} from "../../typesAndInterfaces/types";
 
@@ -149,6 +150,45 @@ const codeHttp = {
 
 const maxVisibleMonth = 3;
 
+const enum color {
+	light = "light",
+	dark = "dark",
+}
+
+const enum typeAlert {
+	success = "success",
+	info = "info",
+	warning = "warning",
+	danger = "danger",
+}
+
+const enum direction {
+	left = "left",
+	right = "right",
+}
+
+const enum namePages {
+	yourMeetings = "your-meetings",
+	proposeMeeting = "propose-meeting",
+	countries = "[countries]",
+	cities = "[cities]",
+	interests = "[interests]",
+	categories = "[categories]",
+}
+
+const enum paths {
+	pathCountries = '/' + namePages.countries,
+	pathAllWithCities = '/' + namePages.countries + '/' + namePages.cities,
+	pathAllWithInterests = '/' + namePages.countries + '/' + namePages.cities + '/' + namePages.interests,
+	pathAllWithCategories = '/' + namePages.countries + '/' + namePages.cities + '/' + namePages.interests + '/' + namePages.categories,
+	pathProposeMeeting = '/' + namePages.proposeMeeting,
+	pathYourMeetings = '/' + namePages.yourMeetings,
+}
+
+const enum listProvider {
+	google = "google"
+}
+
 export {
 	API,
 	url,
@@ -174,5 +214,11 @@ export {
 	basicNameLanguagetranslation,
 	codeHttp,
 	avaliableLanguages,
-	maxVisibleMonth
+	maxVisibleMonth,
+	color,
+	typeAlert,
+	direction,
+	namePages,
+	paths,
+	listProvider
 };

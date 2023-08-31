@@ -3,14 +3,14 @@ import styles from './TypingText.module.css';
 import { TypingTextProps } from './TypingText.props';
 import cn from 'classnames';
 
+const timeTypingOneText = 5000;
+const maxCountRepeat = 50;
+
 export const TypingText = ({listText}: TypingTextProps):JSX.Element => {
 	const [lengthListText, setLengthListText] = useState(0);
 	const [text, setText] = useState<string | null>(null);
 	const [runningAnimation, setRunningAnimation] = useState(false);
 	const [countAnimation, setCountAnimation] = useState(0);
-
-	const timeTypingOneText = 5000;
-	const maxCountRepeat = 50;
 
 	let timerAnimation: ReturnType<typeof setTimeout>;
 	let timerRestart: ReturnType<typeof setTimeout>;

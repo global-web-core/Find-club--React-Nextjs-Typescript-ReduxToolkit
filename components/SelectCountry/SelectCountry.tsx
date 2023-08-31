@@ -2,7 +2,7 @@ import {SelectCountryProps} from './SelectCountry.props';
 import {CountriesInterface, LanguagesInterface} from '../../typesAndInterfaces/interfaces';
 import React, {useState} from 'react';
 import {useRouter} from "next/router";
-import {Helpers, ML} from '../../globals';
+import {Constants, Helpers, ML} from '../../globals';
 import {SelectWithImage} from '../../components';
 import styles from './SelectCountry.module.css';
 
@@ -23,7 +23,7 @@ export const SelectCountry = ({listCountries, listLanguages, text}: SelectCountr
 		const urlCountry = pathCountry && Helpers.getUrlCountry(pathCountry, countries, languages);
 		if (urlCountry) {
 			router.push({
-				pathname: '[countries]',
+				pathname: Constants.namePages.countries,
 				query: {countries: urlCountry}
 			});
 		}

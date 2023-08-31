@@ -7,6 +7,8 @@ import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { useRouter } from 'next/router';
 import { CalendarInterface } from '../../typesAndInterfaces/interfaces';
 
+const highlight = 'highlight';
+
 export const CalendarMeetings = ({language, metadataLanguage, ...props}: CalendarMeetingsProps):JSX.Element => {
 	const router = useRouter();
 	const dispatch = useAppDispatch();
@@ -53,7 +55,7 @@ export const CalendarMeetings = ({language, metadataLanguage, ...props}: Calenda
 				// @ts-ignore // turned off type checking types because i use custom function conflicting react-calendar types for onChange
 				onChange={changeSelectedDay} value={selectedDay}
 				minDate={new Date()} maxDate={maxDate ? new Date(maxDate) : undefined}
-				minDetail={"month"} maxDetail={"month"}
+				minDetail={Constants.nameBasicFilter.month} maxDetail={Constants.nameBasicFilter.month}
 				locale={metadataLanguage}
 				onActiveStartDateChange={changeActiveStartDateChange}
 				tileClassName={({ date }) => {		
@@ -66,7 +68,7 @@ export const CalendarMeetings = ({language, metadataLanguage, ...props}: Calenda
 								if (date.getFullYear() === meetingDate.getFullYear() && date.getMonth() === meetingDate.getMonth() && date.getDate() === meetingDate.getDate()) return true;
 							});
 								
-							return dateMark ? 'highlight' : '';
+							return dateMark ? highlight : '';
 						}
 					}
 				}}

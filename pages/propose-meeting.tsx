@@ -265,7 +265,7 @@ export default function ProposeMeetingPage(): JSX.Element {
 				</Head>
 				<Main>
 					<h1 className={styles.title}>{textTranslation[ML.key.offerToMeet]}</h1>
-					{loading ? <Loading textTranslation={textTranslation[ML.key.loading]} /> : 
+					{loading ? <Loading/> : 
 						<DivDefault className={styles.divForm}>
 							<form  id="propose-meeting" onSubmit={handleSubmit}  className={styles.form}>
 								<Select

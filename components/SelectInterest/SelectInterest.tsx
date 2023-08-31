@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Select, Button } from '../../components';
 import { useRouter } from "next/router";
 import { InterestsInterface } from '../../typesAndInterfaces/interfaces';
-import { ML } from '../../globals';
+import { Constants, ML } from '../../globals';
 
 export const SelectInterest = ({ listInterests, text }: SelectInterestProps): JSX.Element => {
 	const router = useRouter();
@@ -21,7 +21,7 @@ export const SelectInterest = ({ listInterests, text }: SelectInterestProps): JS
 	const handleClick = () => {
 		if (pathInterest) {
 			router.push({
-				pathname: '/[countries]/[cities]/[interests]',
+				pathname: Constants.paths.pathAllWithInterests,
 				query: {countries: router.query.countries, cities: router.query.cities, interests: pathInterest}
 			});
 		}

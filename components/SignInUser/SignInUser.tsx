@@ -5,7 +5,7 @@ import Image from 'next/image';
 import {iconGoogle} from './images';
 import { useAppSelector } from '../../store/hook';
 import { TextTranslationSlice } from '../../store/slices';
-import { ML } from '../../globals';
+import { Constants, ML } from '../../globals';
 
 export const SignInUser = ({ listProviders, handleSignIn }: SignInUserProps): JSX.Element => {
 	const textTranslation = useAppSelector(state => TextTranslationSlice.textTranslationSelect(state));
@@ -21,7 +21,7 @@ export const SignInUser = ({ listProviders, handleSignIn }: SignInUserProps): JS
 						<div className={styles.main}>
 							<h1>{textTranslation[ML.key.logInYourAccount]}</h1>
 							<div className={styles.item} onClick={() => handleClick(provider.id)}>
-								<Image  className={styles.image} src={provider.id === 'google' && iconGoogle || ''} alt="icon" width={48} height={48} />
+								<Image  className={styles.image} src={provider.id === Constants.listProvider.google && iconGoogle || ''} alt="icon" width={48} height={48} />
 								<span>{provider.name}</span>
 							</div>
 						</div>

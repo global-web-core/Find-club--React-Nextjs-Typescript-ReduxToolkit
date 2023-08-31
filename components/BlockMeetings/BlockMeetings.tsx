@@ -8,8 +8,8 @@ import { useEffect } from 'react';
 export const BlockMeetings = (): JSX.Element => {
 	const dispatch = useAppDispatch();
 	const router = useRouter();
-	const pageYourMeetings = router.pathname === '/your-meetings' || false;
-	
+	const pageYourMeetings = router.pathname === ('/' + Constants.namePages.yourMeetings) || false;
+
 	useEffect(() => {
 		if (pageYourMeetings) {
 			dispatch(PaginationSlice.clearAll());

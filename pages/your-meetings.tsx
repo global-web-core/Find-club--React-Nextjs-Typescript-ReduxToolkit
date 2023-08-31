@@ -145,7 +145,7 @@ export default function YourMeetingsPage(): JSX.Element {
 				<Main>
 					<h1 className={styles.title}>{textTranslation[ML.key.yourMeetings]}</h1>
 					{loading
-						? <Loading textTranslation={textTranslation[ML.key.loading]} />
+						? <Loading/>
 						:
 							<BlockMeetings/>
 					}
