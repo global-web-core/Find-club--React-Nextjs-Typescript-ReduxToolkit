@@ -5,5 +5,5 @@ Briefly about the technologies I have implemented in the project:
 - NextJS + React + Redux Toolkit;
 - Typescript;
 - I manipulate data using Rest API.
-- Backend part is located here https://github.com/uuu8001uuu/Find-club--Backend-php
+- Backend part is located here https://github.com/uuu8001uuu/Find-club--Nestjs-Typescript
 - Backend is written in php and I use it with docker.
